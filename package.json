@@ -16,9 +16,13 @@
     "@splinetool/runtime": "^1.12.32",
     "@types/three": "^0.182.0",
     "animejs": "^4.2.2",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.26.2",
+    "gsap": "^3.14.2",
     "lucide-react": "^0.556.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "tailwind-merge": "^3.4.0",
     "three": "^0.182.0"
   },
   "devDependencies": {

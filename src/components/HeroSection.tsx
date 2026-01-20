@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Timeline, stagger } from 'animejs';
 import roboHand from '../assets/Robo hand.jpg';
 import robo2 from '../assets/robo 2.jpg';
-import { FlameBackground } from './FlameBackground';
+
 
 const TextWrapper = ({ text, className = "" }: { text: string; className?: string }) => (
   <span className={`inline-block ${className}`}>
@@ -91,8 +91,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ scrollContainerRef }) 
   return (
     <div className="relative h-screen w-full overflow-hidden flex flex-col items-center justify-center bg-zinc-950">
       
-      {/* Flame Background Effect */}
-      <FlameBackground />
 
       {/* Corner Images */}
       {/* Top Right Hand */}
@@ -132,7 +130,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ scrollContainerRef }) 
       {/* Content Overlay */}
       <div 
         className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center h-[200px] justify-center transition-opacity duration-300 ease-out"
-        style={{ opacity: Math.max(0, 1 - scrollY / 300) }} // Fades out as you scroll
+        style={{ 
+          opacity: Math.max(0, 1 - scrollY / 300),
+          transform: `translateY(${scrollY * 1.2}px)` // Parallax effect
+        }} 
       >
           <div className="relative w-full">
               {/* Welcome Text */}
