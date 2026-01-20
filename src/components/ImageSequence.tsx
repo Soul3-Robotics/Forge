@@ -83,10 +83,10 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({ containerRef }) =>
       let renderWidth, renderHeight;
 
       if (canvasAspect > imgAspect) {
-        renderHeight = rect.height * 0.8; // Use 80% of height
+        renderHeight = rect.height * 0.5; // Use 50% of height
         renderWidth = renderHeight * imgAspect;
       } else {
-        renderWidth = rect.width * 0.8; // Use 80% of width
+        renderWidth = rect.width * 0.5; // Use 50% of width
         renderHeight = renderWidth / imgAspect;
       }
       
