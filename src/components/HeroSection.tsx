@@ -131,8 +131,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ scrollContainerRef }) 
       <div 
         className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center h-[200px] justify-center transition-opacity duration-300 ease-out"
         style={{ 
-          opacity: Math.max(0, 1 - scrollY / 300),
-          transform: `translateY(${scrollY * 1.2}px)` // Parallax effect
+          opacity: Math.max(0, 1 - scrollY / 500), // Slower fade out
+          transform: `translateY(${scrollY * 0.5}px)` // Reduced parallax speed for better continuity
         }} 
       >
           <div className="relative w-full">

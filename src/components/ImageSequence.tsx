@@ -1,8 +1,9 @@
 import React, { useRef, useEffect, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { TextPlugin } from 'gsap/TextPlugin';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
 // Import all frames eagerly
 // @ts-ignore
@@ -18,6 +19,12 @@ interface ImageSequenceProps {
 export const ImageSequence: React.FC<ImageSequenceProps> = ({ containerRef }) => {
   const targetRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const text1Ref = useRef<HTMLDivElement>(null);
+  const text2Ref = useRef<HTMLDivElement>(null);
+  const title1Ref = useRef<HTMLHeadingElement>(null);
+  const title2Ref = useRef<HTMLHeadingElement>(null);
+  const desc1Ref = useRef<HTMLParagraphElement>(null);
+  const desc2Ref = useRef<HTMLParagraphElement>(null);
   const [images, setImages] = useState<HTMLImageElement[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -75,6 +82,20 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({ containerRef }) =>
       
       // Scale context to ensure correct drawing operations
       ctx.scale(dpr, dpr);
+      
+      // Apply scale and opacity from visualProps if available
+      // @ts-ignore
+      const currentScale = visualProps?.scale ?? 1;
+      // @ts-ignore
+      const currentOpacity = visualProps?.opacity ?? 1;
+
+      ctx.globalAlpha = currentOpacity;
+      
+      // Translate to center for scaling
+      ctx.translate(rect.width / 2, rect.height / 2);
+      ctx.scale(currentScale, currentScale);
+      ctx.translate(-rect.width / 2, -rect.height / 2);
+
 
       // Draw image with "contain" behavior
       const canvasAspect = rect.width / rect.height;
@@ -83,10 +104,10 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({ containerRef }) =>
       let renderWidth, renderHeight;
 
       if (canvasAspect > imgAspect) {
-        renderHeight = rect.height * 0.5; // Use 50% of height
+        renderHeight = rect.height * 0.6; // Use 50% of height
         renderWidth = renderHeight * imgAspect;
       } else {
-        renderWidth = rect.width * 0.5; // Use 50% of width
+        renderWidth = rect.width * 0.6; // Use 50% of width
         renderHeight = renderWidth / imgAspect;
       }
       
@@ -98,8 +119,30 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({ containerRef }) =>
     };
 
     const playhead = { frame: 0 };
+    
+    // Animation object for scale and opacity
+    const visualProps = { scale: 0.8, opacity: 0 };
 
     const ctx = gsap.context(() => {
+      // 1. Scale/Fade In Animation (Entry)
+      gsap.to(visualProps, {
+        scale: 1,
+        opacity: 1,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: targetRef.current,
+          scroller: containerRef?.current || window,
+          start: "top 80%", // Start animation when top of container hits 80% of viewport
+          end: "top 20%",   // End animation when top of container hits 20% of viewport
+          scrub: 1,         // Smooth scrubbing
+        },
+        onUpdate: () => {
+             // Force re-render to apply new scale/opacity
+             render(playhead.frame);
+        }
+      });
+
+      // 2. Frame Sequence Animation (Scroll through frames)
       gsap.to(playhead, {
         frame: frames.length - 1,
         ease: "none", // Linear mapping to scroll
@@ -114,10 +157,46 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({ containerRef }) =>
           render(playhead.frame);
         }
       });
+      // 3. Text Animations (Vision of Forge)
+      // Both texts appear together near the end (approx frame 28-30 of 32)
+      
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: targetRef.current,
+          scroller: containerRef?.current || window,
+          start: "65% center", // Start significantly later (when 85% of section hits center)
+          end: "bottom bottom",
+          scrub: 1,
+        }
+      });
+
+      // Ensure elements are visible to GSAP by setting initial state immediately
+      gsap.set([text1Ref.current, text2Ref.current], { opacity: 0, scale: 0.9, visibility: 'visible' });
+      // Set text content to empty for typing effect
+      const title1Text = "Independence";
+      const desc1Text = "Empowering autonomy through neural connection.";
+      const title2Text = "Strength & Rehabilitation";
+      const desc2Text = "Restoring physical capability with adaptive engineering.";
+      
+      if (title1Ref.current) title1Ref.current.innerText = "";
+      if (desc1Ref.current) desc1Ref.current.innerText = "";
+      if (title2Ref.current) title2Ref.current.innerText = "";
+      if (desc2Ref.current) desc2Ref.current.innerText = "";
+
+      // Reveal containers
+      tl.to([text1Ref.current, text2Ref.current], 
+        { opacity: 1, scale: 1, duration: 0.5 }
+      )
+      // Typewriter effects - slower speed (increased duration)
+      .to(title1Ref.current, { text: title1Text, duration: 2, ease: "none" }, "-=0.2")
+      .to(desc1Ref.current, { text: desc1Text, duration: 3, ease: "none" }, "-=1")
+      .to(title2Ref.current, { text: title2Text, duration: 2, ease: "none" }, "-=2") // Overlap
+      .to(desc2Ref.current, { text: desc2Text, duration: 3, ease: "none" }, "-=1");
+      
     }, targetRef); // Scope to component
 
     // Initial render
-    render(0);
+    // render(0); // Removing initial render to avoid flash of full opacity/scale before GSAP kicks in
 
     // Handle resize
     const handleResize = () => render(playhead.frame);
@@ -130,9 +209,26 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({ containerRef }) =>
   }, [isLoaded, images]);
 
   return (
-    <div ref={targetRef} className="h-[300vh] relative bg-black">
+    <div ref={targetRef} className="h-[300vh] relative bg-black -mt-20 z-10">
       <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
         <canvas ref={canvasRef} className="w-full h-full block" />
+        
+        {/* Text Overlays */}
+        <div className="absolute inset-0 pointer-events-none flex items-center justify-between px-8 md:px-20 max-w-full mx-auto z-50 w-full">
+          <div className="text-left flex items-center gap-4 pl-8 md:pl-24 lg:pl-10" ref={text1Ref} style={{ opacity: 0, visibility: 'hidden' }}>
+             <div>
+                <h3 ref={title1Ref} className="text-2xl md:text-3xl font-bold text-red-500 mb-2 font-mono tracking-tight min-h-12">Independence</h3>
+                <p ref={desc1Ref} className="text-gray-300 max-w-[200px] md:max-w-xs text-sm md:text-base shadow-black drop-shadow-md bg-black/80 border border-red-500/20 p-4 rounded-lg backdrop-blur-md font-mono min-h-20">Empowering autonomy through neural connection.</p>
+             </div>
+          </div>
+          <div className="text-right flex items-center gap-4 pr-8 md:pr-24 lg:pr-1" ref={text2Ref} style={{ opacity: 0, visibility: 'hidden' }}>
+            <div>
+                <h3 ref={title2Ref} className="text-2xl md:text-3xl font-bold text-orange-500 mb-2 font-mono tracking-tight min-h-12 md:min-h-18">Strength &<br/>Rehabilitation</h3>
+                <p ref={desc2Ref} className="text-gray-300 max-w-[200px] md:max-w-xs ml-auto text-sm md:text-base shadow-black drop-shadow-md bg-black/80 border border-orange-500/20 p-4 rounded-lg backdrop-blur-md font-mono min-h-20">Restoring physical capability with adaptive engineering.</p>
+            </div>
+          </div>
+        </div>
+
         {!isLoaded && (
             <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-white/50 text-sm animate-pulse">Initializing Sequence...</div>
