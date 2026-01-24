@@ -85,18 +85,10 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({ containerRef }) =>
       
       // Apply scale and opacity from visualProps if available
       // @ts-ignore
-      const currentScale = visualProps?.scale ?? 1;
-      // @ts-ignore
       const currentOpacity = visualProps?.opacity ?? 1;
 
       ctx.globalAlpha = currentOpacity;
       
-      // Translate to center for scaling
-      ctx.translate(rect.width / 2, rect.height / 2);
-      ctx.scale(currentScale, currentScale);
-      ctx.translate(-rect.width / 2, -rect.height / 2);
-
-
       // Draw image with "contain" behavior
       const canvasAspect = rect.width / rect.height;
       const imgAspect = img.width / img.height;
@@ -112,7 +104,7 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({ containerRef }) =>
       }
       
       const offsetX = (rect.width - renderWidth) / 2;
-      const offsetY = (rect.height - renderHeight) / 2;
+      const offsetY = (rect.height - renderHeight) / 2; // Move up by 10% of screen height
 
       ctx.clearRect(0, 0, rect.width, rect.height);
       ctx.drawImage(img, offsetX, offsetY, renderWidth, renderHeight);
@@ -120,8 +112,8 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({ containerRef }) =>
 
     const playhead = { frame: 0 };
     
-    // Animation object for scale and opacity
-    const visualProps = { scale: 0.8, opacity: 0 };
+    // Animation object for opacity only
+    const visualProps = { opacity: 0 };
 
     const ctx = gsap.context(() => {
       // 1. Scale/Fade In Animation (Entry)
@@ -132,7 +124,7 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({ containerRef }) =>
         scrollTrigger: {
           trigger: targetRef.current,
           scroller: containerRef?.current || window,
-          start: "top 80%", // Start animation when top of container hits 80% of viewport
+          start: "top 100%", // Start animation earlier for smoother overlap
           end: "top 20%",   // End animation when top of container hits 20% of viewport
           scrub: 1,         // Smooth scrubbing
         },
@@ -159,7 +151,6 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({ containerRef }) =>
       });
       // 3. Text Animations (Vision of Forge)
       // Both texts appear together near the end (approx frame 28-30 of 32)
-      
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: targetRef.current,

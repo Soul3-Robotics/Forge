@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Timeline, stagger } from 'animejs';
 import roboHand from '../assets/Robo hand.jpg';
 import robo2 from '../assets/robo 2.jpg';
+import forgeVideo from '../assets/forge.mp4';
 
 
 const TextWrapper = ({ text, className = "" }: { text: string; className?: string }) => (
@@ -89,8 +90,22 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ scrollContainerRef }) 
   }, []);
 
   return (
-    <div className="relative h-screen w-full overflow-hidden flex flex-col items-center justify-center bg-zinc-950">
+    <div className="relative h-screen w-full overflow-hidden flex flex-col items-center justify-center bg-black">
       
+      {/* Background Video */}
+      <div className="absolute inset-0 z-0">
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline 
+          className="w-full h-full object-cover opacity-50 blur-xl scale-110"
+        >
+          <source src={forgeVideo} type="video/mp4" />
+        </video>
+        {/* Overlay to ensure text readability */}
+        <div className="absolute inset-0 bg-black/60"></div>
+      </div>
 
       {/* Corner Images */}
       {/* Top Right Hand */}

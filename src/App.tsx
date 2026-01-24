@@ -8,13 +8,17 @@ function App() {
   return (
     <div 
       ref={scrollContainerRef}
-      className="h-screen w-full overflow-y-auto bg-black text-white font-sans selection:bg-red-600 selection:text-black scroll-smooth"
+      className="h-screen w-full overflow-y-auto bg-black text-white font-sans selection:bg-red-600 selection:text-black"
     >
       {/* Hero Section */}
-      <HeroSection scrollContainerRef={scrollContainerRef} />
+      <div className="sticky top-0 z-0">
+        <HeroSection scrollContainerRef={scrollContainerRef} />
+      </div>
 
       {/* Image Sequence Section */}
-      <ImageSequence containerRef={scrollContainerRef} />
+      <div className="relative z-10">
+        <ImageSequence containerRef={scrollContainerRef} />
+      </div>
 
       {/* Footer */}
       <footer className="bg-zinc-950 py-12 border-t border-white/10">
