@@ -1,29 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ArrowRight } from 'lucide-react';
 import logo from '../assets/logo.png';
 
 export const NavBar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    
-    // We need to listen to the scroll event on the main scroll container if possible,
-    // or just window if the layout allows. 
-    // Since App.tsx has a specific scroll container, we might need to rely on that context or passed prop.
-    // For now, let's assume standard window scroll or handle it via a passed ref in future refactors.
-    // However, given the App structure:
-    // <div className="h-screen w-full overflow-y-auto ...">
-    // The window itself won't scroll. The div will.
-    // Let's attach the listener to the closest scrollable parent or just style it to always be glass.
-    
-    // Actually, a cool navbar often stays consistent. Let's make it always glass but transparent at very top?
-    // We'll skip the scroll listener for now and make it purely based on visual style.
-  }, []);
 
   const navLinks = [
     { name: 'Technology', href: '#' },
@@ -38,9 +19,7 @@ export const NavBar = () => {
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled || true ? 'backdrop-blur-md bg-black/40 border-b border-white/5' : 'bg-transparent'
-        }`}
+        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 backdrop-blur-md bg-black/40 border-b border-white/5"
       >
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
