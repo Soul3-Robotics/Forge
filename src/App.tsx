@@ -1,6 +1,7 @@
 import React from 'react';
 import { HeroSection } from './components/HeroSection';
 import { ImageSequence } from './components/ImageSequence';
+import { NavBar } from './components/NavBar';
 
 function App() {
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
@@ -10,6 +11,8 @@ function App() {
       ref={scrollContainerRef}
       className="h-screen w-full overflow-y-auto bg-black text-white font-sans selection:bg-red-600 selection:text-black"
     >
+      <NavBar />
+      
       {/* Hero Section */}
       <div className="sticky top-0 z-0">
         <HeroSection scrollContainerRef={scrollContainerRef} />

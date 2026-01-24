@@ -200,7 +200,7 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({ containerRef }) =>
   }, [isLoaded, images]);
 
   return (
-    <div ref={targetRef} className="h-[300vh] relative bg-black -mt-20 z-10">
+    <div ref={targetRef} className="h-[300vh] relative -mt-[30vh] z-10">
       <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
         <canvas ref={canvasRef} className="w-full h-full block" />
         
