@@ -112,7 +112,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ scrollContainerRef }) 
           <img 
             src={robo2} 
             alt="Exoskeleton Detail" 
-            className="w-full h-full object-cover mask-[linear-gradient(to_bottom_left,black_50%,transparent_100%)] golden-glow" 
+            className="w-full h-full object-cover golden-glow" 
           />
         </div>
       </div>
@@ -129,7 +129,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ scrollContainerRef }) 
           <img 
             src={roboHand} 
             alt="Robotic Hand" 
-            className="w-full h-full object-cover mask-[linear-gradient(to_top_right,black_50%,transparent_100%)] golden-glow" 
+            className="w-full h-full object-cover golden-glow" 
           />
          </div>
       </div>
