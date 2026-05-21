@@ -208,14 +208,14 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({ containerRef }) =>
         <div className="absolute inset-0 pointer-events-none flex items-center justify-between px-8 md:px-20 max-w-full mx-auto z-50 w-full">
           <div className="text-left flex items-center gap-4 pl-8 md:pl-24 lg:pl-10" ref={text1Ref} style={{ opacity: 0, visibility: 'hidden' }}>
              <div>
-                <h3 ref={title1Ref} className="text-2xl md:text-3xl font-bold text-red-500 mb-2 font-mono tracking-tight min-h-12">Independence</h3>
-                <p ref={desc1Ref} className="text-gray-300 max-w-[200px] md:max-w-xs text-sm md:text-base shadow-black drop-shadow-md bg-black/80 border border-red-500/20 p-4 rounded-lg backdrop-blur-md font-mono min-h-20">Empowering autonomy through neural connection.</p>
+                <h3 ref={title1Ref} className="text-2xl md:text-3xl font-bold mb-2 font-mono tracking-tight min-h-12" style={{ color: '#F4B942', textShadow: '0 0 10px rgba(244, 185, 66, 0.5), 0 0 20px rgba(244, 185, 66, 0.3)' }}>Independence</h3>
+                <p ref={desc1Ref} className="max-w-[200px] md:max-w-xs text-sm md:text-base shadow-black drop-shadow-md p-4 rounded-lg backdrop-blur-md font-mono min-h-20" style={{ color: '#F4B942', backgroundColor: 'rgba(5, 5, 5, 0.8)', borderWidth: '1px', borderColor: '#F4B942', boxShadow: '0 0 15px rgba(244, 185, 66, 0.3), inset 0 0 15px rgba(244, 185, 66, 0.1)' }}>Empowering autonomy through neural connection.</p>
              </div>
           </div>
           <div className="text-right flex items-center gap-4 pr-8 md:pr-24 lg:pr-1" ref={text2Ref} style={{ opacity: 0, visibility: 'hidden' }}>
             <div>
-                <h3 ref={title2Ref} className="text-2xl md:text-3xl font-bold text-orange-500 mb-2 font-mono tracking-tight min-h-12 md:min-h-18">Strength &<br/>Rehabilitation</h3>
-                <p ref={desc2Ref} className="text-gray-300 max-w-[200px] md:max-w-xs ml-auto text-sm md:text-base shadow-black drop-shadow-md bg-black/80 border border-orange-500/20 p-4 rounded-lg backdrop-blur-md font-mono min-h-20">Restoring physical capability with adaptive engineering.</p>
+                <h3 ref={title2Ref} className="text-2xl md:text-3xl font-bold mb-2 font-mono tracking-tight min-h-12 md:min-h-18" style={{ color: '#00CFC8', textShadow: '0 0 10px rgba(0, 207, 200, 0.5), 0 0 20px rgba(0, 207, 200, 0.3)' }}>Strength &<br/>Rehabilitation</h3>
+                <p ref={desc2Ref} className="max-w-[200px] md:max-w-xs ml-auto text-sm md:text-base shadow-black drop-shadow-md p-4 rounded-lg backdrop-blur-md font-mono min-h-20" style={{ color: '#00CFC8', backgroundColor: 'rgba(5, 5, 5, 0.8)', borderWidth: '1px', borderColor: '#00CFC8', boxShadow: '0 0 15px rgba(0, 207, 200, 0.3), inset 0 0 15px rgba(0, 207, 200, 0.1)' }}>Restoring physical capability with adaptive engineering.</p>
             </div>
           </div>
         </div>

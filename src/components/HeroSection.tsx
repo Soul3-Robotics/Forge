@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { Timeline, stagger } from 'animejs';
 import roboHand from '../assets/Robo hand.jpg';
 import robo2 from '../assets/robo 2.jpg';
-import forgeVideo from '../assets/forge.mp4';
 
 
 const TextWrapper = ({ text, className = "" }: { text: string; className?: string }) => (
@@ -11,12 +10,34 @@ const TextWrapper = ({ text, className = "" }: { text: string; className?: strin
     {text.split('').map((char, index) => (
       <span 
         key={index} 
-        className="letter inline-block bg-linear-to-r from-red-700 to-orange-500 bg-clip-text text-transparent" 
-        style={{ opacity: 0, transform: 'translateY(100px)' }}
+        className="letter inline-block" 
+        style={{ opacity: 0, transform: 'translateY(100px)', color: '#F4B942' }}
       >
         {char === ' ' ? '\u00A0' : char}
       </span>
     ))}
+  </span>
+);
+
+const ColoredTextWrapper = ({ 
+  segments, 
+  className = "" 
+}: { 
+  segments: Array<{ text: string; color: string }>;
+  className?: string;
+}) => (
+  <span className={`inline-block ${className}`}>
+    {segments.map((segment, segIdx) =>
+      segment.text.split('').map((char, charIdx) => (
+        <span 
+          key={`${segIdx}-${charIdx}`}
+          className="letter inline-block" 
+          style={{ opacity: 0, transform: 'translateY(100px)', color: segment.color }}
+        >
+          {char === ' ' ? '\u00A0' : char}
+        </span>
+      ))
+    )}
   </span>
 );
 
@@ -90,24 +111,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ scrollContainerRef }) 
   }, []);
 
   return (
-    <div className="relative h-screen w-full overflow-hidden flex flex-col items-center justify-center bg-black">
-      
-      {/* Background Video */}
-      <div className="absolute inset-0 z-0">
-        <video 
-          autoPlay 
-          loop 
-          muted 
-          playsInline 
-          className="w-full h-full object-cover opacity-50 blur-xl scale-110"
-        >
-          <source src={forgeVideo} type="video/mp4" />
-        </video>
-        {/* Overlay to ensure text readability */}
-        <div className="absolute inset-0 bg-black/60"></div>
-      </div>
+    <div className="relative h-screen w-full overflow-hidden flex flex-col items-center justify-center hero-section">
 
-      {/* Corner Images */}
+      {/* Robotic Hands */}
       {/* Top Right Hand */}
       <div 
         className="absolute top-0 right-0 w-3/4 md:w-1/2  z-10 pointer-events-none"
@@ -116,11 +122,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ scrollContainerRef }) 
           transform: `translate(${scrollY * 1.2}px, -${scrollY * 0.8}px)` 
         }}
       >
-        <div className="w-full h-full animate-slide-in-right opacity-0" style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}>
+        <div className="w-full h-full animate-slide-in-right opacity-0 slide-in-right-with-delay">
           <img 
             src={robo2} 
             alt="Exoskeleton Detail" 
-            className="w-full h-full object-cover mask-[linear-gradient(to_bottom_left,black_50%,transparent_100%)]" 
+            className="w-full h-full object-cover mask-[linear-gradient(to_bottom_left,black_50%,transparent_100%)] golden-glow" 
           />
         </div>
       </div>
@@ -133,11 +139,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ scrollContainerRef }) 
           transform: `translate(-${scrollY * 1.2}px, ${scrollY * 0.8}px)`
         }}
       >
-         <div className="w-full h-full animate-slide-in-left opacity-0" style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}>
+         <div className="w-full h-full animate-slide-in-left opacity-0 slide-in-left-with-delay">
           <img 
             src={roboHand} 
             alt="Robotic Hand" 
-            className="w-full h-full object-cover mask-[linear-gradient(to_top_right,black_50%,transparent_100%)]" 
+            className="w-full h-full object-cover mask-[linear-gradient(to_top_right,black_50%,transparent_100%)] golden-glow" 
           />
          </div>
       </div>
@@ -153,12 +159,28 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ scrollContainerRef }) 
           <div className="relative w-full">
               {/* Welcome Text */}
               <h1 className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-3xl sm:text-5xl md:text-7xl font-extrabold tracking-tight pb-4 leading-normal">
-                  <TextWrapper text="Welcome to Forge" className="welcome-text" />
+                  <ColoredTextWrapper 
+                    segments={[
+                      { text: 'Welcome to ', color: '#F4B942' },
+                      { text: 'Soul', color: '#00CFC8' },
+                      { text: '3', color: '#F4B942' }
+                    ]}
+                    className="welcome-text" 
+                  />
               </h1>
 
               {/* Main Headline */}
               <h1 className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-2xl sm:text-5xl md:text-7xl font-extrabold tracking-tight whitespace-nowrap pb-4 leading-normal">
-                  <TextWrapper text="Human Strength. Engineered." className="headline-text" />
+                  <ColoredTextWrapper 
+                    segments={[
+                      { text: 'Seva', color: '#00CFC8' },
+                      { text: ' ', color: '#F4B942' },
+                      { text: 'Of Uplifting', color: '#F4B942' },
+                      { text: ' ', color: '#F4B942' },
+                      { text: 'Life', color: '#00CFC8' }
+                    ]}
+                    className="headline-text" 
+                  />
               </h1>
           </div>
       </div>

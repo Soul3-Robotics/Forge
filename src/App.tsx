@@ -3,14 +3,27 @@ import { HeroSection } from './components/HeroSection';
 import { ImageSequence } from './components/ImageSequence';
 import { NavBar } from './components/NavBar';
 
+
 function App() {
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
 
   return (
     <div 
       ref={scrollContainerRef}
-      className="h-screen w-full overflow-y-auto bg-black text-white font-sans selection:bg-red-600 selection:text-black"
+      className="h-screen w-full overflow-y-auto font-sans relative"
+      style={{ backgroundColor: 'var(--bg-primary)' }}
     >
+      {/* Premium Cinematic Background Layers */}
+      <div className="bg-cinematic"></div>
+      <div className="volumetric-glow"></div>
+      <div className="energy-ring energy-ring-1"></div>
+      <div className="energy-ring energy-ring-2"></div>
+      <div className="holographic-texture"></div>
+      <div className="vignette-overlay"></div>
+      <div className="ambient-light"></div>
+      <div className="neon-diffusion"></div>
+      <div className="digital-aura"></div>
+      
       <NavBar />
       
       {/* Hero Section */}
@@ -24,18 +37,18 @@ function App() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-zinc-950 py-12 border-t border-white/10">
+      <footer className="py-12" style={{ borderTopColor: '#F4B942', borderTopWidth: '1px' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
-            <span className="text-2xl font-bold bg-linear-to-r from-red-500 to-orange-600 bg-clip-text text-transparent">
-              FORGE
+            <span className="text-2xl font-bold" style={{ color: '#F4B942' }}>
+              <span style={{ color: '#00CFC8' }}>SOUL</span><span style={{ color: '#F4B942' }}>3</span>
             </span>
-            <p className="text-gray-500 text-sm mt-2">© 2025 Forge Inc. All rights reserved.</p>
+            <p className="text-sm mt-2" style={{ color: '#F4B942', opacity: 0.7 }}>© 2025 SOUL3 Inc. All rights reserved.</p>
           </div>
-          <div className="flex space-x-6 text-gray-400">
-            <a href="#" className="hover:text-white transition-colors">Privacy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms</a>
-            <a href="#" className="hover:text-white transition-colors">Contact</a>
+          <div className="flex space-x-6 transition-colors" style={{ color: '#F4B942', opacity: 0.7 }}>
+            <a href="#" className="transition-colors" style={{ color: '#F4B942' }}>Privacy</a>
+            <a href="#" className="transition-colors" style={{ color: '#F4B942' }}>Terms</a>
+            <a href="#" className="transition-colors" style={{ color: '#F4B942' }}>Contact</a>
           </div>
         </div>
       </footer>
