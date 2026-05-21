@@ -5,20 +5,6 @@ import roboHand from '../assets/Robo hand.jpg';
 import robo2 from '../assets/robo 2.jpg';
 
 
-const TextWrapper = ({ text, className = "" }: { text: string; className?: string }) => (
-  <span className={`inline-block ${className}`}>
-    {text.split('').map((char, index) => (
-      <span 
-        key={index} 
-        className="letter inline-block" 
-        style={{ opacity: 0, transform: 'translateY(100px)', color: '#F4B942' }}
-      >
-        {char === ' ' ? '\u00A0' : char}
-      </span>
-    ))}
-  </span>
-);
-
 const ColoredTextWrapper = ({ 
   segments, 
   className = "" 
