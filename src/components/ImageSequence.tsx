@@ -207,12 +207,12 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({
   return (
     <div
       ref={targetRef}
-      className="relative z-10"
+      className="relative z-10 w-full"
       style={{ height: '400vh' }}
     >
 
       {/* STICKY FULLSCREEN CINEMATIC */}
-      <div className="sticky top-0 h-screen w-screen overflow-hidden bg-black">
+      <div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
 
         {/* FULLSCREEN CANVAS */}
         <canvas
