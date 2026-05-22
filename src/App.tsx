@@ -32,26 +32,9 @@ function App() {
       </div>
 
       {/* Image Sequence Section */}
-      <div className="relative z-10">
+      <div className="w-full h-screen relative z-10">
         <ImageSequence containerRef={scrollContainerRef} />
       </div>
-
-      {/* Footer */}
-      <footer className="py-12" style={{ borderTopColor: '#F4B942', borderTopWidth: '1px' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
-          <div className="mb-4 md:mb-0">
-            <span className="text-2xl font-bold" style={{ color: '#F4B942' }}>
-              <span style={{ color: '#00CFC8' }}>SOUL</span><span style={{ color: '#F4B942' }}>3</span>
-            </span>
-            <p className="text-sm mt-2" style={{ color: '#F4B942', opacity: 0.7 }}>© 2025 SOUL3 Inc. All rights reserved.</p>
-          </div>
-          <div className="flex space-x-6 transition-colors" style={{ color: '#F4B942', opacity: 0.7 }}>
-            <a href="#" className="transition-colors" style={{ color: '#F4B942' }}>Privacy</a>
-            <a href="#" className="transition-colors" style={{ color: '#F4B942' }}>Terms</a>
-            <a href="#" className="transition-colors" style={{ color: '#F4B942' }}>Contact</a>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

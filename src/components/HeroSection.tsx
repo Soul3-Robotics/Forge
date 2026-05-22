@@ -134,7 +134,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           absolute
           top-[5%]
           left-1/2
-          w-[clamp(220px,38vw,750px)]
+          w-[clamp(250px,38vw,750px)]
           z-10
           pointer-events-none
         "
@@ -168,7 +168,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           absolute
           bottom-[2%]
           left-1/2
-          w-[clamp(220px,38vw,750px)]
+          w-[clamp(250px,38vw,750px)]
           z-10
           pointer-events-none
         "
@@ -305,7 +305,7 @@ text-[clamp(1.5rem,4vw,4.5rem)]            "
       </div>
 
       {/* BOTTOM FADE */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black to-transparent z-10"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-black to-transparent z-10"></div>
 
     </div>
   );
