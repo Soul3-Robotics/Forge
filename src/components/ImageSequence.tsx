@@ -6,7 +6,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 // Import all frames eagerly
 // @ts-ignore
-const frameModules = import.meta.glob('../assets/frames/*.jpg', {
+const frameModules = import.meta.glob('../assets/frames/*.png', {
   eager: true,
 });
 
