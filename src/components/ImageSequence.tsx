@@ -31,19 +31,9 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({
 
   const [images, setImages] = useState<HTMLImageElement[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [randomTransforms] = useState(() => {
-    const generateRandomTransform = () => ({
-      x: (Math.random() - 0.5) * 1000,
-      y: (Math.random() - 0.5) * 800,
-      rotation: (Math.random() - 0.5) * 90,
-    });
-    return {
-      topLeft: generateRandomTransform(),
-      topRight: generateRandomTransform(),
-      bottomLeft: generateRandomTransform(),
-      bottomRight: generateRandomTransform(),
-    };
-  });
+  const [randomTransforms] = useState(() => ({
+    rotation: (Math.random() - 0.5) * 90,
+  }));
 
   // PRELOAD IMAGES
   useEffect(() => {
@@ -99,10 +89,6 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({
 
     const playhead = { frame: 0 };
 
-    const visualProps = {
-      opacity: 0,
-    };
-
     // FULLSCREEN CINEMATIC RENDER
     const render = (index: number) => {
       const img = images[Math.round(index)];
@@ -126,8 +112,6 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({
       ctx.imageSmoothingQuality = 'high';
 
       ctx.clearRect(0, 0, rect.width, rect.height);
-
-      ctx.globalAlpha = visualProps.opacity;
 
       const canvasAspect = rect.width / rect.height;
       const imgAspect = img.width / img.height;
@@ -161,25 +145,6 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({
     };
 
     const gsapContext = gsap.context(() => {
-
-      // ENTRY FADE
-      gsap.to(visualProps, {
-        opacity: 1,
-        ease: 'power2.out',
-
-        scrollTrigger: {
-          trigger: targetRef.current,
-          scroller: containerRef?.current || window,
-          start: 'top 100%',
-          end: 'top 20%',
-          scrub: 0.8,
-        },
-
-        onUpdate: () => {
-          render(playhead.frame);
-        },
-      });
-
       // FRAME SEQUENCE
       gsap.to(playhead, {
         frame: frames.length - 1,
@@ -260,20 +225,6 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({
           className="absolute inset-0 w-full h-full block"
         />
 
-        {/* CINEMATIC DARK OVERLAY */}
-        <div className="absolute inset-0 bg-black/0 z-10" />
-
-        {/* VIGNETTE */}
-        <div
-          className="
-            absolute
-            inset-0
-            z-20
-            pointer-events-none
-            bg-[radial-gradient(circle,transparent_40%,rgba(0,0,0,0)_100%)]
-          "
-        />
-
         {/* ROCK IMAGE SECTION */}
         <div className="absolute inset-0 z-30 flex items-center justify-center px-8">
           {/* Glow background */}
@@ -299,7 +250,7 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({
               zIndex: 10,
               width: '750px',
               height: 'auto',
-              transform: `scale(0) rotateZ(${randomTransforms.topLeft.rotation}deg)`,
+              transform: `scale(0) rotateZ(${randomTransforms.rotation}deg)`,
               opacity: 0,
             }}
           />
