@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 // @ts-ignore
 import { Timeline, stagger } from 'animejs';
 
-import roboHand from '../assets/Robo hand.jpg';
-import robo2 from '../assets/robo 2.jpg';
+import roboHand from '../assets/Robo hand.webp';
+import robo2 from '../assets/robo 2.webp';
 
 const ColoredTextWrapper = ({
   segments,
