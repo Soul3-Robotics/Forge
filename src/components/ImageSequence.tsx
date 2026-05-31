@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import rockImage from '../assets/rock.png';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,9 +26,24 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({
 }) => {
   const targetRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const rockImageRef = useRef<HTMLImageElement>(null);
+  const rockGlowRef = useRef<HTMLDivElement>(null);
 
   const [images, setImages] = useState<HTMLImageElement[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [randomTransforms] = useState(() => {
+    const generateRandomTransform = () => ({
+      x: (Math.random() - 0.5) * 1000,
+      y: (Math.random() - 0.5) * 800,
+      rotation: (Math.random() - 0.5) * 90,
+    });
+    return {
+      topLeft: generateRandomTransform(),
+      topRight: generateRandomTransform(),
+      bottomLeft: generateRandomTransform(),
+      bottomRight: generateRandomTransform(),
+    };
+  });
 
   // PRELOAD IMAGES
   useEffect(() => {
@@ -182,6 +198,30 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({
         },
       });
 
+      // ROCK IMAGE ANIMATION - Starts after image sequence completes
+      if (rockImageRef.current && rockGlowRef.current) {
+        // Initialize rock to center with zero scale
+        gsap.set([rockImageRef.current, rockGlowRef.current], {
+          scale: 0,
+          opacity: 0,
+        });
+
+        // Enlarge rock from center
+        gsap.to([rockImageRef.current, rockGlowRef.current], {
+          scale: 1,
+          opacity: 1,
+          rotationZ: 0,
+          ease: 'back.out',
+          scrollTrigger: {
+            trigger: targetRef.current,
+            scroller: containerRef?.current || window,
+            start: '80% center',
+            end: 'bottom bottom',
+            scrub: 0.8,
+          },
+        });
+      }
+
     }, targetRef);
 
     // INITIAL RENDER
@@ -208,11 +248,11 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({
     <div
       ref={targetRef}
       className="relative z-10 w-full"
-      style={{ height: '400vh' }}
+      style={{ height: '600vh' }}
     >
 
       {/* STICKY FULLSCREEN CINEMATIC */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
+      <div className="sticky top-0 h-screen w-full overflow-visible bg-black">
 
         {/* FULLSCREEN CANVAS */}
         <canvas
@@ -221,7 +261,7 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({
         />
 
         {/* CINEMATIC DARK OVERLAY */}
-        <div className="absolute inset-0 bg-black/30 z-10" />
+        <div className="absolute inset-0 bg-black/0 z-10" />
 
         {/* VIGNETTE */}
         <div
@@ -230,9 +270,40 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({
             inset-0
             z-20
             pointer-events-none
-            bg-[radial-gradient(circle,transparent_40%,rgba(0,0,0,0.75)_100%)]
+            bg-[radial-gradient(circle,transparent_40%,rgba(0,0,0,0)_100%)]
           "
         />
+
+        {/* ROCK IMAGE SECTION */}
+        <div className="absolute inset-0 z-30 flex items-center justify-center px-8">
+          {/* Glow background */}
+          <div
+            ref={rockGlowRef}
+            style={{
+              position: 'absolute',
+              width: '650px',
+              height: '700px',
+              borderRadius: '50%',
+              boxShadow: '0 0 100px 40px rgba(6, 182, 212, 0.7), 0 0 150px 60px rgba(14, 165, 168, 0.4)',
+              opacity: 0,
+              transform: 'scale(0)',
+            }}
+          />
+          <img
+            ref={rockImageRef}
+            src={rockImage}
+            alt="Rock"
+            className="object-contain"
+            style={{
+              position: 'relative',
+              zIndex: 10,
+              width: '750px',
+              height: 'auto',
+              transform: `scale(0) rotateZ(${randomTransforms.topLeft.rotation}deg)`,
+              opacity: 0,
+            }}
+          />
+        </div>
 
         {/* LOADER */}
         {!isLoaded && (
