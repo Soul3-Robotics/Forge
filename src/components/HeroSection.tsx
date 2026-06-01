@@ -41,6 +41,18 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const [scrollY, setScrollY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
+  // Preload hero images
+  useEffect(() => {
+    const preloadImages = [roboHand, robo2];
+    preloadImages.forEach((src) => {
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = src;
+      document.head.appendChild(link);
+    });
+  }, []);
+
   // Detect screen size
   useEffect(() => {
     const checkScreen = () => {

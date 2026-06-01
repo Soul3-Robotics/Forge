@@ -5,17 +5,11 @@ import rockImage from '../assets/ rock.webp';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Import all frames eagerly
+// Lazy load frames on demand
 // @ts-ignore
-const frameModules = import.meta.glob('../assets/frames/*.png', {
-  eager: true,
-});
+const frameModules = import.meta.glob('../assets/frames/*.png');
 
-const frames = Object.keys(frameModules)
-  .sort()
-  .map(
-    (path) => (frameModules[path] as { default: string }).default
-  );
+const frames = Object.keys(frameModules).sort();
 
 interface ImageSequenceProps {
   containerRef?: React.RefObject<HTMLElement | null>;
@@ -35,7 +29,7 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({
     rotation: (Math.random() - 0.5) * 90,
   }));
 
-  // PRELOAD IMAGES
+  // LAZY LOAD FRAMES ON DEMAND
   useEffect(() => {
     if (frames.length === 0) {
       console.warn('No frames found');
@@ -45,34 +39,48 @@ export const ImageSequence: React.FC<ImageSequenceProps> = ({
 
     let loadedCount = 0;
     const loadedImages: HTMLImageElement[] = [];
+    let isMounted = true;
 
-    frames.forEach((src, index) => {
-      const img = new Image();
+    const loadFrame = async (index: number) => {
+      try {
+        const frameModule = await frameModules[frames[index]]();
+        const src = (frameModule as { default: string }).default;
 
-      img.src = src;
+        const img = new Image();
+        img.src = src;
 
-      img.onload = () => {
+        await new Promise<void>((resolve, reject) => {
+          img.onload = () => resolve();
+          img.onerror = () => reject();
+        });
+
+        if (isMounted) {
+          loadedImages[index] = img;
+          loadedCount++;
+
+          if (loadedCount === frames.length) {
+            setIsLoaded(true);
+          }
+        }
+      } catch (err) {
+        console.error(`Failed to load frame at index ${index}`);
         loadedCount++;
-
         if (loadedCount === frames.length) {
           setIsLoaded(true);
         }
-      };
+      }
+    };
 
-      img.onerror = () => {
-        console.error(`Failed to load frame: ${src}`);
-
-        loadedCount++;
-
-        if (loadedCount === frames.length) {
-          setIsLoaded(true);
-        }
-      };
-
-      loadedImages[index] = img;
+    // Load all frames asynchronously
+    frames.forEach((_, index) => {
+      loadFrame(index);
     });
 
     setImages(loadedImages);
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // MAIN EFFECT
