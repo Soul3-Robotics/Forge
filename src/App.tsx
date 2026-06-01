@@ -33,7 +33,7 @@ function App() {
 
       {/* Image Sequence Section */}
       <div className="w-full h-screen relative z-10">
-        <ImageSequence containerRef={scrollContainerRef} />
+        <ImageSequence />
       </div>
     </div>
   );

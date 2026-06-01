@@ -138,7 +138,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const rightHandOffset = isMobile ? 35 : 35;
 
   return (
-    <div className="relative h-screen w-full overflow-hidden flex items-center justify-center hero-section bg-[#031313]">
+    <div className="relative h-screen w-full overflow-hidden flex items-center justify-center hero-section">
 
       {/* TOP RIGHT HAND */}
       <div
