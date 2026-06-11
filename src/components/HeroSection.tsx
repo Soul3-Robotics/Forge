@@ -38,21 +38,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   scrollContainerRef,
 }) => {
   const [scrollY, setScrollY] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
-
-  // Detect screen size
-  useEffect(() => {
-    const checkScreen = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkScreen();
-    window.addEventListener('resize', checkScreen);
-
-    return () => {
-      window.removeEventListener('resize', checkScreen);
-    };
-  }, []);
 
   // Scroll effect
   useEffect(() => {
