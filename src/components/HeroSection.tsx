@@ -222,8 +222,6 @@ text-[clamp(4.5rem,4vw,4.5rem)]            "
         />
       </div>
 
-      {/* BOTTOM FADE */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-black to-transparent z-10"></div>
 
     </div>
   );
