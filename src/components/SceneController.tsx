@@ -28,7 +28,7 @@ export const SceneController: React.FC = () => {
       if (section) {
         gsap.set(section, {
           z: -index * sectionSpacing,
-          opacity: index === 0 ? 1 : 0.2
+          opacity: index === 0 ? 1 : 0
         });
       }
     });
@@ -95,9 +95,9 @@ export const SceneController: React.FC = () => {
       tl.to(section, {
         opacity: 0,
         scale: 2,
-        duration: 0.5,
-        ease: "power2.in"
-      }, disappearTime);
+        duration: 0.3,
+        ease: "power1.inOut"
+      }, disappearTime + 0.1);
     });
 
     return () => {
@@ -127,15 +127,15 @@ export const SceneController: React.FC = () => {
             <HeroSection scrollContainerRef={{ current: null }} />
           </div>
 
-          <div ref={el => { sectionsRef.current[1] = el; }} className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div ref={el => { sectionsRef.current[1] = el; }} className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ opacity: 0 }}>
             <AboutUs />
           </div>
 
-          <div ref={el => { sectionsRef.current[2] = el; }} className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div ref={el => { sectionsRef.current[2] = el; }} className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ opacity: 0 }}>
             <OurMission />
           </div>
 
-          <div ref={el => { sectionsRef.current[3] = el; }} className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div ref={el => { sectionsRef.current[3] = el; }} className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ opacity: 0 }}>
             <OurProduct />
           </div>
         </div>

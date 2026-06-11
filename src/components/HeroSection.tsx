@@ -3,8 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { Timeline, stagger } from 'animejs';
 import { AnimatedShaderBackground } from './ui/animated-shader-background';
 
-import roboHand from '../assets/Robo hand.webp';
-import robo2 from '../assets/robo 2.webp';
 
 const ColoredTextWrapper = ({
   segments,
@@ -41,18 +39,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 }) => {
   const [scrollY, setScrollY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-
-  // Preload hero images
-  useEffect(() => {
-    const preloadImages = [roboHand, robo2];
-    preloadImages.forEach((src) => {
-      const link = document.createElement('link');
-      link.rel = 'preload';
-      link.as = 'image';
-      link.href = src;
-      document.head.appendChild(link);
-    });
-  }, []);
 
   // Detect screen size
   useEffect(() => {
@@ -134,9 +120,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
   }, []);
 
-  // Dynamic spacing
-  const leftHandOffset = isMobile ? -110 : -130;
-  const rightHandOffset = isMobile ? 35 : 35;
 
   return (
     <div className="relative h-screen w-full overflow-hidden flex items-center justify-center hero-section">
@@ -145,73 +128,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         <AnimatedShaderBackground className="w-full h-full object-cover" />
       </div>
 
-      {/* TOP RIGHT HAND */}
-      <div
-        className="
-          absolute
-          top-[5%]
-          left-1/2
-          w-[clamp(250px,38vw,750px)]
-          z-10
-          pointer-events-none
-        "
-        style={{
-          willChange: 'transform',
-          transform: `
-            translate(
-              calc(${rightHandOffset}% + ${scrollY * 1.2}px),
-              calc(-10% - ${scrollY * 0.8}px)
-            )
-          `,
-        }}
-      >
-        <div className="w-full h-full animate-slide-in-right opacity-0 slide-in-right-with-delay">
-          <img
-            src={robo2}
-            alt="Robotic Hand"
-            className="
-              w-full
-              h-full
-              object-contain
-              golden-glow
-            "
-          />
-        </div>
-      </div>
-
-      {/* BOTTOM LEFT HAND */}
-      <div
-        className="
-          absolute
-          bottom-[2%]
-          left-1/2
-          w-[clamp(250px,38vw,750px)]
-          z-10
-          pointer-events-none
-        "
-        style={{
-          willChange: 'transform',
-          transform: `
-            translate(
-              calc(${leftHandOffset}% - ${scrollY * 1.2}px),
-              calc(10% + ${scrollY * 0.8}px)
-            )
-          `,
-        }}
-      >
-        <div className="w-full h-full animate-slide-in-left opacity-0 slide-in-left-with-delay">
-          <img
-            src={roboHand}
-            alt="Robotic Hand"
-            className="
-              w-full
-              h-full
-              object-contain
-              golden-glow
-            "
-          />
-        </div>
-      </div>
 
       {/* CENTER CONTENT */}
       <div
@@ -251,7 +167,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               font-extrabold
               tracking-tight
               leading-tight
-              text-[clamp(1rem,5vw,5rem)]
+              text-[clamp(4.5rem,5vw,5rem)]
             "
           >
             <ColoredTextWrapper
@@ -279,7 +195,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               px-4
               max-w-[95vw]
               mx-auto
-text-[clamp(1.5rem,4vw,4.5rem)]            "
+text-[clamp(4.5rem,4vw,4.5rem)]            "
           >
             <ColoredTextWrapper
               segments={[
