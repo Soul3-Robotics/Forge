@@ -14,7 +14,6 @@ export const SceneController: React.FC = () => {
   const cameraRef = useRef<HTMLDivElement>(null);
   const sectionsRef = useRef<(HTMLDivElement | null)[]>([]);
   
-  const shaderRef = useRef<HTMLDivElement>(null);
   const cloudRef = useRef<HTMLDivElement>(null);
   const [bgClass, setBgClass] = useState('bg-black');
 
