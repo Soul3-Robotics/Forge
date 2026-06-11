@@ -90,14 +90,14 @@ body::-webkit-scrollbar-thumb {
 
 .energy-ring-1 {
   width: 180px;
-  height:180px;
+  height: 180px;
 
   animation: energy-ring 5s ease-out infinite;
 }
 
 .energy-ring-2 {
   width: 180px;
-  height:180px;
+  height: 180px;
 
   animation: energy-ring 5s ease-out infinite;
   animation-delay: 4s;
@@ -131,14 +131,12 @@ body::-webkit-scrollbar-thumb {
   z-index: 1;
 
   background:
-    conic-gradient(
-      from 0deg,
+    conic-gradient(from 0deg,
       rgba(0, 207, 200, 0) 0deg,
       rgba(0, 207, 200, 0.08) 60deg,
       rgba(0, 207, 200, 0) 120deg,
       rgba(0, 207, 200, 0.04) 240deg,
-      rgba(0, 207, 200, 0) 360deg
-    );
+      rgba(0, 207, 200, 0) 360deg);
 
   filter: blur(45px);
 
@@ -152,7 +150,9 @@ body::-webkit-scrollbar-thumb {
 ========================================= */
 
 @keyframes ambient-shift {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.4;
   }
 
@@ -175,11 +175,9 @@ body::-webkit-scrollbar-thumb {
   z-index: 1;
 
   background:
-    radial-gradient(
-      circle,
+    radial-gradient(circle,
       rgba(0, 207, 200, 0.18) 0%,
-      transparent 70%
-    );
+      transparent 70%);
 
   filter: blur(130px);
 
@@ -200,11 +198,9 @@ body::-webkit-scrollbar-thumb {
   pointer-events: none;
 
   background:
-    radial-gradient(
-      ellipse 80% 50% at 50% 50%,
+    radial-gradient(ellipse 80% 50% at 50% 50%,
       rgba(0, 207, 200, 0.08) 0%,
-      transparent 60%
-    );
+      transparent 60%);
 
   mix-blend-mode: screen;
 }
@@ -221,16 +217,58 @@ body::-webkit-scrollbar-thumb {
   z-index: 2;
 
   background:
-    radial-gradient(
-      ellipse at center,
+    radial-gradient(ellipse at center,
       transparent 40%,
-      rgba(26, 43, 41, 0.75) 100%
-    );
+      rgba(26, 43, 41, 0.75) 100%);
 }
 
 /* =========================================
    TEXT GLOW
 ========================================= */
+
+.glass-card {
+  box-shadow: 0 8px 32px 0 rgba(0, 207, 200, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 15, 15, 0.4);
+}
+
+/* =========================================
+   DYNAMIC SCENE BACKGROUNDS
+========================================= */
+
+.cloud-layer {
+  background-image: 
+    radial-gradient(ellipse at 20% 30%, rgba(0, 207, 200, 0.4) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 70%, rgba(244, 185, 66, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(2, 129, 128, 0.3) 0%, transparent 60%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1; /* Above shader, below scene */
+}
+
+.bg-about {
+  background-image: 
+    linear-gradient(rgba(0, 207, 200, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 207, 200, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+  background-position: center center;
+  background-color: #050505;
+}
+
+.bg-mission {
+  background: radial-gradient(circle at center, #022020 0%, #000000 100%);
+}
+
+.bg-product {
+  background-image: repeating-radial-gradient(
+    circle at 50% 50%,
+    transparent 0,
+    transparent 40px,
+    rgba(0, 207, 200, 0.03) 40px,
+    rgba(0, 207, 200, 0.03) 41px
+  );
+  background-color: #020202;
+}
 
 .glow-teal {
   text-shadow:

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 // @ts-ignore
 import { Timeline, stagger } from 'animejs';
+import { AnimatedShaderBackground } from './ui/animated-shader-background';
 
 import roboHand from '../assets/Robo hand.webp';
 import robo2 from '../assets/robo 2.webp';
@@ -139,6 +140,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
   return (
     <div className="relative h-screen w-full overflow-hidden flex items-center justify-center hero-section">
+      {/* SHADER BACKGROUND */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <AnimatedShaderBackground className="w-full h-full object-cover" />
+      </div>
 
       {/* TOP RIGHT HAND */}
       <div
