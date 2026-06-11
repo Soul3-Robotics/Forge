@@ -23,13 +23,13 @@ body,
   padding: 0;
   width: 100vw;
   min-height: 100vh;
-  background: var(--bg-primary);
+  background: #000;
   overflow-x: hidden;
   position: relative;
 }
 
 html {
-  scrollbar-color: #444 var(--bg-primary);
+  scrollbar-color: #444 #000;
 }
 
 body::-webkit-scrollbar {
@@ -37,7 +37,7 @@ body::-webkit-scrollbar {
 }
 
 body::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+  background: #000;
 }
 
 body::-webkit-scrollbar-thumb {
