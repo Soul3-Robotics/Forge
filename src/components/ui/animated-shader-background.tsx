@@ -23,6 +23,8 @@ export const useShaderBackground = (shaderSource: string) => {
       private mouseCoords: [number, number] = [0, 0];
       private pointerCoords: number[] = [0, 0];
       private nbrOfPointers = 0;
+      private lastTime = 0;
+      private internalTime = 0;
 
       private vertexSrc = `#version 300 es
   precision highp float;
@@ -153,7 +155,39 @@ export const useShaderBackground = (shaderSource: string) => {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
 
         gl.uniform2f((program as any).resolution, this.canvas.width, this.canvas.height);
-        gl.uniform1f((program as any).time, now * 1e-3);
+        
+        let cloudSpeed = 1.0;
+        const parent = this.canvas.parentElement;
+        if (parent && parent.hasAttribute('data-cloud-speed')) {
+          cloudSpeed = parseFloat(parent.getAttribute('data-cloud-speed')!);
+        }
+
+        const dt = now - (this.lastTime || now);
+        this.lastTime = now;
+        this.internalTime += dt * cloudSpeed;
+
+        gl.uniform1f((program as any).time, this.internalTime * 1e-3);
+        
+        let starOffsetX = 0.0;
+        if (parent && parent.hasAttribute('data-star-offset-x')) {
+          starOffsetX = parseFloat(parent.getAttribute('data-star-offset-x')!);
+        }
+        if (!(program as any).uStarOffsetX) {
+          (program as any).uStarOffsetX = gl.getUniformLocation(program, 'u_star_offset_x');
+        }
+        gl.uniform1f((program as any).uStarOffsetX, starOffsetX);
+
+        let cloudR = 0.02, cloudG = 0.25, cloudB = 0.25;
+        if (parent) {
+          if (parent.hasAttribute('data-cloud-r')) cloudR = parseFloat(parent.getAttribute('data-cloud-r')!);
+          if (parent.hasAttribute('data-cloud-g')) cloudG = parseFloat(parent.getAttribute('data-cloud-g')!);
+          if (parent.hasAttribute('data-cloud-b')) cloudB = parseFloat(parent.getAttribute('data-cloud-b')!);
+        }
+        if (!(program as any).uCloudColor) {
+          (program as any).uCloudColor = gl.getUniformLocation(program, 'u_cloud_color');
+        }
+        gl.uniform3f((program as any).uCloudColor, cloudR, cloudG, cloudB);
+
         gl.uniform2f((program as any).move, ...this.mouseMove);
         gl.uniform2f((program as any).touch, ...this.mouseCoords);
         gl.uniform1i((program as any).pointerCount, this.nbrOfPointers);
@@ -297,6 +331,8 @@ precision highp float;
 out vec4 O;
 uniform vec2 resolution;
 uniform float time;
+uniform float u_star_offset_x;
+uniform vec3 u_cloud_color;
 #define FC gl_FragCoord.xy
 #define T time
 #define R resolution
@@ -344,14 +380,15 @@ void main(void) {
 	uv*=1.-.3*(sin(T*.2)*.5+.5);
 	for (float i=1.; i<12.; i++) {
 		uv+=.1*cos(i*vec2(.1+.01*i, .8)+i*i+T*.5+.1*uv.x);
-		vec2 p=uv;
+		// Disperse the stars across the screen gently so they don't leave the canvas
+		vec2 p = uv + vec2(sin(i*123.456)*0.2 + u_star_offset_x, cos(i*789.123)*0.3);
 		float d=length(p);
 		col+=.00125/d*vec3(0.1, 0.9, 0.9)*(sin(i)*0.5+1.0);
 		float b=noise(i+p+bg*1.731);
 		col+=.002*b/length(max(p,vec2(b*p.x*.02,p.y)));
-		col=mix(col,vec3(bg*.02,bg*.25,bg*.25),d);
+		col=mix(col, bg * u_cloud_color, clamp(d, 0.0, 1.0));
 	}
-	O=vec4(col,1);
+	O=vec4(col, 1);
 }`;
 
 interface AnimatedShaderBackgroundProps {

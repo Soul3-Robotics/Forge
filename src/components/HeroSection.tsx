@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 // @ts-ignore
 import { Timeline, stagger } from 'animejs';
-import { AnimatedShaderBackground } from './ui/animated-shader-background';
+import gsap from 'gsap';
 
 
 const ColoredTextWrapper = ({
@@ -12,21 +12,28 @@ const ColoredTextWrapper = ({
   className?: string;
 }) => (
   <span className={`inline-block ${className}`}>
-    {segments.map((segment, segIdx) =>
-      segment.text.split('').map((char, charIdx) => (
-        <span
-          key={`${segIdx}-${charIdx}`}
-          className="letter inline-block"
-          style={{
-            opacity: 0,
-            transform: 'translateY(100px)',
-            color: segment.color,
-          }}
-        >
-          {char === ' ' ? '\u00A0' : char}
-        </span>
-      ))
-    )}
+    {segments.map((segment, segIdx) => {
+      const words = segment.text.split(/(\s+)/);
+      return words.map((word, wordIdx) => {
+        if (!word) return null;
+        if (word.trim() === '') {
+          return <span key={`${segIdx}-${wordIdx}`} style={{ whiteSpace: 'pre' }}>{word}</span>;
+        }
+        return (
+          <span
+            key={`${segIdx}-${wordIdx}`}
+            className="word inline-block"
+            style={{
+              opacity: 0,
+              transform: 'translateZ(-800px) rotateX(-90deg) translateY(-100px)',
+              color: segment.color,
+            }}
+          >
+            {word}
+          </span>
+        );
+      });
+    })}
   </span>
 );
 
@@ -38,6 +45,18 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   scrollContainerRef,
 }) => {
   const [scrollY, setScrollY] = useState(0);
+
+  const handleAutoScroll = () => {
+    const scrollObj = { y: window.scrollY };
+    gsap.to(scrollObj, {
+      y: 5000, // Exact scroll depth where "About Us" settles on the new 9-second timeline
+      duration: 8, // Cinematic slow scroll scaled up for the longer gap
+      ease: 'power2.inOut',
+      onUpdate: () => {
+        window.scrollTo(0, scrollObj.y);
+      }
+    });
+  };
 
   // Scroll effect
   useEffect(() => {
@@ -74,26 +93,36 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     });
 
     // @ts-ignore
-    tl.add('.welcome-text .letter', {
-      translateY: [100, 0],
+    tl.add('.welcome-text .word', {
+      translateZ: [-800, 0],   // Fly forward from deep background
+      translateY: [-100, 0],   // Drop down slightly
+      rotateX: [-90, 0],       // Flip forward on the X axis
       opacity: [0, 1],
-      delay: stagger(50, { start: 500 }),
+      delay: stagger(150, { start: 200 }), // Smooth, paced cascade
+      duration: 1600,
+      ease: 'easeOutElastic(1, .8)', // Gentle bouncy landing, like floating
     })
 
       // @ts-ignore
-      .add('.welcome-text .letter', {
-        translateY: [0, -100],
+      .add('.welcome-text .word', {
+        translateZ: [0, 800],   // Fly past the camera towards the viewer
+        rotateX: [0, 90],       // Flip away
         opacity: [1, 0],
-        delay: stagger(50),
-        ease: 'inExpo',
+        delay: stagger(100),
+        duration: 1000,
+        ease: 'easeInQuint',
       }, '+=1500')
 
       // @ts-ignore
-      .add('.headline-text .letter', {
-        translateY: [100, 0],
+      .add('.headline-text .word', {
+        translateZ: [-800, 0],
+        translateY: [-100, 0],
+        rotateX: [-90, 0],
         opacity: [0, 1],
-        delay: stagger(30),
-      }, '-=500')
+        delay: stagger(150),
+        duration: 1600,
+        ease: 'easeOutElastic(1, .8)',
+      }, '-=600')
 
       // @ts-ignore
       .add('.subtitle', {
@@ -108,10 +137,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
   return (
     <div className="relative h-screen w-full overflow-hidden flex items-center justify-center hero-section">
-      {/* SHADER BACKGROUND */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <AnimatedShaderBackground className="w-full h-full object-cover" />
-      </div>
+
 
 
       {/* CENTER CONTENT */}
@@ -197,31 +223,40 @@ text-[clamp(4.5rem,4vw,4.5rem)]            "
         </div>
       </div>
 
-      {/* CENTER GLOW */}
-      <div
-        className="
-          absolute
-          inset-0
-          flex
-          items-center
-          justify-center
-          pointer-events-none
-          z-0
-        "
+      {/* Cinematic Auto-Scroll Button */}
+      <div 
+        className="absolute bottom-12 left-1/2 -translate-x-1/2 z-30 transition-all duration-300"
+        style={{
+          opacity: Math.max(0, 1 - scrollY / 200),
+          pointerEvents: scrollY > 200 ? 'none' : 'auto'
+        }}
       >
-        <div
-          className="
-            w-[70vw]
-            h-[70vw]
-            max-w-[900px]
-            max-h-[900px]
-            rounded-full
-            bg-cyan-500/10
-            blur-3xl
-          "
-        />
-      </div>
+        <button 
+          onClick={handleAutoScroll}
+          className="w-32 h-32 rounded-full border-0 bg-transparent text-[#00CFC8] flex items-center justify-center hover:text-[#F4B942] hover:scale-110 transition-all duration-300 drop-shadow-[0_0_15px_rgba(0,207,200,0.5)] group relative cursor-pointer"
+        >
+          {/* Spinning Curved Text */}
+          <div className="relative w-full h-full animate-[spin_12s_linear_infinite] text-[11px] font-bold tracking-widest uppercase">
+            {"click for immersive experience • ".split("").map((char, i, arr) => (
+              <span
+                key={i}
+                className="absolute left-1/2 top-0"
+                style={{
+                  transformOrigin: '50% 64px',
+                  transform: `translateX(-50%) rotate(${i * (360 / arr.length)}deg)`
+                }}
+              >
+                {char === ' ' ? '\u00A0' : char}
+              </span>
+            ))}
+          </div>
 
+          {/* Central Dot */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-2 h-2 rounded-full bg-current group-hover:scale-[2.5] transition-transform duration-300"></div>
+          </div>
+        </button>
+      </div>
 
     </div>
   );

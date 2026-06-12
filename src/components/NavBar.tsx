@@ -10,10 +10,10 @@ export const NavBar = () => {
       className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 navbar"
     >
       <div className="w-full px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center h-20">
+        <div className="flex items-center justify-center h-24 w-full">
           {/* Logo */}
           <div className="shrink-0 flex items-center gap-3 cursor-pointer group">
-            <div className="relative w-auto h-16">
+            <div className="relative w-auto h-20">
               <img src={logo} alt="SOUL3 Logo" className="h-full object-contain" />
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 logo-hover-overlay"></div>
             </div>
