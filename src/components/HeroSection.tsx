@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 // @ts-ignore
 import { Timeline, stagger } from 'animejs';
 import gsap from 'gsap';
-
+import logo from '../assets/favicon.png';
 
 const ColoredTextWrapper = ({
   segments,
@@ -49,7 +49,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const handleAutoScroll = () => {
     const scrollObj = { y: window.scrollY };
     gsap.to(scrollObj, {
-      y: 5000, // Exact scroll depth where "About Us" settles on the new 9-second timeline
+      y: 5500, // Exact scroll depth where "About Us" settles on the new 12-second timeline
       duration: 8, // Cinematic slow scroll scaled up for the longer gap
       ease: 'power2.inOut',
       onUpdate: () => {
@@ -224,14 +224,14 @@ text-[clamp(4.5rem,4vw,4.5rem)]            "
       </div>
 
       {/* Cinematic Auto-Scroll Button */}
-      <div 
+      <div
         className="absolute bottom-12 left-1/2 -translate-x-1/2 z-30 transition-all duration-300"
         style={{
           opacity: Math.max(0, 1 - scrollY / 200),
           pointerEvents: scrollY > 200 ? 'none' : 'auto'
         }}
       >
-        <button 
+        <button
           onClick={handleAutoScroll}
           className="w-32 h-32 rounded-full border-0 bg-transparent text-[#00CFC8] flex items-center justify-center hover:text-[#F4B942] hover:scale-110 transition-all duration-300 drop-shadow-[0_0_15px_rgba(0,207,200,0.5)] group relative cursor-pointer"
         >
@@ -251,9 +251,13 @@ text-[clamp(4.5rem,4vw,4.5rem)]            "
             ))}
           </div>
 
-          {/* Central Dot */}
+          {/* Central Logo */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-2 h-2 rounded-full bg-current group-hover:scale-[2.5] transition-transform duration-300"></div>
+            <img
+              src={logo}
+              alt="SOUL3 Logo"
+              className="w-12 h-12 object-contain group-hover:scale-125 transition-transform duration-300 drop-shadow-[0_0_10px_rgba(244,185,66,0.6)]"
+            />
           </div>
         </button>
       </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, Suspense } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -7,6 +7,9 @@ import { AboutUs } from './AboutUs';
 import { OurMission } from './OurMission';
 import { OurProduct } from './OurProduct';
 import { AnimatedShaderBackground } from './ui/animated-shader-background';
+import { Canvas } from '@react-three/fiber';
+import { ExoskeletonModel } from './ExoskeletonModel';
+import * as THREE from 'three';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -16,6 +19,11 @@ export const SceneController: React.FC = () => {
   const sectionsRef = useRef<(HTMLDivElement | null)[]>([]);
   const shaderRef = useRef<HTMLDivElement>(null);
   const cinematicTextRef = useRef<HTMLDivElement>(null);
+  const exoModelRef = useRef<THREE.Group>(null);
+  const canvasWrapperRef = useRef<HTMLDivElement>(null);
+  
+  // Proxy object to guarantee GSAP always has a target synchronously, bypassing R3F async mount issues
+  const exoProxy = useRef({ scale: 0, posX: 2, posY: -2, posZ: 0, rotY: 0 });
   
   const [bgClass, setBgClass] = useState('bg-black');
 
@@ -28,7 +36,7 @@ export const SceneController: React.FC = () => {
         if (index === 0) {
           gsap.set(section, { z: 0, xPercent: 0, opacity: 1 });
         } else if (index === 1) {
-          gsap.set(section, { z: 0, xPercent: 100, opacity: 1 });
+          gsap.set(section, { z: 0, y: 50, opacity: 0 }); // Fade/slide up instead of slide left
         } else {
           gsap.set(section, { z: -(index - 1) * 2000, xPercent: 0, opacity: 0 });
         }
@@ -39,15 +47,13 @@ export const SceneController: React.FC = () => {
       scrollTrigger: {
         trigger: containerRef.current,
         start: "top top",
-        end: "+=9000",
+        end: "+=12000",
         scrub: 1,
         pin: true,
         onUpdate: (self) => {
-          const t = self.progress * 9; // 9 seconds total
-          if (t < 5) setBgClass('bg-black');
-          else if (t < 8) setBgClass('bg-about');
-          else if (t < 10) setBgClass('bg-mission');
-          else setBgClass('bg-product');
+          const t = self.progress * 12; // 12 seconds total timeline
+          if (t < 4.5) setBgClass('bg-black');
+          else setBgClass('bg-[#2c1a10]'); // Blank brown color background for everything after zoom
         }
       }
     });
@@ -102,17 +108,13 @@ export const SceneController: React.FC = () => {
       tl.to(cinematicTextRef.current, { opacity: 0, duration: 0.5, ease: "power2.in" }, 4.5);
     }
 
-    // GAP: t=1.5 to t=3.5 - Empty space, just the shader showing and the cinematic text
-
-    // 2. About Us slides in (t=3.5 to t=5.0)
-    tl.to(sectionsRef.current[1], { xPercent: 0, duration: 1.5, ease: "power1.inOut" }, 3.5);
-
-    // 3. Slow down the golden clouds to a "float" as About Us arrives (t=3.5 to t=5.0)
+    // GAP 1: t=1.5 to t=3.5 - Empty space, just the shader showing and the cinematic text
+    // 2. Freeze clouds and Zoom massively deep into them (t=3.5 to t=5.0)
     const floatState = { cloudSpeed: 20.0 };
     tl.to(floatState, {
-      cloudSpeed: 0.5,
-      duration: 1.5,
-      ease: "power2.out",
+      cloudSpeed: 0.0,
+      duration: 0.2, // Instantly freeze as zoom starts
+      ease: "power2.inOut",
       onUpdate: () => {
         if (shaderRef.current) {
           shaderRef.current.setAttribute('data-cloud-speed', floatState.cloudSpeed.toString());
@@ -120,17 +122,22 @@ export const SceneController: React.FC = () => {
       }
     }, 3.5);
 
-    // 4. Shader fades out later, after About Us is scrolled past (t=5.5 to t=6.5)
     if (shaderRef.current) {
-      tl.to(shaderRef.current, { opacity: 0, duration: 1, ease: "none" }, 5.5);
+      tl.to(shaderRef.current, { scale: 15, duration: 1.5, ease: "power2.in" }, 3.5); // Zoom from 3.5 to 5.0
+      tl.to(shaderRef.current, { opacity: 0, duration: 0.5, ease: "power1.inOut" }, 4.5); // Fade out fully at 5.0
     }
 
-    // 4. Camera Z Fly (About Us -> Deep sections) from t=5 to t=9
+    // 3. About Us fades up into the blank brown void (t=4.5 to t=6.0)
+    tl.to(sectionsRef.current[1], { y: 0, opacity: 1, duration: 1.5, ease: "power2.out" }, 4.5);
+
+    // GAP 2: User reads About Us (t=6.0 to t=7.0)
+
+    // 4. Camera Z Fly (About Us -> Deep sections) from t=7.0 to t=11.0
     tl.to(cameraRef.current, {
       z: 4000,
       ease: "none",
       duration: 4
-    }, 5);
+    }, 7.0);
 
     // 5. Handle section opacities during the Z fly
     sectionsRef.current.forEach((section, index) => {
@@ -141,14 +148,14 @@ export const SceneController: React.FC = () => {
         tl.to(section, { opacity: 0, duration: 0.1 }, 1.5);
       } 
       else if (index === 1) {
-        // About Us vanishes behind the camera as we fly forward (t=5 to t=6)
-        tl.to(section, { opacity: 0, scale: 3, duration: 1.0, ease: "power2.in" }, 5);
+        // About Us vanishes behind the camera as we fly forward (t=7.0 to t=8.0)
+        tl.to(section, { opacity: 0, scale: 3, duration: 1.0, ease: "power2.in" }, 7.0);
       } 
       else {
-        // Mission (index=2) is reached at t=7. Product (index=3) is reached at t=9.
-        const reachTime = index * 2 + 3; 
+        // Mission (index=2) is reached at t=9. Product (index=3) is reached at t=11.
+        const reachTime = index * 2 + 5; 
         
-        // Fade in as we approach, but wait until the previous section is fully gone
+        // Fade in as we approach
         tl.to(section, {
           opacity: 1,
           duration: 1.0,
@@ -158,12 +165,57 @@ export const SceneController: React.FC = () => {
         // Fade out as we pass through
         tl.to(section, {
           opacity: 0,
-          scale: 3,
           duration: 1.0,
           ease: "power2.in"
         }, reachTime);
       }
     });
+
+    // 6. Exoskeleton 3D Animation for the Product Section (t=10 to t=12)
+    const proxy = exoProxy.current;
+    
+    // Enable interaction only during the Product section
+    if (canvasWrapperRef.current) {
+      tl.set(canvasWrapperRef.current, { pointerEvents: "auto" }, 10.0);
+    }
+    
+    // Massive cinematic scale up as the Product text fades in
+    tl.to(proxy, {
+      scale: 15.0, // Massively increased scale to account for GLB unit differences
+      duration: 1.5,
+      ease: "back.out(1.2)",
+      onUpdate: () => {
+        if (exoModelRef.current) {
+          exoModelRef.current.scale.setScalar(proxy.scale);
+        }
+      }
+    }, 10.0);
+
+    // Float up into perfect dead center
+    tl.to(proxy, {
+      posX: 0, // Animate horizontal offset back to 0
+      posY: 0, // Animate vertical offset to exact center
+      duration: 1.5,
+      ease: "power2.out",
+      onUpdate: () => {
+        if (exoModelRef.current) {
+          exoModelRef.current.position.x = proxy.posX;
+          exoModelRef.current.position.y = proxy.posY;
+        }
+      }
+    }, 10.0);
+
+    // Graceful 360 degree rotation over the section
+    tl.to(proxy, {
+      rotY: Math.PI * 2,
+      duration: 2.0,
+      ease: "none",
+      onUpdate: () => {
+        if (exoModelRef.current) {
+          exoModelRef.current.rotation.y = proxy.rotY;
+        }
+      }
+    }, 10.0);
 
     return () => {
       ScrollTrigger.getAll().forEach(t => t.kill());
@@ -190,9 +242,21 @@ export const SceneController: React.FC = () => {
         </h2>
       </div>
 
-      {/* 3D Viewport */}
+      {/* Global 3D Model Canvas (Z-index above shader but below DOM text) */}
+      <div ref={canvasWrapperRef} className="absolute inset-0 z-10 pointer-events-none">
+        <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+          {/* Initialize scale to 0 and position out of view natively so it's guaranteed hidden on frame 1 */}
+          <group ref={exoModelRef} scale={0} position={[2, -2, 0]}>
+            <Suspense fallback={null}>
+              <ExoskeletonModel />
+            </Suspense>
+          </group>
+        </Canvas>
+      </div>
+
+      {/* 3D Viewport for HTML DOM Sections */}
       <div 
-        className="absolute inset-0 z-10 overflow-hidden"
+        className="absolute inset-0 z-20 overflow-hidden pointer-events-none"
         style={{ perspective: '800px' }}
       >
         <div 
@@ -204,15 +268,15 @@ export const SceneController: React.FC = () => {
             <HeroSection scrollContainerRef={{ current: null }} />
           </div>
 
-          <div ref={el => { sectionsRef.current[1] = el; }} className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ transform: 'translateX(100%)' }}>
+          <div ref={el => { sectionsRef.current[1] = el; }} className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ opacity: 0 }}>
             <AboutUs />
           </div>
 
-          <div ref={el => { sectionsRef.current[2] = el; }} className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ opacity: 0, transform: 'translateZ(-2000px)' }}>
+          <div ref={el => { sectionsRef.current[2] = el; }} className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ opacity: 0 }}>
             <OurMission />
           </div>
 
-          <div ref={el => { sectionsRef.current[3] = el; }} className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ opacity: 0, transform: 'translateZ(-4000px)' }}>
+          <div ref={el => { sectionsRef.current[3] = el; }} className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ opacity: 0 }}>
             <OurProduct />
           </div>
         </div>

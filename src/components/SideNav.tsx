@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 
 const sections = [
   { id: 'hero', label: 'Welcome', scrollPos: 0 },
-  { id: 'about', label: 'About Us', scrollPos: 4000 },
-  { id: 'mission', label: 'Our Mission', scrollPos: 6000 },
-  { id: 'product', label: 'Our Product', scrollPos: 8000 }
+  { id: 'about', label: 'About Us', scrollPos: 6000 },
+  { id: 'mission', label: 'Our Mission', scrollPos: 9000 },
+  { id: 'product', label: 'Our Product', scrollPos: 11000 }
 ];
 
 export const SideNav = () => {
