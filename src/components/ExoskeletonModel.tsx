@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useGLTF, Environment, OrbitControls, Center, Html, OrthographicCamera } from '@react-three/drei';
 import * as THREE from 'three';
 import type { GLTF } from 'three-stdlib';
