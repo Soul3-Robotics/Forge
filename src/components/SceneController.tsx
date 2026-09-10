@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, Suspense } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -7,9 +7,6 @@ import { AboutUs } from './AboutUs';
 import { OurMission } from './OurMission';
 import { OurProduct } from './OurProduct';
 import { AnimatedShaderBackground } from './ui/animated-shader-background';
-import { Canvas } from '@react-three/fiber';
-import { ExoskeletonModel } from './ExoskeletonModel';
-import * as THREE from 'three';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,12 +16,8 @@ export const SceneController: React.FC = () => {
   const sectionsRef = useRef<(HTMLDivElement | null)[]>([]);
   const shaderRef = useRef<HTMLDivElement>(null);
   const cinematicTextRef = useRef<HTMLDivElement>(null);
-  const exoModelRef = useRef<THREE.Group>(null);
-  const canvasWrapperRef = useRef<HTMLDivElement>(null);
-  
-  // Proxy object to guarantee GSAP always has a target synchronously, bypassing R3F async mount issues
-  const exoProxy = useRef({ scale: 0, posX: 2, posY: -2, posZ: 0, rotY: 0 });
-  
+  const brownBgRef = useRef<HTMLDivElement>(null);
+
   const [bgClass, setBgClass] = useState('bg-black');
 
   useEffect(() => {
@@ -96,10 +89,10 @@ export const SceneController: React.FC = () => {
     // Cinematic Text Overlay (Fades in during the hyper-speed gap, fades out before About Us)
     if (cinematicTextRef.current) {
       // Constant cinematic slow zoom
-      tl.fromTo(cinematicTextRef.current, 
-        { scale: 0.9 }, 
-        { scale: 1.3, duration: 3.5, ease: "none" }, 
-      1.5);
+      tl.fromTo(cinematicTextRef.current,
+        { scale: 0.9 },
+        { scale: 1.3, duration: 3.5, ease: "none" },
+        1.5);
 
       // Fade in exactly as clouds speed up
       tl.to(cinematicTextRef.current, { opacity: 1, duration: 0.5, ease: "power2.out" }, 1.5);
@@ -127,6 +120,11 @@ export const SceneController: React.FC = () => {
       tl.to(shaderRef.current, { opacity: 0, duration: 0.5, ease: "power1.inOut" }, 4.5); // Fade out fully at 5.0
     }
 
+    if (brownBgRef.current) {
+      // Fade in the brown void exactly as the clouds vanish
+      tl.to(brownBgRef.current, { opacity: 1, duration: 0.5, ease: "power1.inOut" }, 4.5);
+    }
+
     // 3. About Us fades up into the blank brown void (t=4.5 to t=6.0)
     tl.to(sectionsRef.current[1], { y: 0, opacity: 1, duration: 1.5, ease: "power2.out" }, 4.5);
 
@@ -146,15 +144,15 @@ export const SceneController: React.FC = () => {
       if (index === 0) {
         // Hero is already off-screen to the left, but fade it out so it's not taking up rendering layers
         tl.to(section, { opacity: 0, duration: 0.1 }, 1.5);
-      } 
+      }
       else if (index === 1) {
         // About Us vanishes behind the camera as we fly forward (t=7.0 to t=8.0)
         tl.to(section, { opacity: 0, scale: 3, duration: 1.0, ease: "power2.in" }, 7.0);
-      } 
+      }
       else {
         // Mission (index=2) is reached at t=9. Product (index=3) is reached at t=11.
-        const reachTime = index * 2 + 5; 
-        
+        const reachTime = index * 2 + 5;
+
         // Fade in as we approach
         tl.to(section, {
           opacity: 1,
@@ -171,52 +169,6 @@ export const SceneController: React.FC = () => {
       }
     });
 
-    // 6. Exoskeleton 3D Animation for the Product Section (t=10 to t=12)
-    const proxy = exoProxy.current;
-    
-    // Enable interaction only during the Product section
-    if (canvasWrapperRef.current) {
-      tl.set(canvasWrapperRef.current, { pointerEvents: "auto" }, 10.0);
-    }
-    
-    // Massive cinematic scale up as the Product text fades in
-    tl.to(proxy, {
-      scale: 15.0, // Massively increased scale to account for GLB unit differences
-      duration: 1.5,
-      ease: "back.out(1.2)",
-      onUpdate: () => {
-        if (exoModelRef.current) {
-          exoModelRef.current.scale.setScalar(proxy.scale);
-        }
-      }
-    }, 10.0);
-
-    // Float up into perfect dead center
-    tl.to(proxy, {
-      posX: 0, // Animate horizontal offset back to 0
-      posY: 0, // Animate vertical offset to exact center
-      duration: 1.5,
-      ease: "power2.out",
-      onUpdate: () => {
-        if (exoModelRef.current) {
-          exoModelRef.current.position.x = proxy.posX;
-          exoModelRef.current.position.y = proxy.posY;
-        }
-      }
-    }, 10.0);
-
-    // Graceful 360 degree rotation over the section
-    tl.to(proxy, {
-      rotY: Math.PI * 2,
-      duration: 2.0,
-      ease: "none",
-      onUpdate: () => {
-        if (exoModelRef.current) {
-          exoModelRef.current.rotation.y = proxy.rotY;
-        }
-      }
-    }, 10.0);
-
     return () => {
       ScrollTrigger.getAll().forEach(t => t.kill());
     };
@@ -224,8 +176,9 @@ export const SceneController: React.FC = () => {
 
   return (
     <div ref={containerRef} className="h-screen w-full relative overflow-hidden">
-      {/* 1. Base Dynamic Background */}
+      {/* 1. Base Dynamic Backgrounds */}
       <div className={`absolute inset-0 z-0 transition-colors duration-1000 ${bgClass}`}></div>
+      <div ref={brownBgRef} className="absolute inset-0 z-0 bg-[#2a1708] opacity-0 pointer-events-none"></div>
 
       {/* 2. Global Shader Background (fades out at depth) */}
       <div ref={shaderRef} className="absolute inset-0 z-0 pointer-events-none">
@@ -233,34 +186,22 @@ export const SceneController: React.FC = () => {
       </div>
 
       {/* Cinematic Storytelling Overlay */}
-      <div 
-        ref={cinematicTextRef} 
+      <div
+        ref={cinematicTextRef}
         className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none opacity-0"
       >
         <h2 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#F4B942] to-[#00CFC8] tracking-tight text-center max-w-5xl px-8 drop-shadow-2xl filter drop-shadow-[0_0_30px_rgba(244,185,66,0.4)]">
-          
+
         </h2>
       </div>
 
-      {/* Global 3D Model Canvas (Z-index above shader but below DOM text) */}
-      <div ref={canvasWrapperRef} className="absolute inset-0 z-10 pointer-events-none">
-        <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
-          {/* Initialize scale to 0 and position out of view natively so it's guaranteed hidden on frame 1 */}
-          <group ref={exoModelRef} scale={0} position={[2, -2, 0]}>
-            <Suspense fallback={null}>
-              <ExoskeletonModel />
-            </Suspense>
-          </group>
-        </Canvas>
-      </div>
-
-      {/* 3D Viewport for HTML DOM Sections */}
-      <div 
+      {/* Cinematic Storytelling Overlay */}
+      <div
         className="absolute inset-0 z-20 overflow-hidden pointer-events-none"
         style={{ perspective: '800px' }}
       >
-        <div 
-          ref={cameraRef} 
+        <div
+          ref={cameraRef}
           className="w-full h-full absolute top-0 left-0"
           style={{ transformStyle: 'preserve-3d' }}
         >
