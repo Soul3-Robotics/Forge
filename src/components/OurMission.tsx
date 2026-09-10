@@ -1,11 +1,11 @@
 import React from 'react';
-import { Target, ArrowRight } from 'lucide-react';
+import { Target } from 'lucide-react';
 
 export const OurMission: React.FC = () => {
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center px-4">
       <div className="max-w-5xl mx-auto w-full glass-card p-12 md:p-16 rounded-3xl border border-white/10 bg-black/40 backdrop-blur-xl relative overflow-hidden shadow-2xl">
-        
+
         {/* Background glow effects */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#F4B942] opacity-10 blur-[100px] rounded-full mix-blend-screen pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#00CFC8] opacity-10 blur-[100px] rounded-full mix-blend-screen pointer-events-none"></div>
@@ -14,11 +14,11 @@ export const OurMission: React.FC = () => {
           <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#F4B942] to-[#00CFC8] flex items-center justify-center mb-8 shadow-lg">
             <Target className="w-8 h-8 text-black" />
           </div>
-          
+
           <h2 className="text-5xl md:text-6xl font-black text-white mb-8 tracking-tight">
             The <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F4B942] to-[#00CFC8]">Symbiosis</span> Directive
           </h2>
-          
+
           <p className="text-2xl md:text-3xl text-gray-200 leading-relaxed font-light mb-12 max-w-4xl">
             Our mission is to build intelligent ecosystems that do not just assist humans, but become a literal extension of their nervous system. We believe the future is symbiotic—where machine perception and human intuition operate flawlessly as one entity.
           </p>
