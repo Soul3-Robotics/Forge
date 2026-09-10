@@ -1,5 +1,5 @@
 import React from 'react';
-import { Target, Users, Zap, Shield, Globe, Cpu } from 'lucide-react';
+import { Zap, Shield, Globe, Cpu } from 'lucide-react';
 
 export const AboutUs: React.FC = () => {
   return (
@@ -11,7 +11,7 @@ export const AboutUs: React.FC = () => {
             <span className="text-[#F4B942] text-sm font-semibold tracking-wider uppercase">The SOUL3 Syndicate</span>
           </div>
           <h2 className="text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-500 leading-tight">
-            Pioneering<br/>Humanity's<br/><span className="text-[#00CFC8]">Next Epoch.</span>
+            Pioneering<br />Humanity's<br /><span className="text-[#00CFC8]">Next Epoch.</span>
           </h2>
           <p className="text-xl text-gray-300 leading-relaxed font-light max-w-lg">
             We are a deep-tech engineering coalition forged by industry veterans in robotics, biomechanics, and artificial intelligence. Our mandate is simple: transcend biological limitations.
