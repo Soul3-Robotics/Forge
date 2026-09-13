@@ -55,11 +55,11 @@ body::-webkit-scrollbar-thumb {
 ========================================= */
 
 .text-gold {
-  color: #F4B942;
+  color: #D99C2A;
 }
 
 .text-teal {
-  color: #00CFC8;
+  color: #008B87;
 }
 
 /* =========================================
@@ -73,7 +73,7 @@ body::-webkit-scrollbar-thumb {
 .letter-wrapper {
   opacity: 0;
   transform: translateY(100px);
-  color: #F4B942;
+  color: #D99C2A;
 }
 
 .letter-wrapper.letter {
@@ -88,4 +88,24 @@ body::-webkit-scrollbar-thumb {
 .slide-in-left-with-delay {
   animation-delay: 0.5s;
   animation-fill-mode: forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

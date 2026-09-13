@@ -52,7 +52,7 @@ export const SideNav = () => {
               onClick={() => scrollToSection(section.scrollPos)}
               className={`w-3 h-3 rounded-full transition-all duration-500 ease-out ${
                 isActive 
-                  ? 'bg-[#00CFC8] scale-150 shadow-[0_0_15px_rgba(0,207,200,0.8)]' 
+                  ? 'bg-[#008B87] scale-150 shadow-[0_0_15px_rgba(0,207,200,0.8)]' 
                   : 'bg-gray-600 hover:bg-gray-400 hover:scale-110'
               }`}
               aria-label={section.label}

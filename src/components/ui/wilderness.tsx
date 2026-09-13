@@ -281,7 +281,7 @@ export const ParallaxHero: React.FC<ParallaxHeroProps> = ({
 
       <div
         ref={textRef}
-        className="absolute z-[9] pointer-events-auto transition-transform duration-[450ms] ease-out flex flex-col items-center justify-center w-full"
+        className="absolute z-[30] pointer-events-auto transition-transform duration-[450ms] ease-out flex flex-col items-center justify-center w-full"
         style={{
           top: 'calc(50% - 0px)',
           left: '50%',

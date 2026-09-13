@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import * as anime from 'animejs';
+import { animate, scrambleText, stagger } from 'animejs';
 import logo from '../assets/favicon.png';
 import ParallaxHero from './ui/wilderness';
 
-const ColoredTextWrapper = ({
-  segments,
-  className = "",
-}: {
-  segments: Array<{ text: string; color: string }>;
+const ColoredTextWrapper = React.memo<{
+  segments: { text: string; color: string }[];
   className?: string;
-}) => (
-  <span className={`inline-block ${className}`}>
+}>(({ segments, className }) => (
+  <span className={`inline-block ${className || ''}`}>
     {segments.map((segment, segIdx) => {
       const words = segment.text.split(/(\s+)/);
       return words.map((word, wordIdx) => {
@@ -31,10 +28,7 @@ const ColoredTextWrapper = ({
               <span
                 key={`${segIdx}-${wordIdx}-${charIdx}`}
                 className="letter inline-block"
-                style={{
-                  opacity: 0,
-                  transform: 'translateY(100px)'
-                }}
+                style={{ opacity: 0, display: 'inline-block' }}
               >
                 {char}
               </span>
@@ -44,36 +38,53 @@ const ColoredTextWrapper = ({
       });
     })}
   </span>
-);
+));
+
+const WELCOME_SEGMENTS = [
+  { text: 'Welcome to ', color: '#D99C2A' },
+  { text: 'Soul ', color: '#008B87' },
+  { text: '3', color: '#D99C2A' },
+];
+
+const HEADLINE_SEGMENTS = [
+  { text: 'Seva', color: '#008B87' },
+  { text: ' ', color: '#D99C2A' },
+  { text: 'Of Uplifting', color: '#D99C2A' },
+  { text: ' ', color: '#D99C2A' },
+  { text: 'Life', color: '#008B87' },
+];
 
 export const HeroSection: React.FC = () => {
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
-    // 1) Set up text animations via anime.js
-    let tl: any;
+    // We already have our text split perfectly by ColoredTextWrapper into .letter spans!
+    // So we don't need to call text.splitText() and risk overwriting our gold/teal colors.
+    // Instead, we directly apply text.scrambleText() and standard animations to our .letter spans!
 
     const timer = setTimeout(() => {
-      const letters = document.querySelectorAll('.headline-text .letter');
-      if (letters.length > 0) {
-        tl = (anime as any).timeline({ loop: false })
-          .add({
-            targets: '.headline-text .letter',
-            translateY: [100, 0],
-            opacity: [0, 1],
-            translateZ: 0,
-            easing: "easeOutQuint",
-            duration: 2000,
-            delay: (anime as any).stagger(40, { start: 500 })
-          });
-      }
+      // 1. Scramble animation for Welcome text
+      animate('.welcome-text .letter', {
+        innerHTML: scrambleText({ chars: '!<>-_\\\\/[]{}—=+*^?#________', override: true }),
+        opacity: [0, 1], // Fade in the scramble
+        duration: 800,
+        delay: stagger(50, { start: 200 })
+      });
+
+      // 2. Slide up animation for Main Headline
+      animate('.headline-text .letter', {
+        y: [100, 0],
+        opacity: [0, 1],
+        duration: 1500,
+        ease: 'outQuint',
+        delay: stagger(30, { start: 1000 })
+      });
     }, 100);
 
-    return () => {
-      clearTimeout(timer);
-      if (tl) tl.pause();
-    };
+    return () => clearTimeout(timer);
   }, []);
+
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -99,84 +110,88 @@ export const HeroSection: React.FC = () => {
         <ParallaxHero>
           <div className="relative z-20 flex flex-col items-center w-full px-4 sm:px-6 lg:px-8 pointer-events-none mt-[-100px]">
 
-            {/* Eyebrow badge */}
-            <div
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#00CFC8]/30 bg-[#00CFC8]/10 mb-8 mt-16 sm:mt-0 opacity-0 animate-[fadeIn_1s_ease-out_0.2s_forwards] transform translate-y-4"
-            >
-              <div className="w-2 h-2 rounded-full bg-[#F4B942] animate-pulse"></div>
-              <span className="text-[#00CFC8] text-sm font-semibold tracking-wider uppercase">Project Alpha</span>
-            </div>
 
             {/* Massive 3D Text Container */}
-            <div className="relative perspective-1000 w-full flex justify-center mb-16">
+            <div className="relative perspective-1000 w-full flex flex-col items-center justify-center mb-16 gap-6">
+
+              {/* WELCOME TEXT */}
+              <h1
+                className="
+                  flex
+                  flex-wrap
+                  items-center
+                  justify-center
+                  text-center
+                  font-extrabold
+                  tracking-tight
+                  leading-tight
+                  px-4
+                  text-[clamp(2.5rem,3vw,3rem)]
+                "
+              >
+                <ColoredTextWrapper
+                  segments={WELCOME_SEGMENTS}
+                  className="welcome-text"
+                />
+              </h1>
 
               {/* Layer 1: The glowing backdrop shadow (simulating 3D depth lighting) */}
-              <h1
-                className="
-                  absolute
-                  w-full
-                  flex
-                  flex-wrap
-                  items-center
-                  justify-center
-                  text-center
-                  font-extrabold
-                  tracking-tight
-                  leading-tight
-                  px-4
-                  max-w-[95vw]
-                  mx-auto
-                  blur-[20px]
-                  opacity-40
-                  text-[clamp(4.5rem,4vw,4.5rem)]
-                "
-                style={{
-                  transform: "translateZ(-50px) scale(1.05)",
-                }}
-              >
-                <ColoredTextWrapper
-                  segments={[
-                    { text: 'Seva', color: '#00CFC8' },
-                    { text: ' ', color: '#F4B942' },
-                    { text: 'Of Uplifting', color: '#F4B942' },
-                    { text: ' ', color: '#F4B942' },
-                    { text: 'Life', color: '#00CFC8' },
-                  ]}
-                  className="headline-text"
-                />
-              </h1>
+              <div className="relative w-full flex justify-center">
+                <h1
+                  className="
+                    absolute
+                    w-full
+                    flex
+                    flex-wrap
+                    items-center
+                    justify-center
+                    text-center
+                    font-extrabold
+                    tracking-tight
+                    leading-tight
+                    px-4
+                    max-w-[95vw]
+                    mx-auto
+                    blur-[20px]
+                    opacity-40
+                    text-[clamp(4.5rem,4vw,4.5rem)]
+                  "
+                  style={{
+                    transform: "translateZ(-50px) scale(1.05)",
+                  }}
+                >
+                  <ColoredTextWrapper
+                    segments={HEADLINE_SEGMENTS}
+                    className="headline-text"
+                  />
+                </h1>
 
-              {/* Layer 2: The actual sharp text */}
-              <h1
-                className="
-                  relative
-                  z-10
-                  w-full
-                  flex
-                  flex-wrap
-                  items-center
-                  justify-center
-                  text-center
-                  font-extrabold
-                  tracking-tight
-                  leading-tight
-                  px-4
-                  max-w-[95vw]
-                  mx-auto
-                  text-[clamp(4.5rem,4vw,4.5rem)]
-                "
-              >
-                <ColoredTextWrapper
-                  segments={[
-                    { text: 'Seva', color: '#00CFC8' },
-                    { text: ' ', color: '#F4B942' },
-                    { text: 'Of Uplifting', color: '#F4B942' },
-                    { text: ' ', color: '#F4B942' },
-                    { text: 'Life', color: '#00CFC8' },
-                  ]}
-                  className="headline-text"
-                />
-              </h1>
+                {/* Layer 2: The actual sharp text */}
+                <h1
+                  className="
+                    relative
+                    z-10
+                    w-full
+                    flex
+                    flex-wrap
+                    items-center
+                    justify-center
+                    text-center
+                    font-extrabold
+                    tracking-tight
+                    leading-tight
+                    px-4
+                    max-w-[95vw]
+                    mx-auto
+                    text-[clamp(4.5rem,4vw,4.5rem)]
+                  "
+                >
+                  <ColoredTextWrapper
+                    segments={HEADLINE_SEGMENTS}
+                    className="headline-text"
+                  />
+                </h1>
+              </div>
             </div>
           </div>
         </ParallaxHero>
@@ -184,7 +199,7 @@ export const HeroSection: React.FC = () => {
 
       {/* Cinematic Auto-Scroll Button */}
       <div
-        className="absolute bottom-12 left-1/2 -translate-x-1/2 z-30 transition-all duration-300"
+        className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 transition-all duration-300"
         style={{
           opacity: Math.max(0, 1 - scrollY / 200),
           pointerEvents: scrollY > 200 ? 'none' : 'auto'
@@ -192,11 +207,11 @@ export const HeroSection: React.FC = () => {
       >
         <button
           onClick={handleAutoScroll}
-          className="w-32 h-32 rounded-full border-0 bg-transparent text-[#00CFC8] flex items-center justify-center hover:text-[#F4B942] hover:scale-110 transition-all duration-300 drop-shadow-[0_0_15px_rgba(0,207,200,0.5)] group relative cursor-pointer"
+          className="w-32 h-32 rounded-full border-0 bg-transparent text-[#008B87] flex items-center justify-center hover:text-[#D99C2A] hover:scale-110 transition-all duration-300 drop-shadow-[0_0_15px_rgba(0,207,200,0.5)] group relative cursor-pointer"
         >
           {/* Spinning Curved Text */}
-          <div className="relative w-full h-full animate-[spin_12s_linear_infinite] text-[11px] font-bold tracking-widest uppercase">
-            {"click for immersive experience • ".split("").map((char, i, arr) => (
+          <div className="relative w-full h-full animate-[spin_12s_linear_infinite] text-[11px] font-black tracking-widest uppercase">
+            {"explore soul 3 technology • ".split("").map((char, i, arr) => (
               <span
                 key={i}
                 className="absolute left-1/2 top-0"
