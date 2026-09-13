@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { animate, scrambleText, stagger } from 'animejs';
+import { animate, stagger } from 'animejs';
 import logo from '../assets/favicon.png';
 import ParallaxHero from './ui/wilderness';
 
@@ -63,21 +63,18 @@ export const HeroSection: React.FC = () => {
     // Instead, we directly apply text.scrambleText() and standard animations to our .letter spans!
 
     const timer = setTimeout(() => {
-      // 1. Scramble animation for Welcome text
+      // 1. Typing animation for Welcome text
       animate('.welcome-text .letter', {
-        innerHTML: scrambleText({ chars: '!<>-_\\\\/[]{}—=+*^?#________', override: true }),
-        opacity: [0, 1], // Fade in the scramble
-        duration: 800,
+        opacity: [0, 1],
+        duration: 10,
         delay: stagger(50, { start: 200 })
       });
 
-      // 2. Slide up animation for Main Headline
+      // 2. Typing animation for Main Headline
       animate('.headline-text .letter', {
-        y: [100, 0],
         opacity: [0, 1],
-        duration: 1500,
-        ease: 'outQuint',
-        delay: stagger(30, { start: 1000 })
+        duration: 10,
+        delay: stagger(40, { start: 1000 })
       });
     }, 100);
 
@@ -126,7 +123,7 @@ export const HeroSection: React.FC = () => {
                   tracking-tight
                   leading-tight
                   px-4
-                  text-[clamp(2.5rem,3vw,3rem)]
+                  text-[clamp(4.5rem,4vw,4.5rem)]
                 "
               >
                 <ColoredTextWrapper
@@ -135,40 +132,9 @@ export const HeroSection: React.FC = () => {
                 />
               </h1>
 
-              {/* Layer 1: The glowing backdrop shadow (simulating 3D depth lighting) */}
-              <div className="relative w-full flex justify-center">
-                <h1
-                  className="
-                    absolute
-                    w-full
-                    flex
-                    flex-wrap
-                    items-center
-                    justify-center
-                    text-center
-                    font-extrabold
-                    tracking-tight
-                    leading-tight
-                    px-4
-                    max-w-[95vw]
-                    mx-auto
-                    blur-[20px]
-                    opacity-40
-                    text-[clamp(4.5rem,4vw,4.5rem)]
-                  "
-                  style={{
-                    transform: "translateZ(-50px) scale(1.05)",
-                  }}
-                >
-                  <ColoredTextWrapper
-                    segments={HEADLINE_SEGMENTS}
-                    className="headline-text"
-                  />
-                </h1>
-
-                {/* Layer 2: The actual sharp text */}
-                <h1
-                  className="
+              {/* The actual sharp text */}
+              <h1
+                className="
                     relative
                     z-10
                     w-full
@@ -183,15 +149,14 @@ export const HeroSection: React.FC = () => {
                     px-4
                     max-w-[95vw]
                     mx-auto
-                    text-[clamp(4.5rem,4vw,4.5rem)]
+                    text-[clamp(2.5rem,3vw,3rem)]
                   "
-                >
-                  <ColoredTextWrapper
-                    segments={HEADLINE_SEGMENTS}
-                    className="headline-text"
-                  />
-                </h1>
-              </div>
+              >
+                <ColoredTextWrapper
+                  segments={HEADLINE_SEGMENTS}
+                  className="headline-text"
+                />
+              </h1>
             </div>
           </div>
         </ParallaxHero>
