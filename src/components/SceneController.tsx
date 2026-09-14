@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
+import { animate, random, stagger } from 'animejs';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import { HeroSection } from './HeroSection';
@@ -20,88 +21,112 @@ export const SceneController: React.FC = () => {
   useEffect(() => {
     if (!containerRef.current || !cameraRef.current) return;
 
-    // Setup initial positions
+    // Setup initial positions: Stack ALL sections perfectly in Z-space
     sectionsRef.current.forEach((section, index) => {
       if (section) {
-        if (index === 0) {
-          gsap.set(section, { z: 0, xPercent: 0, opacity: 1 });
-        } else if (index === 1) {
-          gsap.set(section, { z: 0, y: 50, opacity: 0 }); // Fade/slide up instead of slide left
-        } else {
-          gsap.set(section, { z: -(index - 1) * 2000, xPercent: 0, opacity: 0 });
-        }
+        gsap.set(section, {
+          z: -index * 2500,
+          xPercent: 0,
+          y: 0,
+          autoAlpha: index === 0 ? 1 : 0
+        });
       }
     });
+
+    const totalSections = sectionsRef.current.length;
 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: containerRef.current,
         start: "top top",
-        end: "+=10000",
+        end: "+=12000", // Extra long scroll distance for the unified 3D track
         scrub: 1,
         pin: true,
         onUpdate: (self) => {
-          const t = self.progress * 10; // 10 seconds total timeline
-          if (t < 2.5) setBgClass('bg-black');
-          else setBgClass('bg-[#2c1a10]'); // Blank brown color background for everything after zoom
+          const t = self.progress * 12;
+          if (t < 1) setBgClass('bg-black');
+          else setBgClass('bg-[#2c1a10]');
         }
       }
     });
 
-    // 1. Hero slides out (t=0 to t=1.5)
-    tl.to(sectionsRef.current[0], { xPercent: -100, duration: 1.5, ease: "power1.inOut" }, 0);
-
     if (brownBgRef.current) {
-      // Fade in the brown void smoothly
-      tl.to(brownBgRef.current, { opacity: 1, duration: 0.5, ease: "power1.inOut" }, 2.5);
+      // Fade in the dark void background as we leave the Hero section
+      tl.to(brownBgRef.current, { opacity: 1, duration: 1.0, ease: "power1.inOut" }, 1.0);
     }
 
-    // 3. About Us fades up into the blank brown void (t=2.5 to t=4.0)
-    // Use autoAlpha so it's fully hidden beforehand
-    tl.to(sectionsRef.current[1], { y: 0, autoAlpha: 1, duration: 1.5, ease: "power2.out" }, 2.5);
-
-    // FIX "STUCK" FEELING: Apply a continuous, slow Z-translate to About Us while the user reads it (t=2.5 to t=5.0)
-    // We use z instead of scale because scale forces GPU rasterization recalculation on complex DOM elements, causing severe lag.
-    tl.to(sectionsRef.current[1], { z: 500, duration: 2.5, ease: "none" }, 2.5);
-
-    // GAP 2: User reads About Us (t=4.0 to t=5.0)
-
-    // 4. Camera Z Fly (About Us -> Deep sections) from t=5.0 to t=9.0
-    tl.to(cameraRef.current, {
-      z: 4000,
-      ease: "none",
-      duration: 4
-    }, 5.0);
-
-    // 5. Handle section opacities during the Z fly
+    // Master Loop: Architect a perfect, unified Z-fly sequence for every section
     sectionsRef.current.forEach((section, index) => {
       if (!section) return;
 
-      if (index === 0) {
-        // Hero is already off-screen to the left, but fade it out so it's not taking up rendering layers
-        tl.to(section, { opacity: 0, duration: 0.1 }, 1.5);
-      }
-      else if (index === 1) {
-        // About Us vanishes behind the camera as we fly forward (t=5.0 to t=6.0)
-        tl.to(section, { autoAlpha: 0, z: 2000, duration: 1.0, ease: "power2.in" }, 5.0);
-      }
-      else {
-        // Mission (index=2) is reached at t=7. Product (index=3) is reached at t=9.
-        const reachTime = index * 2 + 3;
+      const sectionZ = index * 2500;
+      const startTime = index * 3;
 
-        // Fade in as we approach
+      // 1. Move camera forward to the next section
+      if (index < totalSections - 1) {
+        tl.to(cameraRef.current, {
+          z: sectionZ + 2500,
+          ease: "power2.inOut",
+          duration: 2
+        }, startTime + 1);
+      }
+
+      // 2. Fade IN section as camera approaches
+      if (index > 0) {
         tl.to(section, {
-          opacity: 1,
-          duration: 1.0,
+          autoAlpha: 1,
+          duration: 1,
           ease: "power2.out"
-        }, reachTime - 1.0);
+        }, startTime - 0.5);
+      }
 
-        // Fade out as we pass through
+      // 3. Fade OUT section as camera passes through
+      if (index < totalSections - 1) {
+        if (index === 0) {
+          // Thanos Snap Effect powered natively by Anime.js!
+          const letters = Array.from(section.querySelectorAll('.letter'));
+          if (letters.length > 0) {
+            let crumbleAnim: any = null;
+
+            // Use GSAP as a proxy to scrub the Anime.js engine perfectly with the scroll wheel
+            tl.to({ progress: 0 }, {
+              progress: 1,
+              duration: 2.0,
+              ease: "none",
+              onStart: () => {
+                if (!crumbleAnim) {
+                  // Build the Anime.js physics engine timeline (paused) ONLY when scroll reaches here
+                  crumbleAnim = animate(letters, {
+                    translateX: [0, () => random(-2000, 2000)],
+                    translateY: [0, () => random(-1000, -2500)],
+                    translateZ: [0, () => random(500, 2000)],
+                    rotateX: [0, () => random(-1080, 1080)],
+                    rotateY: [0, () => random(-1080, 1080)],
+                    rotateZ: [0, () => random(-1080, 1080)],
+                    scale: [1, 0],
+                    opacity: [1, 0],
+                    filter: ["blur(0px)", "blur(25px)"],
+                    duration: 2000,
+                    delay: stagger(30 as any),
+                    easing: 'easeInQuad',
+                    autoplay: false
+                  });
+                }
+              },
+              onUpdate: function () {
+                if (crumbleAnim) {
+                  crumbleAnim.seek(this.targets()[0].progress * crumbleAnim.duration);
+                }
+              }
+            }, startTime + 0.5);
+          }
+        }
+
         tl.to(section, {
-          opacity: 0,
-          duration: 1.0,
+          autoAlpha: 0,
+          duration: 1,
           ease: "power2.in"
-        }, reachTime);
+        }, startTime + 1.5);
       }
     });
 

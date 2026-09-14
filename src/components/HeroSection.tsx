@@ -42,7 +42,7 @@ const ColoredTextWrapper = React.memo<{
 
 const WELCOME_SEGMENTS = [
   { text: 'Welcome to ', color: '#D99C2A' },
-  { text: 'Soul ', color: '#008B87' },
+  { text: 'Soul', color: '#008B87' },
   { text: '3', color: '#D99C2A' },
 ];
 
