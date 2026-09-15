@@ -1,79 +1,66 @@
 import React from 'react';
-import { Brain, Activity, Network, Gamepad2, Cpu, Zap } from 'lucide-react';
+import { Cpu, Gamepad2, Zap } from 'lucide-react';
+import aboutImg from '../assets/about.png';
 
 export const AboutUs: React.FC = () => {
   return (
-    <div className="w-full h-screen flex items-center justify-center px-4 relative z-10">
-      <div className="max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        
-        {/* Left Column: Vision & Meaning */}
-        <div className="lg:col-span-5 flex flex-col space-y-8">
-          <div>
-            <div className="inline-block px-4 py-1.5 rounded-full border border-[#008B87]/30 bg-[#008B87]/10 w-fit mb-6">
-              <span className="text-[#008B87] text-sm font-semibold tracking-wider uppercase">Decoding SOUL3</span>
-            </div>
-            <h2 className="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-6">
-              Advanced<br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D99C2A] to-[#008B87]">Rehab Robotics.</span>
-            </h2>
-            <p className="text-xl text-gray-300 leading-relaxed font-light">
-              We are redefining recovery. The "3" in SOUL3 represents the absolute convergence of the three critical pillars of rehabilitation. By treating the patient as a holistic system, we unlock unprecedented healing potential.
-            </p>
-          </div>
-          
-          <div className="pt-6 border-t border-white/10">
-             <h4 className="text-sm text-gray-500 uppercase tracking-widest font-semibold mb-6">Powered by Emerging Tech</h4>
-             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-               <div className="flex flex-col items-start space-y-3 p-4 rounded-2xl bg-white/[0.02] border border-white/5">
-                 <Cpu className="w-6 h-6 text-[#008B87]"/> 
-                 <span className="text-gray-300 text-sm font-medium">Kinematic Robotics</span>
-               </div>
-               <div className="flex flex-col items-start space-y-3 p-4 rounded-2xl bg-white/[0.02] border border-white/5">
-                 <Gamepad2 className="w-6 h-6 text-[#D99C2A]"/> 
-                 <span className="text-gray-300 text-sm font-medium">Gamified Therapy</span>
-               </div>
-               <div className="flex flex-col items-start space-y-3 p-4 rounded-2xl bg-white/[0.02] border border-white/5">
-                 <Zap className="w-6 h-6 text-[#008B87]"/> 
-                 <span className="text-gray-300 text-sm font-medium">Targeted Stimulation</span>
-               </div>
-             </div>
-          </div>
+    <div className="w-full h-screen relative z-10 overflow-hidden flex items-center justify-center pointer-events-none">
+
+      <div className="relative w-full h-full flex flex-col items-center justify-center z-10">
+
+        {/* Expanding Video Container */}
+        <div
+          className="video-container absolute z-0 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-hidden shadow-[0px_0px_50px_rgba(0,0,0,0.5)]"
+          style={{
+            width: '300px',
+            height: '400px',
+            borderRadius: '16px' // 2xl
+          }}
+        >
+          <img
+            src={aboutImg}
+            alt="About Us"
+            className="w-full h-full object-cover"
+          />
+          <div className="video-overlay absolute inset-0 bg-black/50" />
         </div>
 
-        {/* Right Column: The 3 Pillars (Staggered Layout) */}
-        <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-3 gap-6 pl-0 lg:pl-12">
-           {/* Pillar 1 */}
-           <div className="glass-card p-8 rounded-3xl border border-[#008B87]/20 bg-gradient-to-b from-black/80 to-[#008B87]/[0.05] hover:border-[#008B87]/40 transition-all transform hover:-translate-y-2 duration-500 relative overflow-hidden shadow-lg">
-             <div className="w-14 h-14 rounded-2xl bg-[#008B87]/10 flex items-center justify-center mb-8 border border-[#008B87]/20 relative z-10">
-               <Activity className="w-7 h-7 text-[#008B87]" />
-             </div>
-             <h3 className="text-2xl font-bold text-white mb-4 relative z-10">Physical</h3>
-             <p className="text-gray-400 text-sm leading-relaxed relative z-10">
-               Restoring biomechanical function through adaptive exoskeletons that intelligently learn and assist human movement.
-             </p>
-           </div>
-           
-           {/* Pillar 2 */}
-           <div className="glass-card p-8 rounded-3xl border border-[#D99C2A]/20 bg-gradient-to-b from-black/80 to-[#D99C2A]/[0.05] hover:border-[#D99C2A]/40 transition-all transform hover:-translate-y-2 duration-500 mt-0 md:mt-16 relative overflow-hidden shadow-lg">
-             <div className="w-14 h-14 rounded-2xl bg-[#D99C2A]/10 flex items-center justify-center mb-8 border border-[#D99C2A]/20 relative z-10">
-               <Brain className="w-7 h-7 text-[#D99C2A]" />
-             </div>
-             <h3 className="text-2xl font-bold text-white mb-4 relative z-10">Mental</h3>
-             <p className="text-gray-400 text-sm leading-relaxed relative z-10">
-               Engaging cognitive resilience through immersive, gamified therapy environments that make recovery inherently rewarding.
-             </p>
-           </div>
+        {/* Text Layer */}
+        <div className="flex items-center justify-center flex-col w-full relative z-10 pointer-events-none">
+          <h2 className="title-left text-5xl md:text-7xl lg:text-8xl font-bold text-[#008B87] text-center uppercase tracking-tight drop-shadow-md">
+            Decoding
+          </h2>
+          <h2 className="title-right text-5xl md:text-7xl lg:text-8xl font-bold text-[#D99C2A] text-center uppercase tracking-tight drop-shadow-md">
+            SOUL3
+          </h2>
+        </div>
 
-           {/* Pillar 3 */}
-           <div className="glass-card p-8 rounded-3xl border border-[#008B87]/20 bg-gradient-to-b from-black/80 to-[#008B87]/[0.05] hover:border-[#008B87]/40 transition-all transform hover:-translate-y-2 duration-500 mt-0 md:mt-32 relative overflow-hidden shadow-lg">
-             <div className="w-14 h-14 rounded-2xl bg-[#008B87]/10 flex items-center justify-center mb-8 border border-[#008B87]/20 relative z-10">
-               <Network className="w-7 h-7 text-[#008B87]" />
-             </div>
-             <h3 className="text-2xl font-bold text-white mb-4 relative z-10">Neurological</h3>
-             <p className="text-gray-400 text-sm leading-relaxed relative z-10">
-               Rebuilding synaptic pathways using targeted neuro-stimulation synchronized perfectly with robotic kinematics.
-             </p>
-           </div>
+        {/* Glassmorphism Content Box (Fades in during halt) */}
+        <div className="absolute inset-0 flex items-center justify-start pl-12 md:pl-56 pointer-events-none z-20">
+          <div className="about-content-box max-w-2xl p-8 rounded-3xl border border-[#008B87]/20 bg-[#008B87]/10 backdrop-blur-sm shadow-[0_8px_32px_rgba(0,0,0,0.2)] opacity-0 transform translate-y-8 pointer-events-auto">
+            <h2 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4 drop-shadow-md whitespace-nowrap">
+              <span className="text-[#D99C2A]">Advanced Rehab </span>
+              <span className="text-[#008B87]">Robotics.</span>
+            </h2>
+            <p className="text-xl text-black/90 leading-relaxed font-bold mb-8 drop-shadow-sm">
+              SOUL3 brings physical, mental, and neurological rehabilitation together to create a smarter path to recovery.
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <div className="flex flex-col items-start space-y-4 p-6 rounded-2xl bg-black/10 border border-[#008B87]/30 backdrop-blur-md">
+                <Cpu className="w-10 h-10 text-[gold] drop-shadow-md" />
+                <span className="text-white text-lg font-bold tracking-wide">Kinematic Robotics</span>
+              </div>
+              <div className="flex flex-col items-start space-y-4 p-6 rounded-2xl bg-black/10 border border-[#008B87]/30 backdrop-blur-md">
+                <Gamepad2 className="w-10 h-10 text-[#008B87] drop-shadow-md" />
+                <span className="text-[white] text-lg font-bold tracking-wide">Gamified Therapy</span>
+              </div>
+              <div className="flex flex-col items-start space-y-4 p-6 rounded-2xl bg-black/10 border border-[#008B87]/30 backdrop-blur-md">
+                <Zap className="w-10 h-10 text-[gold] drop-shadow-md" />
+                <span className="text-[white] text-lg font-bold tracking-wide">Targeted Stimulation</span>
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>

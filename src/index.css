@@ -115,3 +115,32 @@ body::-webkit-scrollbar-thumb {
     transform: translateY(0);
   }
 }
+@keyframes drift {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100vw); }
+}
+
+.animate-drift-slow {
+  animation: drift 80s linear infinite;
+}
+
+.animate-drift-medium {
+  animation: drift 50s linear infinite;
+}
+
+.animate-drift-fast {
+  animation: drift 30s linear infinite;
+}
+
+@keyframes fog-drift {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+.animate-fog-slow {
+  animation: fog-drift 120s linear infinite;
+}
+
+.animate-fog-fast {
+  animation: fog-drift 60s linear infinite;
+}

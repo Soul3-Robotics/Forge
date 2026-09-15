@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { animate, random, stagger } from 'animejs';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -14,18 +14,22 @@ export const SceneController: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const cameraRef = useRef<HTMLDivElement>(null);
   const sectionsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const brownBgRef = useRef<HTMLDivElement>(null);
-
-  const [bgClass, setBgClass] = useState('bg-black');
-
+  const whiteBgRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!containerRef.current || !cameraRef.current) return;
 
-    // Setup initial positions: Stack ALL sections perfectly in Z-space
+    const sectionConfigs = [
+      { z: 0, startTime: 0, flyDuration: 1.5, pauseDuration: 1.0 }, // Hero
+      { z: -2000, startTime: 2.5, flyDuration: 2.0, pauseDuration: 4.0 }, // About Us (halts to read & expand)
+      { z: -4500, startTime: 8.5, flyDuration: 2.0, pauseDuration: 1.0 }, // Mission
+      { z: -7000, startTime: 11.5, flyDuration: 0, pauseDuration: 1.0 }
+    ];
+
+    // Setup initial positions
     sectionsRef.current.forEach((section, index) => {
-      if (section) {
+      if (section && sectionConfigs[index]) {
         gsap.set(section, {
-          z: -index * 2500,
+          z: sectionConfigs[index].z,
           xPercent: 0,
           y: 0,
           autoAlpha: index === 0 ? 1 : 0
@@ -39,36 +43,32 @@ export const SceneController: React.FC = () => {
       scrollTrigger: {
         trigger: containerRef.current,
         start: "top top",
-        end: "+=12000", // Extra long scroll distance for the unified 3D track
+        end: "+=13000", // Expanded scroll distance to accommodate the long halt
         scrub: 1,
-        pin: true,
-        onUpdate: (self) => {
-          const t = self.progress * 12;
-          if (t < 1) setBgClass('bg-black');
-          else setBgClass('bg-[#2c1a10]');
-        }
+        pin: true
       }
     });
 
-    if (brownBgRef.current) {
-      // Fade in the dark void background as we leave the Hero section
-      tl.to(brownBgRef.current, { opacity: 1, duration: 1.0, ease: "power1.inOut" }, 1.0);
+    if (whiteBgRef.current) {
+      // INSTANTLY snap the white background on exactly as the camera pushes through the Hero section
+      tl.set(whiteBgRef.current, { opacity: 1 }, 1.3);
     }
+
+
 
     // Master Loop: Architect a perfect, unified Z-fly sequence for every section
     sectionsRef.current.forEach((section, index) => {
-      if (!section) return;
+      if (!section || !sectionConfigs[index]) return;
 
-      const sectionZ = index * 2500;
-      const startTime = index * 3;
+      const conf = sectionConfigs[index];
 
       // 1. Move camera forward to the next section
       if (index < totalSections - 1) {
         tl.to(cameraRef.current, {
-          z: sectionZ + 2500,
+          z: Math.abs(sectionConfigs[index + 1].z),
           ease: "power2.inOut",
-          duration: 2
-        }, startTime + 1);
+          duration: conf.flyDuration
+        }, conf.startTime + conf.pauseDuration);
       }
 
       // 2. Fade IN section as camera approaches
@@ -77,7 +77,7 @@ export const SceneController: React.FC = () => {
           autoAlpha: 1,
           duration: 1,
           ease: "power2.out"
-        }, startTime - 0.5);
+        }, conf.startTime - 0.5);
       }
 
       // 3. Fade OUT section as camera passes through
@@ -106,7 +106,7 @@ export const SceneController: React.FC = () => {
                     scale: [1, 0],
                     opacity: [1, 0],
                     filter: ["blur(0px)", "blur(25px)"],
-                    duration: 2000,
+                    duration: 1500,
                     delay: stagger(30 as any),
                     easing: 'easeInQuad',
                     autoplay: false
@@ -118,15 +118,63 @@ export const SceneController: React.FC = () => {
                   crumbleAnim.seek(this.targets()[0].progress * crumbleAnim.duration);
                 }
               }
-            }, startTime + 0.5);
+            }, conf.startTime + 0.5);
+          }
+        } else if (index === 1) {
+          // Video Expansion Effect natively via GSAP!
+          const videoContainer = section.querySelector('.video-container');
+          const videoOverlay = section.querySelector('.video-overlay');
+          const titleLeft = section.querySelector('.title-left');
+          const titleRight = section.querySelector('.title-right');
+          const aboutBg = section.querySelector('.about-bg');
+
+          if (videoContainer && titleLeft && titleRight) {
+            tl.to(videoContainer, {
+              width: '100vw',
+              height: '100vh',
+              borderRadius: '0px',
+              ease: "power2.inOut",
+              duration: 1.5
+            }, conf.startTime + 0.5);
+
+            tl.to(titleLeft, {
+              x: '-100vw',
+              ease: "power2.inOut",
+              duration: 1.5
+            }, conf.startTime + 0.5);
+
+            tl.to(titleRight, {
+              x: '100vw',
+              ease: "power2.inOut",
+              duration: 1.5
+            }, conf.startTime + 0.5);
+
+            if (videoOverlay) {
+              tl.to(videoOverlay, { opacity: 0, duration: 1.0 }, conf.startTime + 0.5);
+            }
+            if (aboutBg) {
+              tl.to(aboutBg, { opacity: 0, duration: 1.5 }, conf.startTime + 0.5);
+            }
+          }
+
+          const aboutContentBox = section.querySelector('.about-content-box');
+          if (aboutContentBox) {
+            tl.to(aboutContentBox, {
+              opacity: 1,
+              y: 0,
+              duration: 1.0,
+              ease: "power2.out"
+            }, conf.startTime + 1.5);
           }
         }
 
+        // Only fade out the entire section if it's NOT the expanding video, 
+        // OR fade it out extremely late so the video expansion completes first.
         tl.to(section, {
           autoAlpha: 0,
           duration: 1,
           ease: "power2.in"
-        }, startTime + 1.5);
+        }, conf.startTime + (index === 0 ? 1.0 : (index === 1 ? conf.pauseDuration - 0.5 : 1.5)));
       }
     });
 
@@ -136,10 +184,11 @@ export const SceneController: React.FC = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="h-screen w-full relative overflow-hidden">
-      {/* 1. Base Dynamic Backgrounds */}
-      <div className={`absolute inset-0 z-0 transition-colors duration-1000 ${bgClass}`}></div>
-      <div ref={brownBgRef} className="absolute inset-0 z-0 bg-[#2a1708] opacity-0 pointer-events-none"></div>
+    <div ref={containerRef} className="h-screen w-full relative overflow-hidden bg-black">
+      {/* Base Dark/Transparent Background for Hero */}
+      <div className="absolute inset-0 z-0 bg-transparent"></div>
+      {/* White Background for About Us and onwards */}
+      <div ref={whiteBgRef} className="absolute inset-0 z-1 bg-[#dcdad8] opacity-0 pointer-events-none transition-colors"></div>
 
       {/* 3D Viewport for HTML DOM Sections */}
       <div
