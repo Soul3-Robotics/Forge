@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 
 const sections = [
   { id: 'hero', label: 'Welcome', scrollPos: 0 },
-  { id: 'about', label: 'About Us', scrollPos: 6000 },
-  { id: 'mission', label: 'Our Mission', scrollPos: 9000 },
-  { id: 'product', label: 'Our Product', scrollPos: 11000 }
+  { id: 'about', label: 'About Us', scrollPos: 1210 },
+  { id: 'product', label: 'Our Product', scrollPos: 5566 },
+  { id: 'contact', label: 'Contact Us', scrollPos: 7018 }
 ];
 
 export const SideNav = () => {
@@ -13,20 +13,15 @@ export const SideNav = () => {
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
-      
-      // Highlight the section the user is currently closest to
-      let closestIdx = 0;
-      let minDiff = Infinity;
-      
+
+      let currentIdx = 0;
       sections.forEach((section, idx) => {
-        const diff = Math.abs(scrollY - section.scrollPos);
-        if (diff < minDiff) {
-          minDiff = diff;
-          closestIdx = idx;
+        if (scrollY >= section.scrollPos - 800) {
+          currentIdx = idx;
         }
       });
-      
-      setActiveIdx(closestIdx);
+
+      setActiveIdx(currentIdx);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -50,11 +45,10 @@ export const SideNav = () => {
           <div key={section.id} className="relative group flex items-center">
             <button
               onClick={() => scrollToSection(section.scrollPos)}
-              className={`w-3 h-3 rounded-full transition-all duration-500 ease-out ${
-                isActive 
-                  ? 'bg-[#008B87] scale-150 shadow-[0_0_15px_rgba(0,207,200,0.8)]' 
+              className={`w-3 h-3 rounded-full transition-all duration-500 ease-out ${isActive
+                  ? 'bg-[#008B87] scale-150 shadow-[0_0_15px_rgba(0,207,200,0.8)]'
                   : 'bg-gray-600 hover:bg-gray-400 hover:scale-110'
-              }`}
+                }`}
               aria-label={section.label}
             />
             {/* Section Label */}
