@@ -41,16 +41,16 @@ const ColoredTextWrapper = React.memo<{
 ));
 
 const WELCOME_SEGMENTS = [
-  { text: 'Welcome to ', color: '#D99C2A' },
+  { text: 'Welcome to ', color: '#c38c25ff' },
   { text: 'Soul', color: '#008B87' },
-  { text: '3', color: '#D99C2A' },
+  { text: '3', color: '#c38c25ff' },
 ];
 
 const HEADLINE_SEGMENTS = [
   { text: 'Seva', color: '#008B87' },
-  { text: ' ', color: '#D99C2A' },
-  { text: 'Of Uplifting', color: '#D99C2A' },
-  { text: ' ', color: '#D99C2A' },
+  { text: ' ', color: '#c38c25ff' },
+  { text: 'Of Uplifting', color: '#c38c25ff' },
+  { text: ' ', color: '#c38c25ff' },
   { text: 'Life', color: '#008B87' },
 ];
 

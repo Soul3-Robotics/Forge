@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { HeroSection } from './HeroSection';
 import { AboutUs } from './AboutUs';
 import { OurMission } from './OurMission';
+import missionBg from '../assets/our-mission.png';
 import { OurProduct } from './OurProduct';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -15,6 +16,7 @@ export const SceneController: React.FC = () => {
   const cameraRef = useRef<HTMLDivElement>(null);
   const sectionsRef = useRef<(HTMLDivElement | null)[]>([]);
   const whiteBgRef = useRef<HTMLDivElement>(null);
+  const missionBgRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!containerRef.current || !cameraRef.current) return;
 
@@ -52,6 +54,11 @@ export const SceneController: React.FC = () => {
     if (whiteBgRef.current) {
       // INSTANTLY snap the white background on exactly as the camera pushes through the Hero section
       tl.set(whiteBgRef.current, { opacity: 1 }, 1.3);
+    }
+    
+    if (missionBgRef.current) {
+      // Crossfade the global mission background as the camera starts flying towards the Mission section
+      tl.to(missionBgRef.current, { opacity: 1, duration: 1.5 }, 6.5);
     }
 
 
@@ -187,8 +194,15 @@ export const SceneController: React.FC = () => {
     <div ref={containerRef} className="h-screen w-full relative overflow-hidden bg-black">
       {/* Base Dark/Transparent Background for Hero */}
       <div className="absolute inset-0 z-0 bg-transparent"></div>
-      {/* White Background for About Us and onwards */}
+      
+      {/* White Background for About Us */}
       <div ref={whiteBgRef} className="absolute inset-0 z-1 bg-[#dcdad8] opacity-0 pointer-events-none transition-colors"></div>
+      
+      {/* Mission Background Crossfade Layer */}
+      <div ref={missionBgRef} className="absolute inset-0 z-2 opacity-0 pointer-events-none transition-colors">
+        <img src={missionBg} alt="Mission Background" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-black/40"></div>
+      </div>
 
       {/* 3D Viewport for HTML DOM Sections */}
       <div
