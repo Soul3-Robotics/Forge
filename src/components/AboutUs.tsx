@@ -37,12 +37,12 @@ export const AboutUs: React.FC = () => {
 
         {/* Glassmorphism Content Box (Fades in during halt) */}
         <div className="absolute inset-0 flex items-center justify-start pl-12 md:pl-57 pointer-events-none z-20">
-          <div className="about-content-box max-w-2xl p-8 rounded-3xl border border-[#008B87]/20 bg-[#008B87]/10 backdrop-blur-[2px] shadow-[0_8px_32px_rgba(0,0,0,0.2)] opacity-0 transform translate-y-8 pointer-events-auto">
+          <div className="about-content-box max-w-2xl p-8 rounded-3xl border border-[#008B87]/30 bg-[#008B87]/30 backdrop-blur-[20px] shadow-[0_8px_32px_rgba(0,0,0,0.2)] opacity-0 transform translate-y-8 pointer-events-auto">
             <h2 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4 drop-shadow-md whitespace-nowrap">
               <span className="text-[#c38c25ff]">Advanced Rehab </span>
               <span className="text-[#008B87]">Robotics.</span>
             </h2>
-            <p className="text-xl text-black/90 leading-relaxed font-bold mb-8 drop-shadow-sm">
+            <p className="text-xl text-white/90 leading-relaxed font-bold mb-8 drop-shadow-sm">
               SOUL3 brings physical, mental, and neurological rehabilitation together to create a smarter path to recovery.
             </p>
 
