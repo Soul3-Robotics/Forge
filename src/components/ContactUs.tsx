@@ -63,7 +63,7 @@ export const ContactUs: React.FC = () => {
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3770.834468648358!2d72.89725831518398!3d19.07098795708573!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c627a20bcaa9%3A0xb2fd3bcfeac0052a!2sriidl%20Somaiya%20Vidyavihar!5e0!3m2!1sen!2sin!4v1683884872322!5m2!1sen!2sin"
                 width="100%"
-                height="100"
+                height="170"
                 style={{ border: 0 }}
                 allowFullScreen={false}
                 loading="lazy"
@@ -98,35 +98,35 @@ export const ContactUs: React.FC = () => {
         <div className="glass-card p-6 md:p-8 rounded-3xl border border-[#008B87]/20 bg-[#008B87]/5 backdrop-blur-xl shadow-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-[#008B87] opacity-10 blur-[100px] rounded-full mix-blend-screen pointer-events-none"></div>
 
-          <h3 className="text-xl font-bold text-white mb-6">Send us a Message</h3>
+          <h3 className="text-3xl font-bold text-[#c38c25ff] mb-6">Send us a Message</h3>
 
           <form className="space-y-4 relative z-10" onSubmit={handleSubmit}>
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-[#008B87] uppercase tracking-widest">Full Name</label>
+              <label className="text-s font-extrabold text-[#c38c25ff] uppercase tracking-widest">Full Name</label>
               <input
                 type="text"
                 value={name}
                 onChange={e => setName(e.target.value)}
                 required
                 className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#008B87]/50 focus:ring-1 focus:ring-[#008B87]/50 transition-all placeholder:text-gray-600 text-base"
-                placeholder="John Doe"
+                placeholder="Your Name"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-[#008B87] uppercase tracking-widest">Email Address</label>
+              <label className="text-s font-extrabold text-[#c38c25ff] uppercase tracking-widest">Email Address</label>
               <input
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
                 className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#008B87]/50 focus:ring-1 focus:ring-[#008B87]/50 transition-all placeholder:text-gray-600 text-base"
-                placeholder="john@example.com"
+                placeholder="you@example.com"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-[#008B87] uppercase tracking-widest">Message</label>
+              <label className="text-s font-extrabold text-[#c38c25ff] uppercase tracking-widest">Message</label>
               <textarea
                 rows={3}
                 value={message}
@@ -137,7 +137,7 @@ export const ContactUs: React.FC = () => {
               ></textarea>
             </div>
 
-            <button type="submit" className="w-full py-4 mt-2 rounded-xl bg-gradient-to-r from-[#008B87] to-[#00a8a3] text-white font-bold tracking-wide hover:shadow-[0_0_20px_rgba(0,139,135,0.4)] transition-all flex items-center justify-center space-x-2">
+            <button type="submit" className="text-xl w-full py-4 mt-2 rounded-xl bg-gradient-to-r from-[#c38c25ff] to-[#c38c25ff] text-white font-extrabold tracking-wide hover:shadow-[0_0_20px_rgba(0,139,135,0.4)] transition-all flex items-center justify-center space-x-2">
               <span>Send Message</span>
               <Send className="w-5 h-5" />
             </button>

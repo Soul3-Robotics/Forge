@@ -1,0 +1,7 @@
+{
+  "name": "soul3-recovery-globe",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Standalone SOUL3 Recovery Atlas with scroll-driven India close-up",
+  "scripts": { "start": "node server.mjs" }
+}

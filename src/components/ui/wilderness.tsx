@@ -190,13 +190,20 @@ export const ParallaxHero: React.FC<ParallaxHeroProps> = ({
   const textRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let ticking = false;
+
     const handleMouseMove = (e: MouseEvent) => {
-      const newXValue = e.clientX - window.innerWidth / 2;
-      const newYValue = e.clientY - window.innerHeight / 2;
-      const newRotateDegree = (newXValue / (window.innerWidth / 2)) * 20;
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const newXValue = e.clientX - window.innerWidth / 2;
+          const newYValue = e.clientY - window.innerHeight / 2;
+          const newRotateDegree = (newXValue / (window.innerWidth / 2)) * 20;
 
-
-      updateLayers(e.clientX, newXValue, newYValue, newRotateDegree);
+          updateLayers(e.clientX, newXValue, newYValue, newRotateDegree);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -218,9 +225,7 @@ export const ParallaxHero: React.FC<ParallaxHeroProps> = ({
       const layer = layers[index];
       const { speedX, speedY, speedZ, rotation } = layer;
 
-      const computedLeft = parseFloat(
-        getComputedStyle(el).left.replace('px', '')
-      );
+      const computedLeft = window.innerWidth / 2;
       const isInLeft = computedLeft < window.innerWidth / 2 ? 1 : -1;
       const zValue = (cursorPosition - computedLeft) * isInLeft * 0.1;
 
@@ -235,9 +240,7 @@ export const ParallaxHero: React.FC<ParallaxHeroProps> = ({
       const textSpeedZ = 0.08;
       const textRotation = 0.04;
 
-      const computedLeft = parseFloat(
-        getComputedStyle(textRef.current).left.replace('px', '')
-      );
+      const computedLeft = window.innerWidth / 2;
       const isInLeft = computedLeft < window.innerWidth / 2 ? 1 : -1;
       const zValue = (cursorPosition - computedLeft) * isInLeft * 0.1;
 

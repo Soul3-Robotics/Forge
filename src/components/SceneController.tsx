@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import { HeroSection } from './HeroSection';
 import { AboutUs } from './AboutUs';
+import type { RecoveryGlobeHandle } from './RecoveryGlobe';
 import { OurMission } from './OurMission';
 import missionBg from '../assets/our-mission.png';
 import contactBg from '../assets/background.png';
@@ -20,15 +21,15 @@ export const SceneController: React.FC = () => {
   const whiteBgRef = useRef<HTMLDivElement>(null);
   const missionBgRef = useRef<HTMLDivElement>(null);
   const contactBgRef = useRef<HTMLDivElement>(null);
+  const globeRef = useRef<RecoveryGlobeHandle>(null);
   useEffect(() => {
     if (!containerRef.current || !cameraRef.current) return;
 
     const sectionConfigs = [
       { z: 0, startTime: 0, flyDuration: 1.5, pauseDuration: 1.0 }, // Hero
-      { z: -2000, startTime: 2.5, flyDuration: 2.0, pauseDuration: 4.0 }, // About Us (halts to read & expand)
-      { z: -4500, startTime: 8.5, flyDuration: 2.0, pauseDuration: 1.0 }, // Mission
-      // { z: -7000, startTime: 11.5, flyDuration: 2.0, pauseDuration: 1.0 }, // Product (Temporarily removed)
-      { z: -7000, startTime: 11.5, flyDuration: 0, pauseDuration: 1.0 } // Contact Us
+      { z: -2000, startTime: 2.5, flyDuration: 2.0, pauseDuration: 8.0 }, // About Us (halts to read & expand, then globe zoom)
+      { z: -4500, startTime: 12.5, flyDuration: 2.0, pauseDuration: 1.0 }, // Mission
+      { z: -7000, startTime: 15.5, flyDuration: 0, pauseDuration: 1.0 } // Contact Us
     ];
 
     // Setup initial positions
@@ -49,7 +50,7 @@ export const SceneController: React.FC = () => {
       scrollTrigger: {
         trigger: containerRef.current,
         start: "top top",
-        end: "+=7500", // Shorter scroll distance so users don't have to scroll multiple times
+        end: "+=12500", // Shorter scroll distance so users don't have to scroll multiple times
         scrub: 1,
         pin: true
       }
@@ -62,14 +63,14 @@ export const SceneController: React.FC = () => {
 
     if (missionBgRef.current) {
       // Crossfade the global mission background as the camera starts flying towards the Mission section
-      tl.to(missionBgRef.current, { opacity: 1, duration: 1.5 }, 6.5);
+      tl.to(missionBgRef.current, { opacity: 1, duration: 1.5 }, 10.5);
       // Fade it out as the camera leaves the Mission section to reveal the next theme
-      tl.to(missionBgRef.current, { opacity: 0, duration: 1.5 }, 9.5);
+      tl.to(missionBgRef.current, { opacity: 0, duration: 1.5 }, 13.5);
     }
 
     if (contactBgRef.current) {
       // Fade in the Contact Us background as the camera flies towards the final section
-      tl.to(contactBgRef.current, { opacity: 1, duration: 1.5 }, 9.5);
+      tl.to(contactBgRef.current, { opacity: 1, duration: 1.5 }, 13.5);
     }
 
 
@@ -141,12 +142,10 @@ export const SceneController: React.FC = () => {
         } else if (index === 1) {
           // Video Expansion Effect natively via GSAP!
           const videoContainer = section.querySelector('.video-container');
-          const videoOverlay = section.querySelector('.video-overlay');
           const titleLeft = section.querySelector('.title-left');
           const titleRight = section.querySelector('.title-right');
-          const aboutBg = section.querySelector('.about-bg');
 
-          if (videoContainer && titleLeft && titleRight) {
+          if (videoContainer) {
             tl.to(videoContainer, {
               width: '100vw',
               height: '100vh',
@@ -154,7 +153,9 @@ export const SceneController: React.FC = () => {
               ease: "power2.inOut",
               duration: 1.5
             }, conf.startTime + 0.5);
+          }
 
+          if (titleLeft && titleRight) {
             tl.to(titleLeft, {
               x: '-100vw',
               ease: "power2.inOut",
@@ -166,24 +167,28 @@ export const SceneController: React.FC = () => {
               ease: "power2.inOut",
               duration: 1.5
             }, conf.startTime + 0.5);
-
-            if (videoOverlay) {
-              tl.to(videoOverlay, { opacity: 0, duration: 1.0 }, conf.startTime + 0.5);
-            }
-            if (aboutBg) {
-              tl.to(aboutBg, { opacity: 0, duration: 1.5 }, conf.startTime + 0.5);
-            }
           }
 
-          const aboutContentBox = section.querySelector('.about-content-box');
-          if (aboutContentBox) {
-            tl.to(aboutContentBox, {
+          const globeWrapper = section.querySelector('.globe-wrapper');
+          if (globeWrapper) {
+            tl.to(globeWrapper, {
               opacity: 1,
-              y: 0,
               duration: 1.0,
               ease: "power2.out"
             }, conf.startTime + 1.5);
           }
+
+          // Recovery Globe Scroll progress
+          tl.to({ val: 0 }, {
+            val: 1,
+            duration: conf.pauseDuration - 4.5,
+            ease: "none",
+            onUpdate: function() {
+              if (globeRef.current) {
+                globeRef.current.setProgress(this.targets()[0].val);
+              }
+            }
+          }, conf.startTime + 4.5);
         }
 
         // Only fade out the entire section if it's NOT the expanding video, 
@@ -236,18 +241,12 @@ export const SceneController: React.FC = () => {
           </div>
 
           <div ref={el => { sectionsRef.current[1] = el; }} className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ visibility: 'hidden', opacity: 0 }}>
-            <AboutUs />
+            <AboutUs ref={globeRef} />
           </div>
 
           <div ref={el => { sectionsRef.current[2] = el; }} className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ opacity: 0 }}>
             <OurMission />
           </div>
-
-          {/* 
-          <div ref={el => { sectionsRef.current[3] = el; }} className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ opacity: 0 }}>
-            <OurProduct />
-          </div> 
-          */}
 
           <div ref={el => { sectionsRef.current[3] = el; }} className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ opacity: 0 }}>
             <ContactUs />
