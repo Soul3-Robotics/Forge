@@ -5,10 +5,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import { HeroSection } from './HeroSection';
 import { AboutUs } from './AboutUs';
-import type { AboutUsHandle } from './AboutUs';
+import type { RecoveryGlobeHandle } from './RecoveryGlobe';
 import { OurMission } from './OurMission';
-import missionBg from '../assets/our-mission.webp';
-import contactBg from '../assets/background.webp';
+import missionBg from '../assets/our-mission.png';
+import contactBg from '../assets/background.png';
 //import { OurProduct } from './OurProduct';
 import { ContactUs } from './ContactUs';
 
@@ -21,19 +21,14 @@ export const SceneController: React.FC = () => {
   const whiteBgRef = useRef<HTMLDivElement>(null);
   const missionBgRef = useRef<HTMLDivElement>(null);
   const contactBgRef = useRef<HTMLDivElement>(null);
-  const globeRef = useRef<AboutUsHandle>(null);
+  const globeRef = useRef<RecoveryGlobeHandle>(null);
   const [heroActive, setHeroActive] = useState(true);
-  const [missionRequested, setMissionRequested] = useState(false);
-  const [contactRequested, setContactRequested] = useState(false);
   useEffect(() => {
     if (!containerRef.current || !cameraRef.current) return;
 
     const context = gsap.context(() => {
       let crumbleAnim: ReturnType<typeof animate> | null = null;
       let heroWasActive = true;
-      let globeRequested = false;
-      let missionPrepared = false;
-      let contactPrepared = false;
     const sectionConfigs = [
       { z: 0, startTime: 0, flyDuration: 1.5, pauseDuration: 1.0 }, // Hero
       { z: -2000, startTime: 2.5, flyDuration: 2.0, pauseDuration: 8.0 }, // About Us (halts to read & expand, then globe zoom)
@@ -60,19 +55,6 @@ export const SceneController: React.FC = () => {
     const tl = gsap.timeline({
         onUpdate: () => {
           const time = tl.time();
-          // Start preparing 3D during the hero exit, well before its reveal.
-          if (!globeRequested && time > 0.5) {
-            globeRequested = true;
-            globeRef.current?.preload();
-          }
-          if (!missionPrepared && time > 8) {
-            missionPrepared = true;
-            setMissionRequested(true);
-          }
-          if (!contactPrepared && time > 12.5) {
-            contactPrepared = true;
-            setContactRequested(true);
-          }
           globeRef.current?.setActive(time > globeStart && time < globeEnd);
           const heroIsActive = time < 2;
           if (heroIsActive !== heroWasActive) {
@@ -248,7 +230,7 @@ export const SceneController: React.FC = () => {
 
       {/* Mission Background Crossfade Layer */}
       <div ref={missionBgRef} className="absolute inset-0 z-1 opacity-0 pointer-events-none transition-colors">
-        <img src={missionRequested ? missionBg : undefined} alt="Mission Background" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
+        <img src={missionBg} alt="Mission Background" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-black/40"></div>
       </div>
 
@@ -281,7 +263,7 @@ export const SceneController: React.FC = () => {
           </div>
 
           <div ref={el => { sectionsRef.current[3] = el; }} className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ opacity: 0 }}>
-            <ContactUs loadMap={contactRequested} />
+            <ContactUs />
           </div>
         </div>
       </div>

@@ -1,38 +1,8 @@
-import { forwardRef, lazy, Suspense, useCallback, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef } from 'react';
+import { RecoveryGlobe } from './RecoveryGlobe';
 import type { RecoveryGlobeHandle } from './RecoveryGlobe';
 
-const RecoveryGlobe = lazy(() => import('./RecoveryGlobe').then(module => ({ default: module.RecoveryGlobe })));
-
-export interface AboutUsHandle extends RecoveryGlobeHandle {
-  preload: () => void;
-}
-
-export const AboutUs = forwardRef<AboutUsHandle>((_, ref) => {
-  const [requested, setRequested] = useState(false);
-  const instance = useRef<RecoveryGlobeHandle | null>(null);
-  const progress = useRef(0);
-  const active = useRef(false);
-
-  // Preserve navigation that happens while the separate 3D bundle is loading.
-  const attachGlobe = useCallback((globe: RecoveryGlobeHandle | null) => {
-    instance.current = globe;
-    globe?.setProgress(progress.current);
-    globe?.setActive(active.current);
-  }, []);
-
-  useImperativeHandle(ref, () => ({
-    preload: () => setRequested(true),
-    setProgress: value => {
-      progress.current = value;
-      instance.current?.setProgress(value);
-    },
-    setActive: value => {
-      active.current = value;
-      if (value) setRequested(true);
-      instance.current?.setActive(value);
-    }
-  }), []);
-
+export const AboutUs = forwardRef<RecoveryGlobeHandle>((_, ref) => {
   return (
     <div className="w-full h-screen relative z-10 overflow-hidden flex items-center justify-center pointer-events-none">
 
@@ -60,9 +30,7 @@ export const AboutUs = forwardRef<AboutUsHandle>((_, ref) => {
 
         {/* Globe Content Box (Fades in during halt) */}
         <div className="globe-wrapper absolute inset-0 pointer-events-auto opacity-0 z-20">
-          {requested && <Suspense fallback={null}>
-            <RecoveryGlobe ref={attachGlobe} />
-          </Suspense>}
+          <RecoveryGlobe ref={ref} />
         </div>
 
       </div>

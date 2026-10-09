@@ -24,7 +24,6 @@ export const RecoveryGlobe = forwardRef<RecoveryGlobeHandle>((_, ref) => {
   const activeRef = useRef(false);
   const syncAnimationRef = useRef<(() => void) | null>(null);
   const requestRenderRef = useRef<(() => void) | null>(null);
-  const progressRef = useRef(0);
 
   const [records, setRecords] = useState<any[]>([]);
   const [geo, setGeo] = useState<any>(null);
@@ -51,12 +50,7 @@ export const RecoveryGlobe = forwardRef<RecoveryGlobeHandle>((_, ref) => {
       if (active) requestRenderRef.current?.();
       else syncAnimationRef.current?.();
     },
-    setProgress: updateProgress
-  }));
-
-  function updateProgress(p: number) {
-    progressRef.current = p;
-    if (!globeInstance.current) return;
+    setProgress: (p: number) => {
       updateCamera(p);
       requestRenderRef.current?.();
 
@@ -81,6 +75,7 @@ export const RecoveryGlobe = forwardRef<RecoveryGlobeHandle>((_, ref) => {
         setZoomPhase(phase);
       }
     }
+  }));
 
   useEffect(() => {
     const controller = new AbortController();
@@ -184,7 +179,7 @@ export const RecoveryGlobe = forwardRef<RecoveryGlobeHandle>((_, ref) => {
       controls.addEventListener('change', requestRender);
       syncAnimation();
 
-      // Warm the shaders independently of the hero's loading screen.
+      // Give WebGL exactly 1 second to compile its shaders and cache geometries before dismissing the loading screen
       const readyTimer = setTimeout(() => {
         warmingUp = false;
         syncAnimation();
@@ -287,12 +282,6 @@ export const RecoveryGlobe = forwardRef<RecoveryGlobeHandle>((_, ref) => {
     globe.htmlElementsData(labels);
 
   }, [layer, selectedCountry, records, isWorldMode]);
-
-  // Initialize labels first, then replay queued navigation with this render's
-  // loaded data. Phase guards in updateProgress avoid redundant state updates.
-  useEffect(() => {
-    if (records.length && geo) updateProgress(progressRef.current);
-  });
 
   const updateCamera = (p: number) => {
     if (!globeInstance.current) return;

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import logo from '../assets/logo.webp';
+import logo from '../assets/logo.png';
 
 export const NavBar = () => {
   return (

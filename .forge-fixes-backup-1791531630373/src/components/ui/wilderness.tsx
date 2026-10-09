@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
-import customSkyBg from '../../assets/background.webp';
-import customFloorBg from '../../assets/floor.webp';
+import customSkyBg from '../../assets/background.png';
+import customFloorBg from '../../assets/floor.png';
 
 interface ParallaxLayer {
   src: string;
@@ -274,8 +274,6 @@ export const ParallaxHero: React.FC<ParallaxHeroProps> = ({
           }}
           src={layer.src}
           alt={layer.alt}
-          fetchPriority="high"
-          decoding="async"
           className={cn(
             'absolute pointer-events-none transition-transform duration-[450ms] ease-out',
             layer.className

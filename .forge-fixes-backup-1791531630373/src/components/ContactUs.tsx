@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, MessageSquare, Send, Phone, MapPin } from 'lucide-react';
 
-export const ContactUs: React.FC<{ loadMap?: boolean }> = ({ loadMap = true }) => {
+export const ContactUs: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -61,7 +61,7 @@ export const ContactUs: React.FC<{ loadMap?: boolean }> = ({ loadMap = true }) =
             {/* Map Location */}
             <div className="mt-4 rounded-2xl overflow-hidden border border-white/10 opacity-80 hover:opacity-100 transition-opacity">
               <iframe
-                src={loadMap ? "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3770.834468648358!2d72.89725831518398!3d19.07098795708573!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c627a20bcaa9%3A0xb2fd3bcfeac0052a!2sriidl%20Somaiya%20Vidyavihar!5e0!3m2!1sen!2sin!4v1683884872322!5m2!1sen!2sin" : undefined}
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3770.834468648358!2d72.89725831518398!3d19.07098795708573!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c627a20bcaa9%3A0xb2fd3bcfeac0052a!2sriidl%20Somaiya%20Vidyavihar!5e0!3m2!1sen!2sin!4v1683884872322!5m2!1sen!2sin"
                 width="100%"
                 height="170"
                 style={{ border: 0 }}

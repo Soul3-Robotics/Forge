@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { animate, stagger } from 'animejs';
-import logo from '../assets/brand-mark.webp';
+import logo from '../assets/favicon.png';
 import ParallaxHero from './ui/wilderness';
 
 const ColoredTextWrapper = React.memo<{
