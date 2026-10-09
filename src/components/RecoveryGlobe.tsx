@@ -183,7 +183,6 @@ export const RecoveryGlobe = forwardRef<RecoveryGlobeHandle>((_, ref) => {
       const readyTimer = setTimeout(() => {
         warmingUp = false;
         syncAnimation();
-        window.dispatchEvent(new Event('globeReady'));
       }, 1000);
 
       return () => {
