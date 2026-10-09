@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { animate, random, stagger } from 'animejs';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -22,13 +22,9 @@ export const SceneController: React.FC = () => {
   const missionBgRef = useRef<HTMLDivElement>(null);
   const contactBgRef = useRef<HTMLDivElement>(null);
   const globeRef = useRef<RecoveryGlobeHandle>(null);
-  const [heroActive, setHeroActive] = useState(true);
   useEffect(() => {
     if (!containerRef.current || !cameraRef.current) return;
 
-    const context = gsap.context(() => {
-      let crumbleAnim: ReturnType<typeof animate> | null = null;
-      let heroWasActive = true;
     const sectionConfigs = [
       { z: 0, startTime: 0, flyDuration: 1.5, pauseDuration: 1.0 }, // Hero
       { z: -2000, startTime: 2.5, flyDuration: 2.0, pauseDuration: 8.0 }, // About Us (halts to read & expand, then globe zoom)
@@ -49,19 +45,8 @@ export const SceneController: React.FC = () => {
     });
 
     const totalSections = sectionsRef.current.length;
-      const globeStart = sectionConfigs[1].startTime + 1.5;
-      const globeEnd = sectionConfigs[1].startTime + sectionConfigs[1].pauseDuration + 0.5;
 
     const tl = gsap.timeline({
-        onUpdate: () => {
-          const time = tl.time();
-          globeRef.current?.setActive(time > globeStart && time < globeEnd);
-          const heroIsActive = time < 2;
-          if (heroIsActive !== heroWasActive) {
-            heroWasActive = heroIsActive;
-            setHeroActive(heroIsActive);
-          }
-        },
       scrollTrigger: {
         trigger: containerRef.current,
         start: "top top",
@@ -120,6 +105,8 @@ export const SceneController: React.FC = () => {
           // Thanos Snap Effect powered natively by Anime.js!
           const letters = Array.from(section.querySelectorAll('.letter'));
           if (letters.length > 0) {
+            let crumbleAnim: any = null;
+
             // Use GSAP as a proxy to scrub the Anime.js engine perfectly with the scroll wheel
             tl.to({ progress: 0 }, {
               progress: 1,
@@ -139,7 +126,7 @@ export const SceneController: React.FC = () => {
                     opacity: [1, 0],
                     filter: ["blur(0px)", "blur(25px)"],
                     duration: 1500,
-                      delay: stagger(30),
+                    delay: stagger(30 as any),
                     easing: 'easeInQuad',
                     autoplay: false
                   });
@@ -214,10 +201,9 @@ export const SceneController: React.FC = () => {
       }
     });
 
-      return () => crumbleAnim?.revert();
-    }, containerRef);
-
-    return () => context.revert();
+    return () => {
+      ScrollTrigger.getAll().forEach(t => t.kill());
+    };
   }, []);
 
   return (
@@ -251,7 +237,7 @@ export const SceneController: React.FC = () => {
           style={{ transformStyle: 'preserve-3d' }}
         >
           <div ref={el => { sectionsRef.current[0] = el; }} className="absolute inset-0">
-            <HeroSection active={heroActive} />
+            <HeroSection />
           </div>
 
           <div ref={el => { sectionsRef.current[1] = el; }} className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ visibility: 'hidden', opacity: 0 }}>

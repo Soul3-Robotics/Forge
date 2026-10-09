@@ -11,14 +11,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 function App() {
   const [loaded, setLoaded] = useState(false);
-  const [showLoader, setShowLoader] = useState(true);
-
-  useEffect(() => {
-    if (!loaded) return;
-    // Keep the existing fade, then remove its invisible infinite animations.
-    const timer = setTimeout(() => setShowLoader(false), 1000);
-    return () => clearTimeout(timer);
-  }, [loaded]);
 
   useEffect(() => {
     const handler = () => setLoaded(true);
@@ -50,7 +42,7 @@ function App() {
 
   return (
     <>
-      {showLoader && <div
+      <div 
         className={`fixed inset-0 z-[100] bg-[#060d12] flex flex-col items-center justify-center transition-opacity duration-1000 pointer-events-none ${loaded ? 'opacity-0' : 'opacity-100'}`}
       >
         <div className="relative w-32 h-32 flex items-center justify-center mb-8">
@@ -60,7 +52,7 @@ function App() {
         </div>
         <div className="text-white font-light tracking-[0.3em] text-sm mb-2">INITIALIZING SOUL3</div>
         <div className="text-[#008B87] font-mono text-[10px] tracking-widest uppercase animate-pulse">Preloading Global Atlas...</div>
-      </div>}
+      </div>
 
       <div className={`w-full min-h-screen font-sans bg-black transition-opacity duration-1000 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
         <NavBar />

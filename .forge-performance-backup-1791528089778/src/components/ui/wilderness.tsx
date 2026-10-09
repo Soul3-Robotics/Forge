@@ -20,7 +20,6 @@ interface ParallaxLayer {
 }
 
 interface ParallaxHeroProps {
-  active?: boolean;
   layers?: ParallaxLayer[];
   children?: React.ReactNode;
   className?: string;
@@ -182,7 +181,6 @@ const defaultLayers: ParallaxLayer[] = [
 ];
 
 export const ParallaxHero: React.FC<ParallaxHeroProps> = ({
-  active = true,
   layers = defaultLayers,
   children,
   className,
@@ -192,25 +190,28 @@ export const ParallaxHero: React.FC<ParallaxHeroProps> = ({
   const textRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!active) return;
-    let frame = 0;
-    let pointerX = 0;
-    let pointerY = 0;
+    let ticking = false;
 
     const handleMouseMove = (e: MouseEvent) => {
-      pointerX = e.clientX;
-      pointerY = e.clientY;
-      if (!frame) {
-        frame = requestAnimationFrame(() => {
-          const newXValue = pointerX - window.innerWidth / 2;
-          const newYValue = pointerY - window.innerHeight / 2;
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const newXValue = e.clientX - window.innerWidth / 2;
+          const newYValue = e.clientY - window.innerHeight / 2;
           const newRotateDegree = (newXValue / (window.innerWidth / 2)) * 20;
 
-          updateLayers(pointerX, newXValue, newYValue, newRotateDegree);
-          frame = 0;
+          updateLayers(e.clientX, newXValue, newYValue, newRotateDegree);
+          ticking = false;
         });
+        ticking = true;
       }
     };
+
+    window.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
 
   const updateLayers = (
     cursorPosition: number,
@@ -248,13 +249,6 @@ export const ParallaxHero: React.FC<ParallaxHeroProps> = ({
         }px)) translateY(calc(-50% + ${yVal * textSpeedY}px))`;
     }
   };
-
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      cancelAnimationFrame(frame);
-    };
-  }, [active, layers]);
 
   return (
     <div

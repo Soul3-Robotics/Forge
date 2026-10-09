@@ -3,7 +3,6 @@ import Globe from 'globe.gl';
 
 export interface RecoveryGlobeHandle {
   setProgress: (p: number) => void;
-  setActive: (active: boolean) => void;
 }
 
 const compact = (n: number) => n >= 1e9 ? (n / 1e9).toFixed(2) + 'B' : n >= 1e6 ? (n / 1e6).toFixed(2) + 'M' : n >= 1e3 ? (n / 1e3).toFixed(1) + 'K' : String(n);
@@ -21,9 +20,6 @@ const cities = [
 export const RecoveryGlobe = forwardRef<RecoveryGlobeHandle>((_, ref) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const globeInstance = useRef<any>(null);
-  const activeRef = useRef(false);
-  const syncAnimationRef = useRef<(() => void) | null>(null);
-  const requestRenderRef = useRef<(() => void) | null>(null);
 
   const [records, setRecords] = useState<any[]>([]);
   const [geo, setGeo] = useState<any>(null);
@@ -44,15 +40,8 @@ export const RecoveryGlobe = forwardRef<RecoveryGlobeHandle>((_, ref) => {
 
   // Expose setProgress to GSAP Timeline
   useImperativeHandle(ref, () => ({
-    setActive: (active: boolean) => {
-      if (activeRef.current === active) return;
-      activeRef.current = active;
-      if (active) requestRenderRef.current?.();
-      else syncAnimationRef.current?.();
-    },
     setProgress: (p: number) => {
       updateCamera(p);
-      requestRenderRef.current?.();
 
       const newWorld = p === 0;
       if (newWorld !== isWorldModeRef.current) {
@@ -78,39 +67,33 @@ export const RecoveryGlobe = forwardRef<RecoveryGlobeHandle>((_, ref) => {
   }));
 
   useEffect(() => {
-    const controller = new AbortController();
     async function load() {
       try {
         const [dataRes, geoRes] = await Promise.all([
-          fetch('/recovery-globe/data.json', { signal: controller.signal }),
-          fetch('/recovery-globe/countries.json', { signal: controller.signal })
+          fetch('/recovery-globe/data.json'),
+          fetch('/recovery-globe/countries.json')
         ]);
         if (!dataRes.ok || !geoRes.ok) throw new Error();
 
         const data = await dataRes.json();
         const geoData = await geoRes.json();
-        if (controller.signal.aborted) return;
         data.sort((a: any, b: any) => a.name.localeCompare(b.name));
 
         setRecords(data);
         setGeo(geoData);
         setSelectedCountry(data.find((d: any) => d.name === 'India'));
       } catch (e: any) {
-        if (controller.signal.aborted) return;
         setError("Fetch error: " + e.message);
       }
     }
     load();
-    return () => controller.abort();
   }, []);
 
   useEffect(() => {
     if (!containerRef.current || !records.length || !geo || globeInstance.current) return;
-    const container = containerRef.current;
 
     try {
       const globe = new (Globe as any)(containerRef.current)
-        .onGlobeReady(() => requestRenderRef.current?.())
         .backgroundColor('#00000000') // Transparent
         .globeImageUrl('/recovery-globe/earth.jpg')
         .bumpImageUrl('/recovery-globe/bump.png')
@@ -143,72 +126,33 @@ export const RecoveryGlobe = forwardRef<RecoveryGlobeHandle>((_, ref) => {
       globeInstance.current = globe;
 
       const observer = new ResizeObserver(() => {
-        const { clientWidth: width, clientHeight: height } = container;
-        if (globe.width() !== width) globe.width(width);
-        if (globe.height() !== height) globe.height(height);
-        requestRenderRef.current?.();
+        if (containerRef.current) {
+          globe.width(containerRef.current.clientWidth).height(containerRef.current.clientHeight);
+        }
       });
-      observer.observe(container);
-
-      // The pinned 3D sections overlap geometrically, so viewport intersection
-      // cannot tell us when the globe is visible. The scene timeline owns that.
-      let warmingUp = true;
-      let running = true;
-      let renderUntil = 0;
-      let idleTimer: ReturnType<typeof setTimeout> | undefined;
-      const syncAnimation = () => {
-        const shouldRun = !document.hidden && (warmingUp || (activeRef.current && performance.now() < renderUntil));
-        if (running === shouldRun) return;
-        running = shouldRun;
-        if (shouldRun) globe.resumeAnimation();
-        else globe.pauseAnimation();
-      };
-      // Allow camera tweens (1100ms), geometry transitions and orbit damping
-      // to settle before resting. Pointer and scene updates wake rendering.
-      const requestRender = () => {
-        renderUntil = performance.now() + 2000;
-        clearTimeout(idleTimer);
-        idleTimer = setTimeout(syncAnimation, 2050);
-        syncAnimation();
-      };
-      syncAnimationRef.current = syncAnimation;
-      requestRenderRef.current = requestRender;
-      document.addEventListener('visibilitychange', requestRender);
-      const pointerEvents = ['pointerdown', 'pointermove', 'pointerup', 'wheel'] as const;
-      pointerEvents.forEach(event => container.addEventListener(event, requestRender, { passive: true }));
-      controls.addEventListener('change', requestRender);
-      syncAnimation();
+      observer.observe(containerRef.current);
 
       // Give WebGL exactly 1 second to compile its shaders and cache geometries before dismissing the loading screen
-      const readyTimer = setTimeout(() => {
-        warmingUp = false;
-        syncAnimation();
+      setTimeout(() => {
         window.dispatchEvent(new Event('globeReady'));
       }, 1000);
 
       return () => {
-        clearTimeout(readyTimer);
-        clearTimeout(idleTimer);
-        document.removeEventListener('visibilitychange', requestRender);
-        pointerEvents.forEach(event => container.removeEventListener(event, requestRender));
-        controls.removeEventListener('change', requestRender);
-        syncAnimationRef.current = null;
-        requestRenderRef.current = null;
         observer.disconnect();
-        globe._destructor();
-        globe.controls().dispose();
-        globe.renderer().dispose();
-        container.replaceChildren();
+        if (globeInstance.current && typeof globeInstance.current._destructor === 'function') {
+          try {
+            globeInstance.current._destructor();
+          } catch (e) { }
+        }
+        if (containerRef.current) {
+          containerRef.current.innerHTML = '';
+        }
         globeInstance.current = null;
       };
     } catch (e: any) {
       setError("WebGL init error: " + e.message);
     }
   }, [records, geo]);
-
-  useEffect(() => {
-    requestRenderRef.current?.();
-  }, [layer, selectedCountry, selectedCity, isWorldMode]);
 
   useEffect(() => {
     if (!globeInstance.current || !isWorldMode || !selectedCountry) return;

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { animate, stagger } from 'animejs';
 import logo from '../assets/favicon.png';
 import ParallaxHero from './ui/wilderness';
@@ -54,55 +54,43 @@ const HEADLINE_SEGMENTS = [
   { text: 'Life', color: '#008B87' },
 ];
 
-export const HeroSection: React.FC<{ active?: boolean }> = ({ active = true }) => {
-  const heroRef = useRef<HTMLDivElement>(null);
-  const scrollButtonRef = useRef<HTMLDivElement>(null);
+export const HeroSection: React.FC = () => {
+  const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
     // We already have our text split perfectly by ColoredTextWrapper into .letter spans!
     // So we don't need to call text.splitText() and risk overwriting our gold/teal colors.
     // Instead, we directly apply text.scrambleText() and standard animations to our .letter spans!
 
-    const animations: ReturnType<typeof animate>[] = [];
     const timer = setTimeout(() => {
-      if (!heroRef.current) return;
       // 1. Typing animation for Welcome text
-      animations.push(animate(heroRef.current.querySelectorAll('.welcome-text .letter'), {
+      animate('.welcome-text .letter', {
         opacity: [0, 1],
         duration: 10,
         delay: stagger(50, { start: 200 })
-      }));
+      });
 
       // 2. Typing animation for Main Headline
-      animations.push(animate(heroRef.current.querySelectorAll('.headline-text .letter'), {
+      animate('.headline-text .letter', {
         opacity: [0, 1],
         duration: 10,
         delay: stagger(40, { start: 1000 })
-      }));
+      });
     }, 100);
 
-    return () => {
-      clearTimeout(timer);
-      animations.forEach(animation => animation.revert());
-    };
+    return () => clearTimeout(timer);
   }, []);
 
 
 
   useEffect(() => {
-    if (!active) return;
     const handleScroll = () => {
-      const button = scrollButtonRef.current;
-      if (!button) return;
-      const scrollY = window.scrollY;
-      button.style.opacity = String(Math.max(0, 1 - scrollY / 200));
-      button.style.pointerEvents = scrollY > 200 ? 'none' : 'auto';
+      setScrollY(window.scrollY);
     };
 
-    handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [active]);
+  }, []);
 
   const handleAutoScroll = () => {
     window.scrollTo({
@@ -112,11 +100,11 @@ export const HeroSection: React.FC<{ active?: boolean }> = ({ active = true }) =
   };
 
   return (
-    <div ref={heroRef} className="w-full h-screen relative flex flex-col justify-center overflow-hidden bg-black hero-section">
+    <div className="w-full h-screen relative flex flex-col justify-center overflow-hidden bg-black hero-section">
 
       {/* 3D Parallax Background taking full height/width */}
       <div className="absolute inset-0 z-0">
-        <ParallaxHero active={active}>
+        <ParallaxHero>
           <div className="relative z-20 flex flex-col items-center w-full px-4 sm:px-6 lg:px-8 pointer-events-none mt-[-100px]">
 
 
@@ -176,15 +164,18 @@ export const HeroSection: React.FC<{ active?: boolean }> = ({ active = true }) =
 
       {/* Cinematic Auto-Scroll Button */}
       <div
-        ref={scrollButtonRef}
         className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 transition-all duration-300"
+        style={{
+          opacity: Math.max(0, 1 - scrollY / 200),
+          pointerEvents: scrollY > 200 ? 'none' : 'auto'
+        }}
       >
         <button
           onClick={handleAutoScroll}
           className="w-32 h-32 rounded-full border-0 bg-transparent text-[#008B87] flex items-center justify-center hover:text-[#D99C2A] hover:scale-110 transition-all duration-300 drop-shadow-[0_0_15px_rgba(0,207,200,0.5)] group relative cursor-pointer"
         >
           {/* Spinning Curved Text */}
-          <div className="relative w-full h-full animate-[spin_12s_linear_infinite] text-[11px] font-black tracking-widest uppercase" style={{ animationPlayState: active ? 'running' : 'paused' }}>
+          <div className="relative w-full h-full animate-[spin_12s_linear_infinite] text-[11px] font-black tracking-widest uppercase">
             {"explore soul 3 technology • ".split("").map((char, i, arr) => (
               <span
                 key={i}
