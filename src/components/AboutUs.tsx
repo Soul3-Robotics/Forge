@@ -12,12 +12,14 @@ export const AboutUs = forwardRef<AboutUsHandle>((_, ref) => {
   const instance = useRef<RecoveryGlobeHandle | null>(null);
   const progress = useRef(0);
   const active = useRef(false);
+  const dive = useRef(0);
 
   // Preserve navigation that happens while the separate 3D bundle is loading.
   const attachGlobe = useCallback((globe: RecoveryGlobeHandle | null) => {
     instance.current = globe;
     globe?.setProgress(progress.current);
     globe?.setActive(active.current);
+    globe?.setDive(dive.current);
   }, []);
 
   useImperativeHandle(ref, () => ({
@@ -25,6 +27,10 @@ export const AboutUs = forwardRef<AboutUsHandle>((_, ref) => {
     setProgress: value => {
       progress.current = value;
       instance.current?.setProgress(value);
+    },
+    setDive: value => {
+      dive.current = value;
+      instance.current?.setDive(value);
     },
     setActive: value => {
       active.current = value;

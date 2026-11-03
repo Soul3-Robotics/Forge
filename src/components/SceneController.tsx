@@ -6,10 +6,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { HeroSection } from './HeroSection';
 import { AboutUs } from './AboutUs';
 import type { AboutUsHandle } from './AboutUs';
-import { OurMission } from './OurMission';
+import { SoulThree } from './SoulThree';
+import { OurVision } from './OurVision';
+import { SCENE_DURATION, SCENE_SCROLL } from './sceneTimeline';
 import missionBg from '../assets/our-mission.webp';
 import contactBg from '../assets/background.webp';
-//import { OurProduct } from './OurProduct';
 import { ContactUs } from './ContactUs';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -20,11 +21,26 @@ export const SceneController: React.FC = () => {
   const sectionsRef = useRef<(HTMLDivElement | null)[]>([]);
   const whiteBgRef = useRef<HTMLDivElement>(null);
   const missionBgRef = useRef<HTMLDivElement>(null);
+  const soulBgRef = useRef<HTMLDivElement>(null);
   const contactBgRef = useRef<HTMLDivElement>(null);
   const globeRef = useRef<AboutUsHandle>(null);
   const [heroActive, setHeroActive] = useState(true);
   const [missionRequested, setMissionRequested] = useState(false);
   const [contactRequested, setContactRequested] = useState(false);
+  // Build the globe while visitors read the hero, so its WebGL setup and
+  // shader compilation don't stall frames during the scroll sequence.
+  useEffect(() => {
+    const idle = window.requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 200));
+    let handle: number | undefined;
+    const timer = setTimeout(() => {
+      handle = idle(() => globeRef.current?.preload(), { timeout: 2000 });
+    }, 1200);
+    return () => {
+      clearTimeout(timer);
+      if (handle !== undefined) (window.cancelIdleCallback ?? clearTimeout)(handle);
+    };
+  }, []);
+
   useEffect(() => {
     if (!containerRef.current || !cameraRef.current) return;
 
@@ -36,9 +52,10 @@ export const SceneController: React.FC = () => {
       let contactPrepared = false;
     const sectionConfigs = [
       { z: 0, startTime: 0, flyDuration: 1.5, pauseDuration: 1.0 }, // Hero
-      { z: -2000, startTime: 2.5, flyDuration: 2.0, pauseDuration: 8.0 }, // About Us (halts to read & expand, then globe zoom)
-      { z: -4500, startTime: 12.5, flyDuration: 2.0, pauseDuration: 1.0 }, // Mission
-      { z: -7000, startTime: 15.5, flyDuration: 0, pauseDuration: 1.0 } // Contact Us
+      { z: -2000, startTime: 2.5, flyDuration: 2.0, pauseDuration: 12.5 }, // About Us (expand, globe zoom, then dive into Mumbai)
+      { z: -4500, startTime: 17.0, flyDuration: 2.0, pauseDuration: 9.0 }, // SOUL3 story: three chapters of rehab
+      { z: -7000, startTime: 28.0, flyDuration: 2.0, pauseDuration: 3.5 }, // Our Vision
+      { z: -9500, startTime: 33.5, flyDuration: 0, pauseDuration: 1.0 } // Contact Us
     ];
 
     // Setup initial positions
@@ -65,11 +82,11 @@ export const SceneController: React.FC = () => {
             globeRequested = true;
             globeRef.current?.preload();
           }
-          if (!missionPrepared && time > 8) {
+          if (!missionPrepared && time > 24) {
             missionPrepared = true;
             setMissionRequested(true);
           }
-          if (!contactPrepared && time > 12.5) {
+          if (!contactPrepared && time > 28) {
             contactPrepared = true;
             setContactRequested(true);
           }
@@ -83,7 +100,7 @@ export const SceneController: React.FC = () => {
       scrollTrigger: {
         trigger: containerRef.current,
         start: "top top",
-        end: "+=12500", // Shorter scroll distance so users don't have to scroll multiple times
+        end: `+=${SCENE_SCROLL}`,
         scrub: 1,
         pin: true
       }
@@ -94,16 +111,24 @@ export const SceneController: React.FC = () => {
       tl.set(whiteBgRef.current, { opacity: 1 }, 1.3);
     }
 
+    // Keep the timeline length fixed so scroll positions stay predictable.
+    tl.set({}, {}, SCENE_DURATION);
+
+    if (soulBgRef.current) {
+      // Deep Mumbai night sits behind the globe dive and carries into SOUL3
+      tl.to(soulBgRef.current, { opacity: 1, duration: 1.0 }, 13.0);
+      tl.to(soulBgRef.current, { opacity: 0, duration: 1.5 }, 26.5);
+    }
+
     if (missionBgRef.current) {
-      // Crossfade the global mission background as the camera starts flying towards the Mission section
-      tl.to(missionBgRef.current, { opacity: 1, duration: 1.5 }, 10.5);
-      // Fade it out as the camera leaves the Mission section to reveal the next theme
-      tl.to(missionBgRef.current, { opacity: 0, duration: 1.5 }, 13.5);
+      // Crossfade the mission artwork in as the camera flies towards Our Vision
+      tl.to(missionBgRef.current, { opacity: 1, duration: 1.5 }, 26.5);
+      tl.to(missionBgRef.current, { opacity: 0, duration: 1.5 }, 31.5);
     }
 
     if (contactBgRef.current) {
       // Fade in the Contact Us background as the camera flies towards the final section
-      tl.to(contactBgRef.current, { opacity: 1, duration: 1.5 }, 13.5);
+      tl.to(contactBgRef.current, { opacity: 1, duration: 1.5 }, 31.5);
     }
 
 
@@ -212,14 +237,53 @@ export const SceneController: React.FC = () => {
           // Recovery Globe Scroll progress
           tl.to({ val: 0 }, {
             val: 1,
-            duration: conf.pauseDuration - 4.5,
-            ease: "none",
+            duration: 3.5,
+            ease: "power1.in",
             onUpdate: function() {
               if (globeRef.current) {
                 globeRef.current.setProgress(this.targets()[0].val);
               }
             }
           }, conf.startTime + 4.5);
+
+          // Hold on India, then let the globe roll away before flying onward
+          tl.to({ val: 0 }, {
+            val: 1,
+            duration: 3.5,
+            ease: "power1.in",
+            onUpdate: function() {
+              globeRef.current?.setDive(this.targets()[0].val);
+            }
+          }, conf.startTime + 8.5);
+        } else if (index === 2) {
+          // SOUL3 story: one chapter on stage at a time, each drawing a ring of care
+          const S = conf.startTime;
+          const beats = section.querySelectorAll('.s3-beat');
+          const beatTimes: [number, number | null][] = [[S - 0.6, S + 1.3], [S + 1.6, S + 3.4], [S + 3.7, S + 5.5], [S + 5.8, S + 7.6], [S + 7.8, null]];
+          beats.forEach((beat, i) => {
+            const [inAt, outAt] = beatTimes[i];
+            tl.fromTo(beat, { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.7, ease: "power2.out" }, inAt);
+            if (outAt !== null) tl.to(beat, { autoAlpha: 0, y: -40, duration: 0.6, ease: "power2.in" }, outAt);
+          });
+          [0, 1, 2].forEach(i => {
+            const at = beatTimes[i + 1][0];
+            tl.to(section.querySelector(`.s3-ring-${i}`), { attr: { 'stroke-dashoffset': 0 }, duration: 1.4, ease: "power2.inOut" }, at);
+            tl.fromTo(section.querySelector(`.s3-chip-${i}`), { autoAlpha: 0, scale: 0.6 }, { autoAlpha: 1, scale: 1, duration: 0.5, ease: "back.out(2)" }, at + 0.9);
+          });
+          // All three rings close: the Mumbai beacon becomes SOUL3
+          tl.to(section.querySelector('.s3-beacon'), { scale: 4, autoAlpha: 0, duration: 0.8, ease: "power2.in" }, S + 7.8);
+          tl.fromTo(section.querySelector('.s3-mark'), { autoAlpha: 0, scale: 0.6 }, { autoAlpha: 1, scale: 1, duration: 0.9, ease: "back.out(1.6)" }, S + 8.1);
+          tl.to(section.querySelector('.s3-stage'), { rotate: 8, scale: 1.04, duration: 1.2, ease: "power1.inOut" }, S + 7.8);
+          tl.fromTo(section.querySelector('.s3-acronym'), { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.6 }, S + 8.4);
+        } else if (index === 3) {
+          // Vision: an "imagine" beat resolves into the vision card
+          const V = conf.startTime;
+          const imagine = section.querySelector('.vision-imagine');
+          tl.fromTo(imagine, { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.7, ease: "power2.out" }, V - 0.6);
+          tl.to(imagine, { autoAlpha: 0, scale: 1.15, duration: 0.6, ease: "power2.in" }, V + 0.8);
+          tl.fromTo(section.querySelector('.vision-card'), { autoAlpha: 0, scale: 0.92 }, { autoAlpha: 1, scale: 1, duration: 0.8, ease: "power2.out" }, V + 1.2);
+          tl.fromTo(section.querySelectorAll('.vision-line'), { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.2, ease: "power2.out" }, V + 1.3);
+          tl.fromTo(section.querySelectorAll('.vision-point'), { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.2, ease: "power2.out" }, V + 2.1);
         }
 
         // Only fade out the entire section if it's NOT the expanding video, 
@@ -228,7 +292,7 @@ export const SceneController: React.FC = () => {
           autoAlpha: 0,
           duration: 1,
           ease: "power2.in"
-        }, conf.startTime + (index === 0 ? 1.0 : (index === 1 ? conf.pauseDuration - 0.5 : 1.5)));
+        }, conf.startTime + (index === 0 ? 1.0 : (index === 1 ? conf.pauseDuration - 0.5 : conf.pauseDuration + 0.5)));
       }
     });
 
@@ -245,6 +309,11 @@ export const SceneController: React.FC = () => {
 
       {/* White Background for About Us */}
       <div ref={whiteBgRef} className="absolute inset-0 z-1 bg-[#dcdad8] opacity-0 pointer-events-none transition-colors"></div>
+
+      {/* SOUL3 Background: Mumbai night glow behind the dive and the three pillars */}
+      <div ref={soulBgRef} className="absolute inset-0 z-1 opacity-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 40%, #0b3a3a 0%, #05171c 45%, #020608 100%)' }}>
+        <div className="absolute inset-0 opacity-[0.07]" style={{ backgroundImage: 'radial-gradient(#7ce4d4 1px, transparent 1px)', backgroundSize: '28px 28px' }}></div>
+      </div>
 
       {/* Mission Background Crossfade Layer */}
       <div ref={missionBgRef} className="absolute inset-0 z-1 opacity-0 pointer-events-none transition-colors">
@@ -277,10 +346,14 @@ export const SceneController: React.FC = () => {
           </div>
 
           <div ref={el => { sectionsRef.current[2] = el; }} className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ opacity: 0 }}>
-            <OurMission />
+            <SoulThree />
           </div>
 
           <div ref={el => { sectionsRef.current[3] = el; }} className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ opacity: 0 }}>
+            <OurVision />
+          </div>
+
+          <div ref={el => { sectionsRef.current[4] = el; }} className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ opacity: 0 }}>
             <ContactUs loadMap={contactRequested} />
           </div>
         </div>

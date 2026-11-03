@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
+import { sceneTimeToScroll } from './sceneTimeline';
 
 const sections = [
   { id: 'hero', label: 'Welcome', scrollPos: 0 },
-  { id: 'globe', label: 'The Problem', scrollPos: 3030 },
-  { id: 'mission', label: 'Our Mission', scrollPos: 9468 },
-  { id: 'contact', label: 'Contact Us', scrollPos: 11741 }
+  { id: 'globe', label: 'The Problem', scrollPos: sceneTimeToScroll(3.9) },
+  { id: 'soul3', label: 'SOUL3', scrollPos: sceneTimeToScroll(17.0) },
+  { id: 'vision', label: 'Our Vision', scrollPos: sceneTimeToScroll(29.5) },
+  { id: 'contact', label: 'Contact Us', scrollPos: sceneTimeToScroll(34.5) }
 ];
 
 export const SideNav = () => {

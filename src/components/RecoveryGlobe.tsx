@@ -4,6 +4,7 @@ import Globe from 'globe.gl';
 export interface RecoveryGlobeHandle {
   setProgress: (p: number) => void;
   setActive: (active: boolean) => void;
+  setDive: (d: number) => void;
 }
 
 const compact = (n: number) => n >= 1e9 ? (n / 1e9).toFixed(2) + 'B' : n >= 1e6 ? (n / 1e6).toFixed(2) + 'M' : n >= 1e3 ? (n / 1e3).toFixed(1) + 'K' : String(n);
@@ -25,6 +26,8 @@ export const RecoveryGlobe = forwardRef<RecoveryGlobeHandle>((_, ref) => {
   const syncAnimationRef = useRef<(() => void) | null>(null);
   const requestRenderRef = useRef<(() => void) | null>(null);
   const progressRef = useRef(0);
+  const diveRef = useRef(0);
+  const indiaUiRef = useRef<HTMLDivElement>(null);
 
   const [records, setRecords] = useState<any[]>([]);
   const [geo, setGeo] = useState<any>(null);
@@ -39,7 +42,7 @@ export const RecoveryGlobe = forwardRef<RecoveryGlobeHandle>((_, ref) => {
   const isCityModeRef = useRef(false);
   const zoomPhaseRef = useRef(0);
   const wasZero = useRef(true);
-  const wasCity = useRef(false);
+  const wasCity = useRef(0);
 
   const [error, setError] = useState<string | null>(null);
 
@@ -51,8 +54,20 @@ export const RecoveryGlobe = forwardRef<RecoveryGlobeHandle>((_, ref) => {
       if (active) requestRenderRef.current?.();
       else syncAnimationRef.current?.();
     },
-    setProgress: updateProgress
+    setProgress: updateProgress,
+    setDive: updateDive
   }));
+
+  // Final leg of the globe journey: the earth rolls away into the distance.
+  function updateDive(d: number) {
+    if (diveRef.current === d) return;
+    diveRef.current = d;
+    if (indiaUiRef.current) indiaUiRef.current.style.opacity = String(1 - Math.min(1, d * 3));
+    if (containerRef.current) containerRef.current.style.opacity = String(1 - Math.max(0, Math.min(1, (d - 0.85) / 0.15)));
+    if (!globeInstance.current) return;
+    updateCamera(progressRef.current);
+    requestRenderRef.current?.();
+  }
 
   function updateProgress(p: number) {
     progressRef.current = p;
@@ -337,9 +352,25 @@ export const RecoveryGlobe = forwardRef<RecoveryGlobeHandle>((_, ref) => {
         altitude: 2.15 + (isMobile ? 0.76 - 2.15 : 0.42 - 2.15) * z
       }, 0);
 
-      if (wasCity.current !== isNowCity) {
-        globe.htmlElementsData(isNowCity ? cities : []);
-        wasCity.current = isNowCity;
+      // Roll away: the globe keeps its size and rolls off to the right,
+      // turning the way a ball would as it travels.
+      const roll = ease(clamp(diveRef.current));
+      const baseLat = 21 + z, baseLng = 76 + 4 * z;
+      const baseAlt = 2.15 + (isMobile ? 0.76 - 2.15 : 0.42 - 2.15) * z;
+      const baseOffset = isMobile ? 0 : window.innerWidth * 0.12 * z;
+
+      globe.globeOffset([baseOffset + window.innerWidth * 1.3 * roll, 0]);
+      globe.pointOfView({
+        lat: baseLat,
+        lng: baseLng - 270 * roll,
+        altitude: baseAlt
+      }, 0);
+
+      const labelMode = diveRef.current > 0 ? 2 : isNowCity ? 1 : 0;
+      if (wasCity.current !== labelMode) {
+        globe.htmlElementsData(labelMode === 2 ? [] : labelMode === 1 ? cities : []);
+        globe.pointsData(labelMode === 2 ? [] : cities);
+        wasCity.current = labelMode;
       }
     }
   };
@@ -434,6 +465,7 @@ export const RecoveryGlobe = forwardRef<RecoveryGlobeHandle>((_, ref) => {
       </div>
 
       {/* INDIA JOURNEY UI */}
+      <div ref={indiaUiRef}>
       <div className={`absolute inset-0 pointer-events-none transition-opacity duration-1000 ${!isWorldMode ? 'opacity-100' : 'opacity-0'}`}>
         <div className="absolute top-1/2 left-10 lg:left-16 -translate-y-1/2 max-w-md pointer-events-auto">
           <div className="flex items-center gap-3 mb-4">
@@ -480,6 +512,7 @@ export const RecoveryGlobe = forwardRef<RecoveryGlobeHandle>((_, ref) => {
             VIEW SOURCE
           </a>
         </div>
+      </div>
       </div>
 
     </div>

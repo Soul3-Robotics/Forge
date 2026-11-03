@@ -73,74 +73,19 @@ body::-webkit-scrollbar-thumb {
   background-color: transparent;
 }
 
-.letter-wrapper {
-  opacity: 0;
-  transform: translateY(100px);
-  color: #D99C2A;
+/* =========================================
+   STORY TEXT ACCENTS
+========================================= */
+
+.text-gold-grad,
+.text-teal-grad,
+.text-mint-grad {
+  font-style: italic;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
 }
 
-.letter-wrapper.letter {
-  display: inline-block;
-}
-
-.slide-in-right-with-delay {
-  animation-delay: 0.5s;
-  animation-fill-mode: forwards;
-}
-
-.slide-in-left-with-delay {
-  animation-delay: 0.5s;
-  animation-fill-mode: forwards;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(100px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-@keyframes drift {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100vw); }
-}
-
-.animate-drift-slow {
-  animation: drift 80s linear infinite;
-}
-
-.animate-drift-medium {
-  animation: drift 50s linear infinite;
-}
-
-.animate-drift-fast {
-  animation: drift 30s linear infinite;
-}
-
-@keyframes fog-drift {
-  0% { transform: translate3d(0, 0, 0); }
-  100% { transform: translate3d(-50%, 0, 0); }
-}
-
-.animate-fog-slow {
-  animation: fog-drift 120s linear infinite;
-}
-
-.animate-fog-fast {
-  animation: fog-drift 60s linear infinite;
-}
+.text-gold-grad { background-image: linear-gradient(to right, #c38c25, #f5dca1); }
+.text-teal-grad { background-image: linear-gradient(to right, #008B87, #7ce4d4); }
+.text-mint-grad { background-image: linear-gradient(to right, #7ce4d4, #dcfff6); }
