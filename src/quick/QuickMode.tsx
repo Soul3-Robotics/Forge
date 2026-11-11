@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, ArrowUpRight, Mail, MapPin, Menu, Phone, Play, Plus, X } from 'lucide-react';
 import logo from '../assets/logo.webp';
 import heroImg from '../assets/background.webp';
-import visionImg from '../assets/our-mission.webp';
 import { Mockup } from './Mockups';
 import { RoadSteps } from './RoadSteps';
+import { Founders } from './Founders';
 import { INDIA_PATH, INDIA_VIEWBOX, MUMBAI } from './indiaMap';
 import { contact, faqs, hero, impact, modules, modulesIntro, overview, problem, sources, vision } from './content';
 import { CINEMATIC_URL } from '../viewMode';
@@ -28,6 +28,7 @@ const nav = [
   { href: '#care', id: 'care', label: 'Services' },
   { href: '#problem', id: 'problem', label: 'Why SOUL3' },
   { href: '#how', id: 'how', label: 'How it works' },
+  { href: '#team', id: 'team', label: 'Team' },
   { href: '#faq', id: 'faq', label: 'FAQ' },
 ];
 
@@ -446,29 +447,48 @@ export const QuickMode = () => {
         </div>
       </section>
 
-      {/* Vision over the mission artwork */}
-      <section className="q-night relative overflow-hidden">
-        <img src={visionImg} alt="" loading="lazy" className="q-hero-img !object-center" />
-        <div className="q-scrim" />
-        <div className="relative q-wrap py-28 md:py-44 grid lg:grid-cols-[1.25fr_0.75fr] gap-14 lg:gap-24">
-          <div className="q-reveal">
+      {/* Vision: statement, the SOUL3 acronym, and three goals as a staircase */}
+      <section className="q-dark relative overflow-hidden py-24 md:py-36">
+        <div className="q-wrap">
+          <div className="q-reveal text-center max-w-4xl mx-auto">
             <p className="q-kicker mb-6">{vision.kicker}</p>
-            <h2 className="text-[42px] md:text-7xl leading-[1.02] tracking-[-0.025em]">{vision.title}</h2>
-            <p className="q-ui text-lg text-[var(--q-soft)] mt-8 max-w-xl leading-relaxed">{vision.body}</p>
+            <h2 className="text-[40px] md:text-7xl leading-[1.04] tracking-[-0.025em]">{vision.title[0]} <em className="text-[var(--q-gold)]">{vision.title[1]}</em></h2>
+            <p className="q-ui text-lg md:text-xl text-[var(--q-soft)] mt-7 max-w-xl mx-auto leading-relaxed">{vision.body}</p>
           </div>
-          <ul className="q-reveal self-end border-t border-[var(--q-line-2)]">
-            {vision.roadmap.map(r => (
-              <li key={r.when} className="grid grid-cols-[5rem_1fr] gap-4 py-6 border-b border-[var(--q-line-2)]">
-                <span className="q-ui text-[13px] text-[var(--q-gold)] uppercase tracking-[0.14em] pt-1">{r.when}</span>
-                <span className="text-xl md:text-2xl leading-snug">{r.what}</span>
+
+          <ol className="q-reveal grid grid-cols-5 mt-16 md:mt-24 border-y border-[var(--q-line)]" aria-label="What SOUL3 stands for">
+            {vision.acronym.map((a, i) => (
+              <li key={a.l} className={`q-acro flex flex-col items-center text-center py-7 md:py-10 px-1 ${i ? 'border-l border-[var(--q-line)]' : ''}`} style={{ transitionDelay: `${i * 0.08}s` }}>
+                <span className={`q-num text-[44px] sm:text-6xl md:text-[110px] leading-none ${i === 4 ? 'text-[var(--q-gold)]' : ''}`}>{i === 4 ? <>×3</> : a.l}</span>
+                <span className="q-ui text-[11px] sm:text-sm md:text-base text-[var(--q-soft)] mt-3 md:mt-4 leading-tight">{a.w}</span>
               </li>
             ))}
-          </ul>
+          </ol>
+
+          <div className="mt-20 md:mt-28">
+            <div className="q-reveal flex items-end justify-between gap-6 mb-8 md:mb-10">
+              <p className="q-kicker">Our three goals</p>
+              <p className="q-ui text-sm text-[var(--q-mute)] hidden md:block">One step at a time</p>
+            </div>
+            <ol className="q-stairs grid lg:grid-cols-3 gap-3 lg:gap-0 lg:items-end">
+              {vision.roadmap.map((r, i) => (
+                <li key={r.when} className={`q-reveal q-stair q-stair-${i + 1}`} style={{ transitionDelay: `${i * 0.15}s` }}>
+                  <div className="flex items-center gap-3 mb-5">
+                    <span className="q-stair-badge"><span className="q-num text-xl">{i + 1}</span></span>
+                    <p className="q-ui text-[12px] uppercase tracking-[0.16em] opacity-80">{r.when} · {r.where}</p>
+                  </div>
+                  <p className="text-[26px] md:text-[30px] leading-[1.15]">{r.what}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
         </div>
       </section>
 
+      <Founders />
+
       {/* FAQ */}
-      <section id="faq" className="py-24 md:py-36 scroll-mt-16">
+      <section id="faq" className="py-24 md:py-36 scroll-mt-16 border-t border-[var(--q-line-2)]">
         <div className="q-wrap grid lg:grid-cols-[0.8fr_1.2fr] gap-12 lg:gap-24">
           <div className="q-reveal">
             <p className="q-kicker mb-5">Questions</p>

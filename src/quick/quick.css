@@ -50,6 +50,7 @@
 }
 .q-gold-band { background: #e3a737; color: #14211f; }
 .q-root {
+  font-variant-numeric: lining-nums;
   background: var(--q-bg);
   font-family: 'Vollkorn', serif;
   min-height: 100vh;
@@ -265,4 +266,28 @@
 .q-road-in .q-road-stop { opacity: 1; translate: 0 0; }
 @media (prefers-reduced-motion: reduce) {
   .q-road-svg, .q-road-stop { transition: none; clip-path: none; opacity: 1; translate: none; }
+}
+
+/* Our vision */
+.q-acro { opacity: 0; transform: translateY(18px); transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.q-in .q-acro { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .q-acro { opacity: 1; transform: none; } }
+
+/* Our three goals as a staircase: each step higher than the last */
+.q-stair { position: relative; padding: 26px 26px 30px; border-radius: 26px; }
+.q-stair-1 { background: rgba(244, 239, 230, 0.07); border: 1px solid rgba(244, 239, 230, 0.14); }
+.q-stair-2 { background: #1f5a55; }
+.q-stair-3 { background: #e3a737; color: #14211f; }
+.q-stair-badge { width: 44px; height: 44px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.q-stair-1 .q-stair-badge { border: 2px solid rgba(244, 239, 230, 0.5); }
+.q-stair-2 .q-stair-badge { background: #7ce4d4; color: #113d3b; }
+.q-stair-3 .q-stair-badge { background: #14211f; color: #e3a737; }
+.q-stair-2 { margin-left: 7%; }
+.q-stair-3 { margin-left: 14%; }
+@media (min-width: 1024px) {
+  .q-stair { border-radius: 28px 28px 0 0; padding: 30px 32px 40px; display: flex; flex-direction: column; }
+  .q-stair-1 { min-height: 240px; border-bottom: 0; }
+  .q-stair-2 { min-height: 330px; margin-left: 0; }
+  .q-stair-3 { min-height: 420px; margin-left: 0; }
+  .q-stairs { border-bottom: 2px solid rgba(244, 239, 230, 0.25); }
 }

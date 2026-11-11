@@ -70,19 +70,36 @@ export const impact = {
   stats: [
     { value: '00', label: 'partner physio centres', placeholder: true },
     { value: '00', label: 'patients supported', placeholder: true },
-    { value: '000', label: 'guided sessions delivered', placeholder: true },
-    { value: '00%', label: 'average mobility improvement', placeholder: true },
-      ],
+  ],
 };
 
 export const vision = {
   kicker: 'Our vision',
-  title: 'A world where everyone can become their old selves again.',
-  body: 'We call it seva: service that uplifts a life. SOUL3 stands for Seva Of Uplifting Life, multiplied by three disciplines working as one.',
+  title: ['A world where everyone can', 'become their old selves again.'],
+  body: 'We call it seva: service that uplifts a life. It is the idea our name is built on.',
+  acronym: [
+    { l: 'S', w: 'Seva' },
+    { l: 'O', w: 'Of' },
+    { l: 'U', w: 'Uplifting' },
+    { l: 'L', w: 'Life' },
+    { l: '3', w: 'Body, brain, mind' },
+  ],
   roadmap: [
-    { when: 'Now', what: 'Mumbai pilot from Riidl, Somaiya Vidyavihar University' },
-    { when: 'Next', what: 'A network of partner physio centres across Mumbai' },
-    { when: 'Later', what: 'Technology led rehab within reach of every Indian city' },
+    { when: 'Now', where: 'Mumbai', what: 'Pilot from Riidl, Somaiya Vidyavihar University' },
+    { when: 'Next', where: 'Across Mumbai', what: 'Partner with 100 physio clinics across Mumbai' },
+    { when: 'Later', where: 'Across India', what: 'Technology led rehab within reach of every Indian city' },
+  ],
+};
+
+// Founders. Add each photo to src/assets/team/ and reference it in FOUNDER_PHOTOS inside Founders.tsx.
+export const founders = {
+  kicker: 'The founders',
+  title: ['Three people,', 'one promise.'],
+  body: 'The team building SOUL3 at Riidl, Somaiya Vidyavihar University, so that recovery in India is measured, connected and close to home.',
+  people: [
+    { id: 'founder1', name: 'Shubham Mehta', role: 'Co-founder & CEO', bio: 'B.Tech in Robotics and AI.', linkedin: '', placeholder: false },
+    { id: 'founder2', name: 'Taher Hotelwala', role: 'Co-founder & COO', bio: 'B.Tech in Robotics and AI.', linkedin: '', placeholder: false },
+    { id: 'founder3', name: 'Fardin Pirjade', role: 'Co-founder & CTO', bio: 'B.E in Electronics and Telecommunications.', linkedin: '', placeholder: false },
   ],
 };
 
