@@ -4,8 +4,9 @@ import logo from '../assets/logo.webp';
 import heroImg from '../assets/background.webp';
 import visionImg from '../assets/our-mission.webp';
 import { Mockup } from './Mockups';
+import { RoadSteps } from './RoadSteps';
 import { INDIA_PATH, INDIA_VIEWBOX, MUMBAI } from './indiaMap';
-import { contact, faqs, hero, impact, modules, modulesIntro, overview, problem, sources, steps, vision } from './content';
+import { contact, faqs, hero, impact, modules, modulesIntro, overview, problem, sources, vision } from './content';
 import { CINEMATIC_URL } from '../viewMode';
 import './quick.css';
 
@@ -417,23 +418,13 @@ export const QuickMode = () => {
       </section>
 
       {/* How it works */}
-      <section id="how" className="q-night py-24 md:py-36 scroll-mt-16">
+      <section id="how" className="q-night py-24 md:py-32 scroll-mt-16 overflow-hidden">
         <div className="q-wrap">
-          <div className="q-reveal mb-14 md:mb-20 max-w-2xl">
+          <div className="q-reveal mb-12 md:mb-4 max-w-2xl">
             <p className="q-kicker mb-5">How it works</p>
             <h2 className="text-[40px] md:text-6xl leading-[1.04] tracking-[-0.025em]">From first visit to <em className="text-[var(--q-gold)]">walking out.</em></h2>
           </div>
-          <ol className="grid md:grid-cols-2 lg:grid-cols-4 gap-px bg-[var(--q-line)] rounded-[28px] overflow-hidden">
-            {steps.map(s => (
-              <li key={s.n} className="q-reveal bg-[var(--q-bg)] p-8 md:p-10 lg:min-h-[340px] flex flex-col">
-                <p className="q-num text-[72px] text-[var(--q-gold)]">{s.n}</p>
-                <div className="mt-auto pt-10">
-                  <h3 className="text-[28px] mb-3">{s.title}</h3>
-                  <p className="q-ui text-[15px] text-[var(--q-soft)] leading-relaxed">{s.body}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
+          <RoadSteps />
         </div>
       </section>
 
@@ -503,7 +494,7 @@ export const QuickMode = () => {
           <div className="q-reveal">
             <p className="q-kicker mb-6">Contact</p>
             <h2 className="text-5xl md:text-7xl leading-[1.0] tracking-[-0.025em]">Start the <em className="text-[var(--q-gold)]">road home.</em></h2>
-            <p className="q-ui text-lg text-[var(--q-soft)] mt-6 max-w-md leading-relaxed">For yourself, a family member or a patient you refer. We usually reply within a working day.</p>
+            <p className="q-ui text-lg text-[var(--q-soft)] mt-6 max-w-md leading-relaxed">For yourself, a family member, a patient you refer, or a physio centre that wants to partner with us. We usually reply within a working day.</p>
             <ul className="mt-12 border-t border-[var(--q-line)]">
               {[
                 { icon: Mail, k: 'Email', v: contact.email, href: `mailto:${contact.email}` },

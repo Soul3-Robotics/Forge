@@ -16,7 +16,7 @@ export type SourceKey = keyof typeof sources;
 export const hero = {
   kicker: 'Riidl, Somaiya Vidyavihar University · Mumbai',
   title: ['The long road back,', 'brought closer to home.'],
-  body: 'SOUL3 brings physiotherapy, neuro-rehabilitation and mental health care into one guided recovery, measured at every step and shared with the people who matter.',
+  body: 'SOUL3 equips physiotherapy centres with the technology, equipment and programmes to bring physiotherapy, neuro-rehabilitation and mental health care into one guided recovery, measured at every step.',
   primary: 'Talk to our team',
   secondary: 'See how we help',
 };
@@ -47,7 +47,7 @@ export const modulesIntro = {
 };
 
 export const modules = [
-  { id: 'physio', chip: "Session 24 of 30 complete", tag: 'Physiotherapy', title: 'Movement, rebuilt and measured.', body: 'Guided sessions for strength, balance and range of motion, with progress tracked week by week instead of guessed.', points: ['Range of motion and strength baselines', 'Home and centre sessions', 'Fall risk and balance scoring'] },
+  { id: 'physio', chip: "Session 24 of 30 complete", tag: 'Physiotherapy', title: 'Movement, rebuilt and measured.', body: 'Guided sessions for strength, balance and range of motion, with progress tracked week by week instead of guessed.', points: ['Range of motion and strength baselines', 'At partner centres and at home', 'Fall risk and balance scoring'] },
   { id: 'neuro', chip: "Meena reached a new milestone", tag: 'Neuro-rehab', title: 'New paths for the brain.', body: 'After stroke or neurological injury, structured therapy helps the brain relearn speech, grip and walking, one milestone at a time.', points: ['Stroke and brain injury programmes', 'Speech, cognition and fine motor work', 'Milestones the family can see'] },
   { id: 'mind', chip: "Mood up 4 weeks running", tag: 'Mental health', title: 'Care for the weight of it all.', body: 'Fear and frustration slow recovery. Regular check ins and counselling sit inside the plan, not outside it.', points: ['Weekly mood check ins', 'Counselling for patients and carers', 'Early flags for post stroke depression'] },
   { id: 'sensor', chip: "Form corrected remotely", tag: 'Technology', title: 'Sensors that see every repetition.', body: 'Wearable sensors built by our team record each exercise, so therapists can correct form remotely and nothing goes unmeasured.', points: ['Live repetition and angle tracking', 'Left and right symmetry', 'Works at home over Wi-Fi'] },
@@ -58,9 +58,9 @@ export const modules = [
 export type ModuleId = typeof modules[number]['id'];
 
 export const steps = [
-  { n: '01', title: 'Assessment', body: 'A combined physical, neurological and emotional baseline in the first visit.' },
+  { n: '01', title: 'Assessment', body: 'At a SOUL3 partner centre, a combined physical, neurological and emotional baseline in the first visit.' },
   { n: '02', title: 'Personal plan', body: 'One plan across all three disciplines with goals the patient chooses.' },
-  { n: '03', title: 'Guided sessions', body: 'At our centre or at home, measured by sensors and reviewed by therapists.' },
+  { n: '03', title: 'Guided sessions', body: 'At a partner physio centre or at home, using SOUL3 equipment, measured by sensors and reviewed by therapists.' },
   { n: '04', title: 'Review and report', body: 'Monthly reports, adjusted goals, and a clear end point for every phase.' },
 ];
 
@@ -68,11 +68,11 @@ export const impact = {
   kicker: 'Our progress',
   title: 'Early days, measured honestly.',
   stats: [
+    { value: '00', label: 'partner physio centres', placeholder: true },
     { value: '00', label: 'patients supported', placeholder: true },
     { value: '000', label: 'guided sessions delivered', placeholder: true },
     { value: '00%', label: 'average mobility improvement', placeholder: true },
-    { value: '00', label: 'clinicians and engineers', placeholder: true },
-  ],
+      ],
 };
 
 export const vision = {
@@ -81,14 +81,16 @@ export const vision = {
   body: 'We call it seva: service that uplifts a life. SOUL3 stands for Seva Of Uplifting Life, multiplied by three disciplines working as one.',
   roadmap: [
     { when: 'Now', what: 'Mumbai pilot from Riidl, Somaiya Vidyavihar University' },
-    { when: 'Next', what: 'Partner clinics and home care across Mumbai' },
+    { when: 'Next', what: 'A network of partner physio centres across Mumbai' },
     { when: 'Later', what: 'Technology led rehab within reach of every Indian city' },
   ],
 };
 
 export const faqs = [
-  { q: 'Who is SOUL3 for?', a: 'Anyone recovering from stroke, neurological illness, injury or surgery, and the families caring for them.' },
-  { q: 'Do you offer sessions at home?', a: 'Yes. Many sessions can happen at home with our sensors, with in person visits where a therapist needs to be in the room.' },
+  { q: 'Who is SOUL3 for?', a: 'Anyone recovering from stroke, neurological illness, injury or surgery, the families caring for them, and the physiotherapy centres that treat them.' },
+  { q: 'Is SOUL3 a clinic?', a: 'No. We do not run our own centres. We partner with physiotherapy centres and provide our services, sensors and equipment so their therapists can deliver SOUL3 care.' },
+  { q: 'I run a physio centre. Can we partner?', a: 'Yes. We set up our equipment and software at your centre, train your team and support you with the SOUL3 care programme.' },
+  { q: 'Do you offer sessions at home?', a: 'Yes. Many sessions can happen at home with SOUL3 sensors, with visits to a partner centre when a therapist needs to be in the room.' },
   { q: 'Do I need a doctor’s referral?', a: 'No. You can contact us directly. If you have one, share it and we will work with your doctor.' },
   { q: 'Is mental health support included?', a: 'Yes. Emotional check ins and counselling are part of every plan, for patients and for carers.' },
   { q: 'Where are you based?', a: 'At Riidl, Somaiya Vidyavihar University in Mumbai. We are starting in Mumbai and growing from there.' },

@@ -251,3 +251,18 @@
 @keyframes q-pulse { 0% { transform: scale(0.6); opacity: 1; } 100% { transform: scale(2.6); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .q-india-pulse { animation: none; } }
 
+
+/* How it works: road with step banners */
+.q-banner {
+  position: relative; background: #f6f1e7; color: #14211f; border-radius: 20px; padding: 18px 20px 20px;
+  box-shadow: 0 24px 50px -24px rgba(0, 0, 0, 0.7); --q-banner-num: #c0841a;
+  border-top: 4px solid #c0841a;
+}
+.q-banner-gold { background: #e3a737; border-top-color: #14211f; --q-banner-num: #14211f; }
+.q-road-svg { clip-path: inset(0 100% 0 0); transition: clip-path 1.8s cubic-bezier(0.65, 0, 0.25, 1); }
+.q-road-in .q-road-svg { clip-path: inset(-300px -100vw -300px -100vw); }
+.q-road-stop { opacity: 0; translate: 0 16px; transition: opacity 0.7s ease, translate 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.q-road-in .q-road-stop { opacity: 1; translate: 0 0; }
+@media (prefers-reduced-motion: reduce) {
+  .q-road-svg, .q-road-stop { transition: none; clip-path: none; opacity: 1; translate: none; }
+}
