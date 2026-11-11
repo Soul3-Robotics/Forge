@@ -122,9 +122,9 @@ const StatTiles = () => {
   const strokes = statBy('strokes'), living = statBy('living'), physio = statBy('physio'), gap = statBy('gap'), psd = statBy('psd'), global = statBy('global');
   const r = 34, c = 2 * Math.PI * r;
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
       {/* Strokes: 1990 vs 2021 bars */}
-      <div className="q-reveal q-tile q-tile-teal lg:col-span-2">
+      <div className="q-reveal q-tile q-tile-teal col-span-2">
         <p className="q-ui q-tile-tag">Stroke in India</p>
         <div className="flex items-end justify-between gap-6 mt-4">
           <div>
@@ -175,7 +175,7 @@ const StatTiles = () => {
       </div>
 
       {/* Physio shortage: comparison bars */}
-      <div className="q-reveal q-tile q-tile-paper lg:col-span-2">
+      <div className="q-reveal q-tile q-tile-paper col-span-2">
         <p className="q-ui q-tile-tag">Physiotherapists per 10,000 people</p>
         <div className="space-y-4 my-6" aria-hidden>
           {[['India today', 0.36, 'var(--q-gold)'], ['WHO benchmark', 1, 'var(--q-ink)']].map(([k, v, col]) => (
@@ -481,14 +481,14 @@ export const QuickMode = () => {
               <p className="q-kicker">Our three goals</p>
               <p className="q-ui text-sm text-[var(--q-mute)] hidden md:block">One step at a time</p>
             </div>
-            <ol className="q-stairs grid lg:grid-cols-3 gap-3 lg:gap-0 lg:items-end">
+            <ol className="q-stairs">
               {vision.roadmap.map((r, i) => (
                 <li key={r.when} className={`q-reveal q-stair q-stair-${i + 1}`} style={{ transitionDelay: `${i * 0.15}s` }}>
-                  <div className="flex items-center gap-3 mb-5">
-                    <span className="q-stair-badge"><span className="q-num text-xl">{i + 1}</span></span>
-                    <p className="q-ui text-[12px] uppercase tracking-[0.16em] opacity-80">{r.when} · {r.where}</p>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-3 sm:mb-5">
+                    <span className="q-stair-badge"><span className="q-num text-sm sm:text-xl">{i + 1}</span></span>
+                    <p className="q-ui text-[9px] sm:text-[11px] lg:text-[12px] uppercase tracking-[0.1em] sm:tracking-[0.16em] opacity-80 leading-snug">{r.when} · {r.where}</p>
                   </div>
-                  <p className="text-[26px] md:text-[30px] leading-[1.15]">{r.what}</p>
+                  <p className="text-[14px] sm:text-[20px] lg:text-[30px] leading-[1.18]">{r.what}</p>
                 </li>
               ))}
             </ol>

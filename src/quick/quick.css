@@ -197,10 +197,12 @@
 
 .q-hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 70%; }
 .q-scrim { position: absolute; inset: 0; background: rgba(8, 22, 21, 0.62); }
+/* Phones: cards keep their exact desktop design, just drawn smaller */
 @media (max-width: 767px) {
-  .q-card-stage { height: auto; min-height: 300px; padding: 20px 16px 26px; }
-  .q-card-stage > .q-mock { zoom: 0.76; }
-  .q-chip { bottom: 10px; right: 12px; }
+  .q-card { flex-basis: 400px; zoom: 0.72; }
+  .q-rail { gap: 18px; }
+  .q-tile { zoom: 0.74; }
+  .q-banner { zoom: 0.88; }
 }
 
 /* Floating pill navigation */
@@ -273,21 +275,23 @@
 .q-in .q-acro { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { .q-acro { opacity: 1; transform: none; } }
 
-/* Our three goals as a staircase: each step higher than the last */
-.q-stair { position: relative; padding: 26px 26px 30px; border-radius: 26px; }
-.q-stair-1 { background: rgba(244, 239, 230, 0.07); border: 1px solid rgba(244, 239, 230, 0.14); }
-.q-stair-2 { background: #1f5a55; }
-.q-stair-3 { background: #e3a737; color: #14211f; }
-.q-stair-badge { width: 44px; height: 44px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+/* Our three goals as a staircase: three columns rising left to right at every screen size */
+.q-stairs { display: grid; grid-template-columns: repeat(3, 1fr); align-items: end; border-bottom: 2px solid rgba(244, 239, 230, 0.25); }
+.q-stair { position: relative; display: flex; flex-direction: column; border-radius: 16px 16px 0 0; padding: 12px 10px 16px; }
+.q-stair-1 { background: rgba(244, 239, 230, 0.07); border: 1px solid rgba(244, 239, 230, 0.14); border-bottom: 0; min-height: 150px; }
+.q-stair-2 { background: #1f5a55; min-height: 195px; }
+.q-stair-3 { background: #e3a737; color: #14211f; min-height: 240px; }
+.q-stair-badge { width: 28px; height: 28px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .q-stair-1 .q-stair-badge { border: 2px solid rgba(244, 239, 230, 0.5); }
 .q-stair-2 .q-stair-badge { background: #7ce4d4; color: #113d3b; }
 .q-stair-3 .q-stair-badge { background: #14211f; color: #e3a737; }
-.q-stair-2 { margin-left: 7%; }
-.q-stair-3 { margin-left: 14%; }
+@media (min-width: 640px) {
+  .q-stair { border-radius: 22px 22px 0 0; padding: 22px 20px 28px; }
+  .q-stair-1 { min-height: 200px; } .q-stair-2 { min-height: 270px; } .q-stair-3 { min-height: 340px; }
+  .q-stair-badge { width: 38px; height: 38px; }
+}
 @media (min-width: 1024px) {
-  .q-stair { border-radius: 28px 28px 0 0; padding: 30px 32px 40px; display: flex; flex-direction: column; }
-  .q-stair-1 { min-height: 240px; border-bottom: 0; }
-  .q-stair-2 { min-height: 330px; margin-left: 0; }
-  .q-stair-3 { min-height: 420px; margin-left: 0; }
-  .q-stairs { border-bottom: 2px solid rgba(244, 239, 230, 0.25); }
+  .q-stair { border-radius: 28px 28px 0 0; padding: 30px 32px 40px; }
+  .q-stair-1 { min-height: 240px; } .q-stair-2 { min-height: 330px; } .q-stair-3 { min-height: 420px; }
+  .q-stair-badge { width: 44px; height: 44px; }
 }
