@@ -31,13 +31,13 @@ export const problem = {
   kicker: 'Why this matters',
   title: 'India is saving more lives than ever. Far fewer are being given back.',
   stats: [
-    { value: '1.25M', label: 'new strokes in India in a single year', note: 'Up from 0.65M in 1990', source: 'gbdStroke' },
-    { value: '9.4M', label: 'Indians living with the effects of stroke', note: 'Roughly double the 1990 figure', source: 'gbdStroke' },
-    { value: '0.36', label: 'physiotherapists for every 10,000 people', note: 'WHO benchmark is at least 1', source: 'physio' },
-    { value: '84.5%', label: 'of people with a mental illness receive no care', note: 'Fewer than one in six reach treatment', source: 'nmhs' },
-    { value: '1 in 4', label: 'stroke survivors develop depression', note: '27% pooled prevalence', source: 'psd' },
-    { value: '2.4B', label: 'people worldwide could benefit from rehab', note: 'Over half go without in many countries', source: 'who' },
-  ] as { value: string; label: string; note: string; source: SourceKey }[],
+    { id: 'strokes', value: '1.25M', label: 'new strokes in India in a single year', note: 'Up from 0.65M in 1990', source: 'gbdStroke' },
+    { id: 'living', value: '9.4M', label: 'Indians living with the effects of stroke', note: 'Roughly double the 1990 figure', source: 'gbdStroke' },
+    { id: 'physio', value: '0.36', label: 'per 10,000 people', note: 'WHO benchmark is at least 1', source: 'physio' },
+    { id: 'gap', value: '84.5%', label: 'of people with a mental illness receive no care', note: 'Fewer than one in six reach treatment', source: 'nmhs' },
+    { id: 'psd', value: '1 in 4', label: 'stroke survivors develop depression', note: '27% pooled prevalence', source: 'psd' },
+    { id: 'global', value: '2.4B', label: 'people worldwide could benefit from rehab', note: 'Over half go without in many countries', source: 'who' },
+  ] as { id: string; value: string; label: string; note: string; source: SourceKey }[],
 };
 
 export const modulesIntro = {

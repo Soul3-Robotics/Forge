@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, ArrowUpRight, Mail, MapPin, Phone, Play, Plus } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpRight, Mail, MapPin, Menu, Phone, Play, Plus, X } from 'lucide-react';
 import logo from '../assets/logo.webp';
 import heroImg from '../assets/background.webp';
 import visionImg from '../assets/our-mission.webp';
-import { HeroPanel, Mockup } from './Mockups';
+import { Mockup } from './Mockups';
+import { INDIA_PATH, INDIA_VIEWBOX, MUMBAI } from './indiaMap';
 import { contact, faqs, hero, impact, modules, modulesIntro, overview, problem, sources, steps, vision } from './content';
 import { CINEMATIC_URL } from '../viewMode';
 import './quick.css';
@@ -23,33 +24,80 @@ const useReveal = () => {
 };
 
 const nav = [
-  { href: '#care', label: 'What we do' },
-  { href: '#problem', label: 'Why it matters' },
-  { href: '#how', label: 'How it works' },
-  { href: '#faq', label: 'FAQ' },
+  { href: '#care', id: 'care', label: 'Services' },
+  { href: '#problem', id: 'problem', label: 'Why SOUL3' },
+  { href: '#how', id: 'how', label: 'How it works' },
+  { href: '#faq', id: 'faq', label: 'FAQ' },
 ];
 
+// Floating pill navigation with the current section highlighted.
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [active, setActive] = useState('');
+  const [menu, setMenu] = useState(false);
+
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 24);
     on();
     window.addEventListener('scroll', on, { passive: true });
-    return () => window.removeEventListener('scroll', on);
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) setActive(e.target.id); });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    ['top', ...nav.map(n => n.id), 'contact'].forEach(id => { const el = document.getElementById(id); if (el) io.observe(el); });
+    return () => { window.removeEventListener('scroll', on); io.disconnect(); };
   }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = menu ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [menu]);
+
   return (
-    <header className={`fixed top-0 inset-x-0 z-50 transition-colors duration-300 ${scrolled ? 'bg-[rgba(244,239,230,0.92)] backdrop-blur-md border-b border-[var(--q-line)]' : 'border-b border-transparent'}`}>
-      <div className="q-wrap flex items-center justify-between h-16 md:h-20">
-        <a href="#top" className="flex items-center" aria-label="SOUL3 home"><img src={logo} alt="SOUL3" className="h-10 md:h-12 w-auto" /></a>
-        <nav className="hidden lg:flex items-center gap-8">
-          {nav.map(n => <a key={n.href} href={n.href} className="q-link !text-[var(--q-ink)] hover:!text-[var(--q-teal)]">{n.label}</a>)}
+    <>
+      <header className={`fixed inset-x-0 z-50 transition-[top] duration-500 ${scrolled ? 'top-3' : 'top-4 md:top-6'}`}>
+        <div className="q-wrap">
+          <div className={`q-nav ${scrolled ? 'q-nav-solid' : ''}`}>
+            <a href="#top" className="flex items-center gap-2.5 pl-1.5 shrink-0" aria-label="SOUL3 home">
+              <img src={logo} alt="SOUL3" className="h-10 sm:h-12 md:h-14 w-auto" />
+            </a>
+
+            <nav className="hidden lg:flex items-center gap-1 absolute left-1/2 -translate-x-1/2" aria-label="Sections">
+              {nav.map(n => (
+                <a key={n.href} href={n.href} className={`q-nav-link ${active === n.id ? 'q-nav-link-active' : ''}`}>{n.label}</a>
+              ))}
+            </nav>
+
+            <div className="flex items-center gap-1.5">
+              <a href={CINEMATIC_URL} className="q-nav-link hidden md:inline-flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-[var(--q-ink)] inline-flex items-center justify-center"><Play className="w-2.5 h-2.5 text-[#f4efe6] fill-[#f4efe6] ml-px" /></span>
+                Watch the story
+              </a>
+              <a href="#contact" className="q-nav-cta">Book a consult</a>
+              <button className="q-nav-burger lg:hidden" onClick={() => setMenu(true)} aria-label="Open menu"><Menu className="w-5 h-5" /></button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div className={`q-menu lg:hidden ${menu ? 'q-menu-open' : ''}`} aria-hidden={!menu}>
+        <div className="q-wrap flex items-center justify-between h-20">
+          <img src={logo} alt="SOUL3" className="h-10 w-auto" />
+          <button className="q-nav-burger !bg-[#f4efe6] !text-[#14211f]" onClick={() => setMenu(false)} aria-label="Close menu"><X className="w-5 h-5" /></button>
+        </div>
+        <nav className="q-wrap flex flex-col mt-6">
+          {[...nav, { href: '#contact', id: 'contact', label: 'Contact' }].map((n, i) => (
+            <a key={n.href} href={n.href} onClick={() => setMenu(false)} className="flex items-baseline gap-4 py-4 border-b border-[rgba(244,239,230,0.12)]">
+              <span className="q-ui text-xs text-[#e8b04a]">0{i + 1}</span>
+              <span className="text-[40px] leading-none tracking-[-0.02em]">{n.label}</span>
+            </a>
+          ))}
         </nav>
-        <div className="flex items-center gap-2 md:gap-3">
-          <a href={CINEMATIC_URL} className="q-link !text-[var(--q-ink)] hidden sm:inline-flex items-center gap-2 px-3"><Play className="w-3.5 h-3.5" /> Experience</a>
-          <a href="#contact" className="q-btn q-btn-primary !h-10 !px-4 md:!px-5">Contact</a>
+        <div className="q-wrap mt-10 flex flex-col gap-3">
+          <a href="#contact" onClick={() => setMenu(false)} className="q-btn justify-center bg-[#e3a737] text-[#14211f]">Book a consult <ArrowRight className="w-4 h-4" /></a>
+          <a href={CINEMATIC_URL} className="q-btn justify-center border border-[rgba(244,239,230,0.3)]"><Play className="w-4 h-4" /> Watch the SOUL3 story</a>
         </div>
       </div>
-    </header>
+    </>
   );
 };
 
@@ -57,25 +105,188 @@ const SourceLink = ({ k }: { k: keyof typeof sources }) => (
   <a href={sources[k].url} target="_blank" rel="noreferrer" className="q-ui text-[11px] text-[var(--q-mute)] hover:text-[var(--q-ink)] underline underline-offset-2 decoration-[var(--q-line-2)]">{sources[k].label}</a>
 );
 
-// Wiro style card carousel: one paper card per part of the programme.
-const CareCarousel = () => {
-  const track = useRef<HTMLDivElement>(null);
-  const [open, setOpen] = useState<string | null>(null);
-  const [edge, setEdge] = useState({ start: true, end: false });
+// Visual stat tiles for the "Why SOUL3" section. Each tile pairs a figure with a tiny chart.
+type Stat = typeof problem.stats[number];
+const statBy = (id: string) => problem.stats.find(s => s.id === id)!;
 
-  const update = () => {
-    const t = track.current;
-    if (!t) return;
-    setEdge({ start: t.scrollLeft < 8, end: t.scrollLeft + t.clientWidth > t.scrollWidth - 8 });
-  };
-  useEffect(() => { update(); }, []);
+const TileFoot = ({ s }: { s: Stat }) => (
+  <div className="mt-auto pt-5">
+    <p className="q-ui text-[13px] opacity-70">{s.note}</p>
+    <a href={sources[s.source].url} target="_blank" rel="noreferrer" className="q-ui text-[10.5px] opacity-50 hover:opacity-90 underline underline-offset-2 mt-1.5 inline-block">{sources[s.source].label}</a>
+  </div>
+);
+
+const StatTiles = () => {
+  const strokes = statBy('strokes'), living = statBy('living'), physio = statBy('physio'), gap = statBy('gap'), psd = statBy('psd'), global = statBy('global');
+  const r = 34, c = 2 * Math.PI * r;
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Strokes: 1990 vs 2021 bars */}
+      <div className="q-reveal q-tile q-tile-teal lg:col-span-2">
+        <p className="q-ui q-tile-tag">Stroke in India</p>
+        <div className="flex items-end justify-between gap-6 mt-4">
+          <div>
+            <p className="q-num text-5xl md:text-[56px]">{strokes.value}</p>
+            <p className="text-xl leading-snug mt-2 max-w-[16rem]">{strokes.label}</p>
+          </div>
+          <div className="flex items-end gap-3 h-28 shrink-0" aria-hidden>
+            {[['1990', 0.65], ['2021', 1.25]].map(([y, v]) => (
+              <div key={y as string} className="flex flex-col items-center gap-2 h-full justify-end">
+                <span className="q-ui text-[11px] opacity-80">{v}M</span>
+                <span className={`w-10 rounded-lg ${y === '2021' ? 'bg-[#e8b04a]' : 'bg-[rgba(244,239,230,0.25)]'}`} style={{ height: `${((v as number) / 1.25) * 72}%` }} />
+                <span className="q-ui text-[11px] opacity-60">{y}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <TileFoot s={strokes} />
+      </div>
+
+      {/* Mental health gap: ring */}
+      <div className="q-reveal q-tile q-tile-paper">
+        <p className="q-ui q-tile-tag">Mental health</p>
+        <div className="relative w-24 h-24 my-4" aria-hidden>
+          <svg viewBox="0 0 80 80" className="w-full h-full -rotate-90">
+            <circle cx="40" cy="40" r={r} fill="none" stroke="var(--q-surface-3)" strokeWidth="9" />
+            <circle cx="40" cy="40" r={r} fill="none" stroke="var(--q-teal)" strokeWidth="9" strokeLinecap="round" strokeDasharray={`${c * 0.845} ${c}`} />
+          </svg>
+        </div>
+        <p className="q-num text-[44px] text-[var(--q-teal)]">{gap.value}</p>
+        <p className="text-lg leading-snug mt-1">{gap.label}</p>
+        <TileFoot s={gap} />
+      </div>
+
+      {/* Post stroke depression: 1 of 4 figures */}
+      <div className="q-reveal q-tile q-tile-gold">
+        <p className="q-ui q-tile-tag">After a stroke</p>
+        <div className="flex gap-2 my-5" aria-hidden>
+          {[0, 1, 2, 3].map(i => (
+            <span key={i} className={`flex flex-col items-center gap-1 ${i === 0 ? '' : 'opacity-30'}`}>
+              <span className="w-5 h-5 rounded-full bg-[#14211f]" />
+              <span className="w-9 h-10 rounded-t-full bg-[#14211f]" />
+            </span>
+          ))}
+        </div>
+        <p className="q-num text-[44px]">{psd.value}</p>
+        <p className="text-lg leading-snug mt-1">{psd.label}</p>
+        <TileFoot s={psd} />
+      </div>
+
+      {/* Physio shortage: comparison bars */}
+      <div className="q-reveal q-tile q-tile-paper lg:col-span-2">
+        <p className="q-ui q-tile-tag">Physiotherapists per 10,000 people</p>
+        <div className="space-y-4 my-6" aria-hidden>
+          {[['India today', 0.36, 'var(--q-gold)'], ['WHO benchmark', 1, 'var(--q-ink)']].map(([k, v, col]) => (
+            <div key={k as string} className="grid grid-cols-[7.5rem_1fr_2.5rem] items-center gap-3">
+              <span className="q-ui text-[13px] text-[var(--q-soft)]">{k}</span>
+              <span className="h-3 rounded-full bg-[var(--q-surface-3)] overflow-hidden"><span className="block h-full rounded-full" style={{ width: `${(v as number) * 100}%`, background: col as string }} /></span>
+              <span className="q-ui text-sm text-right">{v}</span>
+            </div>
+          ))}
+        </div>
+        <p className="text-xl leading-snug"><span className="q-num text-[var(--q-gold)] text-[28px]">{physio.value}</span> {physio.label}, about a third of what is needed.</p>
+        <TileFoot s={physio} />
+      </div>
+
+      {/* Living with stroke */}
+      <div className="q-reveal q-tile q-tile-paper">
+        <p className="q-ui q-tile-tag">Living with stroke</p>
+        <div className="grid grid-cols-10 gap-1 my-5 w-fit" aria-hidden>
+          {Array.from({ length: 40 }, (_, i) => <span key={i} className={`w-2.5 h-2.5 rounded-full ${i < 20 ? 'bg-[var(--q-surface-3)]' : 'bg-[var(--q-teal)]'}`} />)}
+        </div>
+        <p className="q-num text-[44px] text-[var(--q-teal)]">{living.value}</p>
+        <p className="text-lg leading-snug mt-1">{living.label}</p>
+        <TileFoot s={living} />
+      </div>
+
+      {/* Global need */}
+      <div className="q-reveal q-tile q-tile-night">
+        <p className="q-ui q-tile-tag">Worldwide</p>
+        <svg viewBox="0 0 80 80" className="w-20 h-20 my-4" aria-hidden>
+          <circle cx="40" cy="40" r="34" fill="none" stroke="#e8b04a" strokeWidth="1.5" />
+          <ellipse cx="40" cy="40" rx="15" ry="34" fill="none" stroke="#e8b04a" strokeOpacity="0.6" strokeWidth="1.2" />
+          <line x1="6" y1="40" x2="74" y2="40" stroke="#e8b04a" strokeOpacity="0.6" strokeWidth="1.2" />
+          <line x1="12" y1="24" x2="68" y2="24" stroke="#e8b04a" strokeOpacity="0.35" strokeWidth="1" />
+          <line x1="12" y1="56" x2="68" y2="56" stroke="#e8b04a" strokeOpacity="0.35" strokeWidth="1" />
+        </svg>
+        <p className="q-num text-[44px] text-[#e8b04a]">{global.value}</p>
+        <p className="text-lg leading-snug mt-1">{global.label}</p>
+        <TileFoot s={global} />
+      </div>
+    </div>
+  );
+};
+
+// Continuously drifting card rail. Pauses on hover, while a card is open,
+// while dragging and when off screen. Arrows and drag nudge it.
+const SPEED = 38; // px per second
+const CareCarousel = () => {
+  const rail = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState<string | null>(null);
+  const state = useRef({ offset: 0, hover: false, drag: null as null | { x: number; start: number; moved: boolean }, tween: null as null | { from: number; to: number; t0: number }, visible: false });
+  const openRef = useRef<string | null>(null);
+  useEffect(() => { openRef.current = open; }, [open]);
+
+  useEffect(() => {
+    const el = rail.current;
+    if (!el) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const io = new IntersectionObserver(([e]) => { state.current.visible = e.isIntersecting; });
+    io.observe(el);
+    let last = performance.now();
+    let raf = 0;
+    const loop = (now: number) => {
+      const s = state.current;
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      const half = el.scrollWidth / 2;
+      if (s.tween) {
+        const p = Math.min(1, (now - s.tween.t0) / 700);
+        const ease = 1 - Math.pow(1 - p, 3);
+        s.offset = s.tween.from + (s.tween.to - s.tween.from) * ease;
+        if (p === 1) s.tween = null;
+      } else if (!reduce && s.visible && !s.hover && !s.drag && !openRef.current) {
+        s.offset += SPEED * dt;
+      }
+      if (half > 0) {
+        if (s.offset >= half) { s.offset -= half; if (s.tween) { s.tween.from -= half; s.tween.to -= half; } if (s.drag) s.drag.start -= half; }
+        if (s.offset < 0) { s.offset += half; if (s.tween) { s.tween.from += half; s.tween.to += half; } if (s.drag) s.drag.start += half; }
+      }
+      el.style.transform = `translate3d(${-s.offset}px,0,0)`;
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => { cancelAnimationFrame(raf); io.disconnect(); };
+  }, []);
 
   const go = (dir: 1 | -1) => {
-    const t = track.current;
-    const card = t?.querySelector<HTMLElement>('.q-card');
-    if (!t || !card) return;
-    t.scrollBy({ left: dir * (card.offsetWidth + 28), behavior: 'smooth' });
+    const card = rail.current?.querySelector<HTMLElement>('.q-card');
+    if (!card) return;
+    const s = state.current;
+    const step = card.offsetWidth + parseFloat(getComputedStyle(rail.current!).columnGap || '24');
+    s.tween = { from: s.offset, to: s.offset + dir * step, t0: performance.now() };
   };
+
+  const onDown = (e: React.PointerEvent) => {
+    if ((e.target as HTMLElement).closest('button, a')) return;
+    state.current.tween = null;
+    state.current.drag = { x: e.clientX, start: state.current.offset, moved: false };
+  };
+  const onMove = (e: React.PointerEvent) => {
+    const d = state.current.drag;
+    if (!d) return;
+    const dx = e.clientX - d.x;
+    if (Math.abs(dx) > 4 && !d.moved) { d.moved = true; (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); }
+    if (d.moved) state.current.offset = d.start - dx;
+  };
+  const onUp = () => { state.current.drag = null; };
+
+  const arrows = (small?: boolean) => (
+    <>
+      <button className={`q-arrow ${small ? '!w-14 !h-14' : ''}`} onClick={() => go(-1)} aria-label="Previous"><ArrowLeft className="w-6 h-6" strokeWidth={2.5} /></button>
+      <button className={`q-arrow ${small ? '!w-14 !h-14' : ''}`} onClick={() => go(1)} aria-label="Next"><ArrowRight className="w-6 h-6" strokeWidth={2.5} /></button>
+    </>
+  );
 
   return (
     <section id="care" className="q-dark py-20 md:py-32 scroll-mt-16 overflow-hidden">
@@ -85,49 +296,51 @@ const CareCarousel = () => {
           <h2 className="text-[40px] md:text-6xl leading-[1.04] tracking-[-0.02em]">{modulesIntro.title}</h2>
           <p className="q-ui text-lg text-[var(--q-soft)] mt-6 leading-relaxed">{modulesIntro.body}</p>
         </div>
-        <div className="q-reveal hidden md:flex gap-4 shrink-0">
-          <button className="q-arrow" onClick={() => go(-1)} disabled={edge.start} aria-label="Previous"><ArrowLeft className="w-6 h-6" strokeWidth={2.5} /></button>
-          <button className="q-arrow" onClick={() => go(1)} disabled={edge.end} aria-label="Next"><ArrowRight className="w-6 h-6" strokeWidth={2.5} /></button>
+        <div className="q-reveal hidden md:flex gap-4 shrink-0">{arrows()}</div>
+      </div>
+
+      <div
+        className="q-viewport"
+        onMouseEnter={() => { state.current.hover = true; }}
+        onMouseLeave={() => { state.current.hover = false; state.current.drag = null; }}
+        onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}
+      >
+        <div ref={rail} className="q-rail">
+          {[0, 1].map(copy => modules.map((m, i) => {
+            const key = `${m.id}-${copy}`;
+            const isOpen = open === key;
+            return (
+              <article key={key} className="q-card q-light" data-open={isOpen} aria-hidden={copy === 1 || undefined}>
+                <div className="q-card-stage">
+                  <div className="q-mock"><Mockup id={m.id} /></div>
+                  <div className="q-chip"><span className="w-2 h-2 rounded-full bg-[#1f8f86]" />{m.chip}</div>
+                </div>
+                <div className="relative px-7 md:px-8 pt-8 pb-7 flex items-end justify-between gap-5 flex-1">
+                  <div>
+                    <p className="q-ui text-[11px] tracking-[0.14em] uppercase text-[var(--q-gold)] mb-2.5">0{i + 1} · {m.tag}</p>
+                    <h3 className="text-[28px] md:text-[32px] leading-[1.04] tracking-[-0.02em] text-[var(--q-ink)]">{m.title}</h3>
+                    <p className="q-ui text-[14px] text-[var(--q-soft)] mt-3 leading-relaxed">{m.body}</p>
+                  </div>
+                  <button className="q-plus-btn" tabIndex={copy === 1 ? -1 : 0} onClick={() => setOpen(isOpen ? null : key)} aria-expanded={isOpen} aria-label={`${isOpen ? 'Hide' : 'Show'} details for ${m.tag}`}>
+                    <Plus className="w-6 h-6" strokeWidth={2.5} />
+                  </button>
+                </div>
+                <div className="q-detail" aria-hidden={!isOpen}>
+                  <p className="q-ui text-[11px] tracking-[0.14em] uppercase text-[#e8b04a] mb-4">What's included</p>
+                  <ul>
+                    {m.points.map(p => (
+                      <li key={p} className="text-[22px] md:text-2xl leading-snug py-3.5 border-b border-[rgba(244,239,230,0.14)]">{p}</li>
+                    ))}
+                  </ul>
+                  <a href="#contact" tabIndex={isOpen ? 0 : -1} onClick={() => setOpen(null)} className="q-ui mt-7 inline-flex items-center gap-2 text-[#e8b04a] text-sm">Ask about {m.tag.toLowerCase()} <ArrowRight className="w-4 h-4" /></a>
+                </div>
+              </article>
+            );
+          }))}
         </div>
       </div>
 
-      <div ref={track} onScroll={update} className="q-track">
-        {modules.map((m, i) => {
-          const isOpen = open === m.id;
-          return (
-            <article key={m.id} className="q-card q-light" data-open={isOpen}>
-              <div className="q-card-stage">
-                <div className="q-mock"><Mockup id={m.id} /></div>
-                <div className="q-chip"><span className="w-2 h-2 rounded-full bg-[#1f8f86]" />{m.chip}</div>
-              </div>
-              <div className="relative px-8 md:px-10 pt-10 pb-9 flex items-end justify-between gap-6 flex-1">
-                <div>
-                  <p className="q-ui text-[12px] tracking-[0.14em] uppercase text-[var(--q-gold)] mb-3">0{i + 1} · {m.tag}</p>
-                  <h3 className="text-[34px] md:text-[42px] leading-[1.02] tracking-[-0.02em] text-[var(--q-ink)]">{m.title}</h3>
-                  <p className="q-ui text-[15px] md:text-base text-[var(--q-soft)] mt-4 leading-relaxed">{m.body}</p>
-                </div>
-                <button className="q-plus-btn" onClick={() => setOpen(isOpen ? null : m.id)} aria-expanded={isOpen} aria-label={`${isOpen ? 'Hide' : 'Show'} details for ${m.tag}`}>
-                  <Plus className="w-7 h-7" strokeWidth={2.5} />
-                </button>
-              </div>
-              <div className="q-detail" aria-hidden={!isOpen}>
-                <p className="q-ui text-[12px] tracking-[0.14em] uppercase text-[#e8b04a] mb-5">What's included</p>
-                <ul>
-                  {m.points.map(p => (
-                    <li key={p} className="text-2xl md:text-3xl leading-snug py-4 border-b border-[rgba(244,239,230,0.14)]">{p}</li>
-                  ))}
-                </ul>
-                <a href="#contact" onClick={() => setOpen(null)} className="q-ui mt-8 inline-flex items-center gap-2 text-[#e8b04a] text-sm">Ask about {m.tag.toLowerCase()} <ArrowRight className="w-4 h-4" /></a>
-              </div>
-            </article>
-          );
-        })}
-      </div>
-
-      <div className="q-wrap flex md:hidden gap-3 mt-2">
-        <button className="q-arrow !w-14 !h-14" onClick={() => go(-1)} disabled={edge.start} aria-label="Previous"><ArrowLeft className="w-5 h-5" strokeWidth={2.5} /></button>
-        <button className="q-arrow !w-14 !h-14" onClick={() => go(1)} disabled={edge.end} aria-label="Next"><ArrowRight className="w-5 h-5" strokeWidth={2.5} /></button>
-      </div>
+      <div className="q-wrap flex md:hidden gap-3 mt-8">{arrows(true)}</div>
     </section>
   );
 };
@@ -154,10 +367,10 @@ export const QuickMode = () => {
       <Header />
 
       {/* Hero over the Mumbai sunrise artwork */}
-      <section className="relative min-h-[100svh] flex items-center overflow-hidden">
+      <section className="relative min-h-[100svh] flex items-start lg:items-center overflow-hidden">
         <img src={heroImg} alt="" className="q-hero-img" fetchPriority="high" />
-        <div className="relative q-wrap grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center pt-28 pb-16 md:pt-32">
-          <div className="q-reveal">
+        <div className="relative q-wrap pt-32 pb-16 md:pt-36">
+          <div className="q-reveal max-w-3xl">
             <p className="q-kicker !text-[#7a520c] mb-6">{hero.kicker}</p>
             <h1 className="text-[46px] leading-[1.0] md:text-7xl lg:text-[72px] xl:text-[82px] tracking-[-0.025em] text-[#14211f]">
               {hero.title[0]}<br /><em className="text-[#1a6f68]">{hero.title[1]}</em>
@@ -168,7 +381,6 @@ export const QuickMode = () => {
               <a href="#care" className="q-btn q-btn-ghost bg-[rgba(255,253,248,0.6)] backdrop-blur-sm">{hero.secondary}</a>
             </div>
           </div>
-          <div className="q-reveal lg:translate-y-16"><HeroPanel /></div>
         </div>
       </section>
 
@@ -183,24 +395,24 @@ export const QuickMode = () => {
       <CareCarousel />
 
       {/* Problem in numbers */}
-      <section id="problem" className="py-24 md:py-36 scroll-mt-16">
-        <div className="q-wrap">
-          <div className="q-reveal max-w-3xl mb-14 md:mb-20">
+      <section id="problem" className="relative overflow-hidden py-24 md:py-32 scroll-mt-16">
+        <svg className="q-india" viewBox={INDIA_VIEWBOX} aria-hidden>
+          <defs>
+            <pattern id="q-india-dots" width="14" height="14" patternUnits="userSpaceOnUse">
+              <circle cx="7" cy="7" r="2.6" fill="#1f8f86" />
+            </pattern>
+          </defs>
+          <path d={INDIA_PATH} fill="url(#q-india-dots)" />
+          <path d={INDIA_PATH} fill="none" stroke="#1f8f86" strokeWidth="3" strokeLinejoin="round" />
+          <circle className="q-india-pulse" cx={MUMBAI.x} cy={MUMBAI.y} r="22" fill="none" stroke="#c0841a" strokeWidth="4" />
+          <circle cx={MUMBAI.x} cy={MUMBAI.y} r="12" fill="#c0841a" />
+        </svg>
+        <div className="relative q-wrap">
+          <div className="q-reveal max-w-3xl mb-12 md:mb-16">
             <p className="q-kicker mb-5">{problem.kicker}</p>
             <h2 className="text-[40px] md:text-6xl leading-[1.04] tracking-[-0.025em]">{problem.title}</h2>
           </div>
-          <dl className="grid md:grid-cols-2 border-t border-[var(--q-line-2)]">
-            {problem.stats.map((s, i) => (
-              <div key={s.label} className={`q-reveal py-9 md:py-12 border-b border-[var(--q-line-2)] ${i % 2 ? 'md:pl-12 md:border-l' : 'md:pr-12'}`}>
-                <dt className="q-num text-[64px] md:text-[96px] text-[var(--q-teal)]">{s.value}</dt>
-                <dd className="mt-3">
-                  <p className="text-2xl md:text-[28px] leading-snug">{s.label}</p>
-                  <p className="q-ui text-sm text-[var(--q-soft)] mt-2">{s.note}</p>
-                  <div className="mt-3"><SourceLink k={s.source} /></div>
-                </dd>
-              </div>
-            ))}
-          </dl>
+          <StatTiles />
         </div>
       </section>
 
