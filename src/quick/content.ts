@@ -67,10 +67,11 @@ export const steps = [
 export const impact = {
   kicker: 'Our progress',
   title: 'Early days, measured honestly.',
-  stats: [
-    { value: '00', label: 'partner physio centres', placeholder: true },
-    { value: '00', label: 'patients supported', placeholder: true },
-  ],
+  value: '1',
+  label: 'partner doctor and mentor on board',
+  body: 'Our first clinical partner is also our mentor, guiding SOUL3 from the clinical side and partnered with us in building it. Every new partner is one more step toward 100 physio clinics across Mumbai.',
+  note: 'Clinical partner',
+  goal: 100,
 };
 
 export const vision = {
@@ -101,6 +102,8 @@ export const founders = {
     { id: 'founder2', name: 'Taher Hotelwala', role: 'Co-founder & COO', bio: 'B.Tech in Robotics and AI.', linkedin: '', placeholder: false },
     { id: 'founder3', name: 'Fardin Pirjade', role: 'Co-founder & CTO', bio: 'B.E in Electronics and Telecommunications.', linkedin: '', placeholder: false },
   ],
+  // Mentor and first clinical partner. Fill in once confirmed; placeholder styling shows until then.
+  mentor: { id: 'mentor', name: 'Dr. Name Surname', title: 'Mentor and clinical partner', specialty: 'Specialty, e.g. Physiotherapist', bio: 'One line on their experience and how they guide SOUL3.', linkedin: '', placeholder: true },
 };
 
 export const faqs = [

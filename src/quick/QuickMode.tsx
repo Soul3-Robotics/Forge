@@ -429,20 +429,31 @@ export const QuickMode = () => {
         </div>
       </section>
 
-      {/* Impact */}
+      {/* Impact: one honest number and how far it is from the next goal */}
       <section className="py-24 md:py-32">
-        <div className="q-wrap">
-          <div className="q-reveal mb-12">
+        <div className="q-wrap grid lg:grid-cols-[1fr_1fr] gap-12 lg:gap-20 items-end">
+          <div className="q-reveal">
             <p className="q-kicker mb-5">{impact.kicker}</p>
-            <h2 className="text-[40px] md:text-6xl tracking-[-0.025em]">{impact.title}</h2>
+            <h2 className="text-[40px] md:text-6xl leading-[1.04] tracking-[-0.025em]">{impact.title}</h2>
+            <p className="q-ui text-lg text-[var(--q-soft)] mt-6 max-w-md leading-relaxed">{impact.body}</p>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-12 border-t border-[var(--q-line-2)] pt-10">
-            {impact.stats.map(s => (
-              <div key={s.label} className="q-reveal pr-6">
-                <p className={`q-num text-6xl md:text-[88px] ${s.placeholder ? 'q-placeholder inline-block text-[var(--q-mute)]' : 'text-[var(--q-teal)]'}`} title={s.placeholder ? 'Placeholder: SOUL3 figure to be added' : undefined}>{s.value}</p>
-                <p className="q-ui text-sm text-[var(--q-soft)] mt-4">{s.label}</p>
+          <div className="q-reveal">
+            <div className="flex items-end gap-5">
+              <p className="q-num text-[140px] md:text-[200px] leading-[0.8] text-[var(--q-teal)]">{impact.value}</p>
+              <div className="pb-2 md:pb-4">
+                <span className="q-ui inline-block text-[11px] uppercase tracking-[0.14em] text-[var(--q-gold)] border border-[var(--q-line-2)] rounded-full px-3 py-1 mb-3">{impact.note}</span>
+                <p className="text-2xl md:text-3xl leading-tight max-w-[14rem]">{impact.label}</p>
               </div>
-            ))}
+            </div>
+            <div className="mt-10">
+              <div className="flex justify-between q-ui text-[12px] uppercase tracking-[0.14em] text-[var(--q-mute)] mb-3">
+                <span>Today</span><span>Goal: {impact.goal} clinics</span>
+              </div>
+              <div className="relative h-3 rounded-full bg-[var(--q-surface-3)]">
+                <span className="absolute left-0 top-0 h-full rounded-full bg-[var(--q-teal)]" style={{ width: `${Math.max(2, (Number(impact.value) / impact.goal) * 100)}%` }} />
+                <span className="absolute top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-[var(--q-teal)] border-4 border-[var(--q-bg)]" style={{ left: `calc(${Math.max(2, (Number(impact.value) / impact.goal) * 100)}% - 10px)` }} />
+              </div>
+            </div>
           </div>
         </div>
       </section>

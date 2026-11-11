@@ -51,6 +51,37 @@ export const Founders = () => (
           );
         })}
       </ul>
+
+      <Mentor />
     </div>
   </section>
 );
+
+// Mentor strip: a wide row under the founders, portrait on the left, details on the right.
+const Mentor = () => {
+  const m = founders.mentor;
+  const photo = FOUNDER_PHOTOS[m.id];
+  return (
+    <div className="q-reveal mt-20 md:mt-28 grid sm:grid-cols-[180px_1fr] md:grid-cols-[220px_1fr] gap-6 md:gap-10 items-center rounded-[32px] p-5 md:p-6 pr-6 md:pr-12 bg-[#fffdf8] border border-[var(--q-line)] shadow-[0_24px_60px_-36px_rgba(20,33,31,0.45)]">
+      <div className="relative aspect-square rounded-[24px] overflow-hidden bg-[#1f5a55]">
+        {photo ? (
+          <img src={photo} alt={m.name} loading="lazy" className="w-full h-full object-cover" />
+        ) : (
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <span className="q-num text-[64px] leading-none text-[#f4efe6]">Dr</span>
+            {m.placeholder && <span className="q-ui text-xs mt-2 text-[#f4efe6] opacity-60">Photo coming soon</span>}
+          </div>
+        )}
+      </div>
+      <div>
+        <span className="q-ui inline-block text-[11px] uppercase tracking-[0.14em] text-[var(--q-gold)] border border-[var(--q-line-2)] rounded-full px-3 py-1">{m.title}</span>
+        <h3 className={`text-[30px] md:text-[40px] leading-tight mt-4 ${m.placeholder ? 'text-[var(--q-mute)]' : ''}`}>{m.name}</h3>
+        <p className={`q-ui text-[13px] uppercase tracking-[0.14em] mt-1.5 ${m.placeholder ? 'text-[var(--q-mute)]' : 'text-[var(--q-teal)]'}`}>{m.specialty}</p>
+        <p className={`q-ui text-base md:text-lg leading-relaxed mt-4 max-w-2xl ${m.placeholder ? 'text-[var(--q-mute)]' : 'text-[var(--q-soft)]'}`}>{m.bio}</p>
+        {m.linkedin && (
+          <a href={m.linkedin} target="_blank" rel="noreferrer" className="q-ui inline-flex items-center gap-2 mt-5 text-sm text-[var(--q-ink)] hover:text-[var(--q-teal)]">View profile <ArrowUpRight className="w-4 h-4" /></a>
+        )}
+      </div>
+    </div>
+  );
+};
