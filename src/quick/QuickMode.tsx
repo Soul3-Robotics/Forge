@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, ArrowUpRight, Mail, MapPin, Menu, Phone, Play, Plus, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpRight, Image as ImageIcon, Mail, MapPin, Menu, Phone, Play, Plus, X } from 'lucide-react';
 import logo from '../assets/logo.webp';
+import riidlLogo from '../assets/supporters/riidl.png';
+import somaiyaLogo from '../assets/supporters/somaiya.png';
 import heroImg from '../assets/background.webp';
 import { Mockup } from './Mockups';
 import { RoadSteps } from './RoadSteps';
@@ -23,6 +25,12 @@ const useReveal = () => {
     return () => io.disconnect();
   }, []);
 };
+
+// Supporter logos (src/assets/supporters/).
+const SUPPORTER_LOGOS: { src: string; alt: string; h: string }[] = [
+  { src: riidlLogo, alt: 'Riidl', h: 'h-12 md:h-[68px]' },
+  { src: somaiyaLogo, alt: 'Somaiya Vidyavihar University', h: 'h-12 md:h-[72px]' },
+];
 
 const nav = [
   { href: '#care', id: 'care', label: 'Services' },
@@ -394,6 +402,44 @@ export const QuickMode = () => {
         </div>
       </section>
 
+      {/* Vision: statement, the SOUL3 acronym, and four goals as a staircase */}
+      <section id="vision" className="q-night relative overflow-hidden py-24 md:py-36 scroll-mt-16">
+        <div className="q-wrap">
+          <div className="q-reveal text-center max-w-4xl mx-auto">
+            <p className="q-kicker mb-6">{vision.kicker}</p>
+            <h2 className="text-[40px] md:text-7xl leading-[1.04] tracking-[-0.025em]">{vision.title[0]} <em className="text-[var(--q-gold)]">{vision.title[1]}</em></h2>
+            <p className="q-ui text-lg md:text-xl text-[var(--q-soft)] mt-7 max-w-xl mx-auto leading-relaxed">{vision.body[0]}<strong className="font-bold text-[var(--q-gold)]">{vision.body[1]}</strong>{vision.body[2]}</p>
+          </div>
+
+          <ol className="q-reveal grid grid-cols-5 mt-16 md:mt-24 border-y border-[var(--q-line)]" aria-label="What SOUL3 stands for">
+            {vision.acronym.map((a, i) => (
+              <li key={a.l} className={`q-acro flex flex-col items-center text-center py-7 md:py-10 px-1 ${i ? 'border-l border-[var(--q-line)]' : ''}`} style={{ transitionDelay: `${i * 0.08}s` }}>
+                <span className={`q-num text-[44px] sm:text-6xl md:text-[110px] leading-none ${i === 4 ? 'text-[var(--q-gold)]' : ''}`}>{i === 4 ? <>×3</> : a.l}</span>
+                <span className="q-ui text-[11px] sm:text-sm md:text-base text-[var(--q-soft)] mt-3 md:mt-4 leading-tight">{a.w}</span>
+              </li>
+            ))}
+          </ol>
+
+          <div className="mt-20 md:mt-28">
+            <div className="q-reveal flex items-end justify-between gap-6 mb-8 md:mb-10">
+              <p className="q-kicker">Our four goals</p>
+              <p className="q-ui text-sm text-[var(--q-mute)] hidden md:block">One step at a time</p>
+            </div>
+            <ol className="q-stairs">
+              {vision.roadmap.map((r, i) => (
+                <li key={r.when} className={`q-reveal q-stair q-stair-${i + 1}`} style={{ transitionDelay: `${i * 0.15}s` }}>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-3 sm:mb-5">
+                    <span className="q-stair-badge"><span className="q-num text-sm sm:text-xl">{i + 1}</span></span>
+                    <p className="q-ui text-[8px] sm:text-[11px] lg:text-[12px] uppercase tracking-[0.08em] sm:tracking-[0.16em] opacity-80 leading-snug">{r.when} · {r.where}</p>
+                  </div>
+                  <p className="text-[12px] sm:text-[18px] lg:text-[26px] leading-[1.18]">{r.what}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </section>
+
       <CareCarousel />
 
       {/* Problem in numbers */}
@@ -458,44 +504,6 @@ export const QuickMode = () => {
         </div>
       </section>
 
-      {/* Vision: statement, the SOUL3 acronym, and three goals as a staircase */}
-      <section className="q-dark relative overflow-hidden py-24 md:py-36">
-        <div className="q-wrap">
-          <div className="q-reveal text-center max-w-4xl mx-auto">
-            <p className="q-kicker mb-6">{vision.kicker}</p>
-            <h2 className="text-[40px] md:text-7xl leading-[1.04] tracking-[-0.025em]">{vision.title[0]} <em className="text-[var(--q-gold)]">{vision.title[1]}</em></h2>
-            <p className="q-ui text-lg md:text-xl text-[var(--q-soft)] mt-7 max-w-xl mx-auto leading-relaxed">{vision.body}</p>
-          </div>
-
-          <ol className="q-reveal grid grid-cols-5 mt-16 md:mt-24 border-y border-[var(--q-line)]" aria-label="What SOUL3 stands for">
-            {vision.acronym.map((a, i) => (
-              <li key={a.l} className={`q-acro flex flex-col items-center text-center py-7 md:py-10 px-1 ${i ? 'border-l border-[var(--q-line)]' : ''}`} style={{ transitionDelay: `${i * 0.08}s` }}>
-                <span className={`q-num text-[44px] sm:text-6xl md:text-[110px] leading-none ${i === 4 ? 'text-[var(--q-gold)]' : ''}`}>{i === 4 ? <>×3</> : a.l}</span>
-                <span className="q-ui text-[11px] sm:text-sm md:text-base text-[var(--q-soft)] mt-3 md:mt-4 leading-tight">{a.w}</span>
-              </li>
-            ))}
-          </ol>
-
-          <div className="mt-20 md:mt-28">
-            <div className="q-reveal flex items-end justify-between gap-6 mb-8 md:mb-10">
-              <p className="q-kicker">Our three goals</p>
-              <p className="q-ui text-sm text-[var(--q-mute)] hidden md:block">One step at a time</p>
-            </div>
-            <ol className="q-stairs">
-              {vision.roadmap.map((r, i) => (
-                <li key={r.when} className={`q-reveal q-stair q-stair-${i + 1}`} style={{ transitionDelay: `${i * 0.15}s` }}>
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-3 sm:mb-5">
-                    <span className="q-stair-badge"><span className="q-num text-sm sm:text-xl">{i + 1}</span></span>
-                    <p className="q-ui text-[9px] sm:text-[11px] lg:text-[12px] uppercase tracking-[0.1em] sm:tracking-[0.16em] opacity-80 leading-snug">{r.when} · {r.where}</p>
-                  </div>
-                  <p className="text-[14px] sm:text-[20px] lg:text-[30px] leading-[1.18]">{r.what}</p>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </div>
-      </section>
-
       <Founders />
 
       {/* FAQ */}
@@ -515,6 +523,18 @@ export const QuickMode = () => {
                 <p className="q-ui text-base text-[var(--q-soft)] leading-relaxed pb-8 max-w-2xl">{f.a}</p>
               </details>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Supported by: partner logos */}
+      <section className="py-14 md:py-20">
+        <div className="q-wrap q-reveal flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
+          <p className="q-kicker shrink-0">Supported by</p>
+          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16">
+            {SUPPORTER_LOGOS.length
+              ? SUPPORTER_LOGOS.map(l => <img key={l.alt} src={l.src} alt={l.alt} className={`${l.h} w-auto object-contain`} loading="lazy" />)
+              : [0, 1].map(i => <div key={i} className="q-logo-slot" aria-hidden><ImageIcon className="w-6 h-6" strokeWidth={1.5} /></div>)}
           </div>
         </div>
       </section>

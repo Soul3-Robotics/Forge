@@ -43,7 +43,7 @@ export const problem = {
 export const modulesIntro = {
   kicker: 'What we do',
   title: 'One system for every part of getting better.',
-  body: 'Six parts of the SOUL3 programme, each feeding the same recovery record. Tap + on any card to see what is included.',
+  body: 'Roadmap of the SOUL3 programme, each feeding the same recovery record. Tap + on any card to see what is included.',
 };
 
 export const modules = [
@@ -77,7 +77,7 @@ export const impact = {
 export const vision = {
   kicker: 'Our vision',
   title: ['A world where everyone can', 'become their old selves again.'],
-  body: 'We call it seva: service that uplifts a life. It is the idea our name is built on.',
+  body: ['We call it ', 'seva', ': service that uplifts a life. It is the idea our name is built on.'],
   acronym: [
     { l: 'S', w: 'Seva' },
     { l: 'O', w: 'Of' },
@@ -89,6 +89,7 @@ export const vision = {
     { when: 'Now', where: 'Mumbai', what: 'Pilot from Riidl, Somaiya Vidyavihar University' },
     { when: 'Next', where: 'Across Mumbai', what: 'Partner with 100 physio clinics across Mumbai' },
     { when: 'Later', where: 'Across India', what: 'Technology led rehab within reach of every Indian city' },
+    { when: 'Beyond', where: 'Worldwide', what: 'Taking SOUL3 to every country that needs better recovery' },
   ],
 };
 
@@ -98,9 +99,9 @@ export const founders = {
   title: ['Three people,', 'one promise.'],
   body: 'The team building SOUL3 at Riidl, Somaiya Vidyavihar University, so that recovery in India is measured, connected and close to home.',
   people: [
-    { id: 'founder1', name: 'Shubham Mehta', role: 'Co-founder & CEO', bio: 'B.Tech in Robotics and AI.', linkedin: '', placeholder: false },
-    { id: 'founder2', name: 'Taher Hotelwala', role: 'Co-founder & COO', bio: 'B.Tech in Robotics and AI.', linkedin: '', placeholder: false },
-    { id: 'founder3', name: 'Fardin Pirjade', role: 'Co-founder & CTO', bio: 'B.E in Electronics and Telecommunications.', linkedin: '', placeholder: false },
+    { id: 'founder1', name: 'Shubham Mehta', role: 'Co-founder', bio: 'B.Tech in Robotics and AI.', linkedin: '', placeholder: false },
+    { id: 'founder2', name: 'Taher Hotelwala', role: 'Co-founder', bio: 'B.Tech in Robotics and AI.', linkedin: '', placeholder: false },
+    { id: 'founder3', name: 'Fardin Pirjade', role: 'Co-founder', bio: 'B.E in Electronics and Telecommunications.', linkedin: '', placeholder: false },
   ],
   // Mentor and first clinical partner. Fill in once confirmed; placeholder styling shows until then.
   mentor: { id: 'mentor', name: 'Dr. Name Surname', title: 'Mentor and clinical partner', specialty: 'Specialty, e.g. Physiotherapist', bio: 'One line on their experience and how they guide SOUL3.', linkedin: '', placeholder: true },

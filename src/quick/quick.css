@@ -248,7 +248,7 @@
 .q-tile-night { background: #14211f; color: #f4efe6; }
 
 /* Faint India map behind the Why SOUL3 section, Mumbai marked in gold */
-.q-india { position: absolute; pointer-events: none; opacity: 0.12; width: min(1040px, 120vw); right: -30vw; top: 60px; }
+.q-india { position: absolute; pointer-events: none; opacity: 0.2; width: min(1040px, 120vw); right: -30vw; top: 60px; }
 @media (min-width: 1024px) { .q-india { right: max(-80px, calc((100vw - 1200px) / 2 - 140px)); top: 20px; } }
 .q-india-pulse { transform-box: fill-box; transform-origin: center; animation: q-pulse 2.6s ease-out infinite; }
 @keyframes q-pulse { 0% { transform: scale(0.6); opacity: 1; } 100% { transform: scale(2.6); opacity: 0; } }
@@ -276,22 +276,29 @@
 @media (prefers-reduced-motion: reduce) { .q-acro { opacity: 1; transform: none; } }
 
 /* Our three goals as a staircase: three columns rising left to right at every screen size */
-.q-stairs { display: grid; grid-template-columns: repeat(3, 1fr); align-items: end; border-bottom: 2px solid rgba(244, 239, 230, 0.25); }
-.q-stair { position: relative; display: flex; flex-direction: column; border-radius: 16px 16px 0 0; padding: 12px 10px 16px; }
-.q-stair-1 { background: rgba(244, 239, 230, 0.07); border: 1px solid rgba(244, 239, 230, 0.14); border-bottom: 0; min-height: 150px; }
-.q-stair-2 { background: #1f5a55; min-height: 195px; }
-.q-stair-3 { background: #e3a737; color: #14211f; min-height: 240px; }
+.q-stairs { display: grid; grid-template-columns: repeat(4, 1fr); align-items: end; border-bottom: 2px solid rgba(244, 239, 230, 0.25); }
+.q-stair { position: relative; display: flex; flex-direction: column; border-radius: 14px 14px 0 0; padding: 10px 8px 14px; }
+.q-stair-1 { background: rgba(244, 239, 230, 0.07); border: 1px solid rgba(244, 239, 230, 0.14); border-bottom: 0; min-height: 135px; }
+.q-stair-2 { background: #1f5a55; min-height: 180px; }
+.q-stair-3 { background: #2b7a72; min-height: 225px; }
+.q-stair-4 { background: #e3a737; color: #14211f; min-height: 270px; }
 .q-stair-badge { width: 28px; height: 28px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .q-stair-1 .q-stair-badge { border: 2px solid rgba(244, 239, 230, 0.5); }
 .q-stair-2 .q-stair-badge { background: #7ce4d4; color: #113d3b; }
-.q-stair-3 .q-stair-badge { background: #14211f; color: #e3a737; }
+.q-stair-3 .q-stair-badge { background: #f4efe6; color: #113d3b; }
+.q-stair-4 .q-stair-badge { background: #14211f; color: #e3a737; }
 @media (min-width: 640px) {
   .q-stair { border-radius: 22px 22px 0 0; padding: 22px 20px 28px; }
-  .q-stair-1 { min-height: 200px; } .q-stair-2 { min-height: 270px; } .q-stair-3 { min-height: 340px; }
+  .q-stair-1 { min-height: 190px; } .q-stair-2 { min-height: 250px; } .q-stair-3 { min-height: 310px; } .q-stair-4 { min-height: 370px; }
   .q-stair-badge { width: 38px; height: 38px; }
 }
 @media (min-width: 1024px) {
-  .q-stair { border-radius: 28px 28px 0 0; padding: 30px 32px 40px; }
-  .q-stair-1 { min-height: 240px; } .q-stair-2 { min-height: 330px; } .q-stair-3 { min-height: 420px; }
+  .q-stair { border-radius: 28px 28px 0 0; padding: 28px 26px 36px; }
+  .q-stair-1 { min-height: 230px; } .q-stair-2 { min-height: 300px; } .q-stair-3 { min-height: 370px; } .q-stair-4 { min-height: 440px; }
   .q-stair-badge { width: 44px; height: 44px; }
 }
+
+/* Supported by: logo strip */
+.q-logo-slot { height: 88px; min-width: 180px; border-radius: 20px; border: 1.5px dashed var(--q-line-2); display: flex; align-items: center; justify-content: center; color: var(--q-mute); }
+.q-logo { height: 64px; width: auto; object-fit: contain; }
+@media (min-width: 768px) { .q-logo-slot { height: 110px; min-width: 240px; } .q-logo { height: 84px; } }
